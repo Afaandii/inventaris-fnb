@@ -10,10 +10,12 @@ import (
 
 func main(){
 	cfg := config.LoadDBConfig()
-	_, err := database.Connect(cfg)
+	db, err := database.Connect(cfg)
 	if err != nil {
 		log.Fatal("connection database: ", err)
 	}
+
+	database.AutoMigrate(db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
