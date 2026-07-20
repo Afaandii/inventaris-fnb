@@ -15,6 +15,13 @@ func main(){
 		log.Fatal("connection database: ", err)
 	}
 
+	// menutup pool connection secara otomatis saat aplikasi mati
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal("Failed to get db from gorm: ", err)
+	}
+	defer sqlDB.Close()
+
 	database.AutoMigrate(db)
 
 	if cfg.PORT == "" {
