@@ -1,6 +1,8 @@
-package users
+package model
 
-import "time"
+import (
+	"time"
+)
 
 type Users struct {
 	IDUser      uint      `json:"id_user" gorm:"primaryKey;autoIncrement;column:id_user"`
@@ -16,6 +18,8 @@ type Users struct {
 	IsActive    *bool     `json:"is_active" gorm:"type:bool;column:is_active"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+
+	Role Roles `gorm:"foreignKey:RoleRef;references:IDRole;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Users) TableName() string {

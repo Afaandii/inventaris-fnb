@@ -1,6 +1,8 @@
-package roles
+package model
 
-import "time"
+import (
+	"time"
+)
 
 type Roles struct {
 	IDRoles     uint   `json:"id_role" gorm:"primaryKey;autoIncrement;column:id_role"`
@@ -9,6 +11,8 @@ type Roles struct {
 	Description *string `json:"description" gorm:"default:null;type:text;column:description"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt 	time.Time `json:"updated_at"`
+
+	User []Users `gorm:"foreignKey:RoleRef;references:IDRole;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (Roles) TableName() string{
