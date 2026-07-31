@@ -1,4 +1,4 @@
-package units
+package model
 
 import "time"
 

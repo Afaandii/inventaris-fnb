@@ -1,4 +1,4 @@
-package outlets
+package model
 
 import (
 	"time"
