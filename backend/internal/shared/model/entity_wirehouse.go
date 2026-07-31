@@ -1,4 +1,4 @@
-package wirehouse
+package model
 
 import "time"
 

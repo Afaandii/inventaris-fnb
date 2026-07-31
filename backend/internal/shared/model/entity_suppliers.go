@@ -1,4 +1,4 @@
-package suppliers
+package model
 
 import "time"
 
