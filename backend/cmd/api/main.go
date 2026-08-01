@@ -1,14 +1,18 @@
 package main
 
 import (
+	"backend/internal/modules/master/categories"
 	"backend/internal/shared/config"
 	"backend/internal/shared/database"
+	"backend/internal/shared/middleware"
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func main(){
+func main() {
 	cfg := config.LoadDBConfig()
 	db, err := database.Connect(cfg)
 	if err != nil {
@@ -23,6 +27,11 @@ func main(){
 	defer sqlDB.Close()
 
 	database.AutoMigrate(db)
+
+	// register routes
+	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
+	categories.RegisterRoutesCategory(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
