@@ -6,7 +6,7 @@ import (
 	"github.com/gosimple/slug"
 )
 
-type Service interface {
+type ServiceCategory interface {
 	GetAll() ([]model.Category, error)
 	GetById(id uint) (*model.Category, error)
 	Create(parent_id uint, category_name, types, description string) (*model.Category, error)
@@ -14,23 +14,23 @@ type Service interface {
 	Delete(id uint) error
 }
 
-type service struct {
+type serviceCategory struct {
 	repo CategoryRepository
 }
 
-func NewService(repo CategoryRepository) Service {
-	return &service{repo}
+func NewService(repo CategoryRepository) ServiceCategory {
+	return &serviceCategory{repo}
 }
 
-func (sc *service) GetAll() ([]model.Category, error) {
+func (sc *serviceCategory) GetAll() ([]model.Category, error) {
 	return sc.repo.FindAll()
 }
 
-func (sc *service) GetById(id_category uint) (*model.Category, error) {
+func (sc *serviceCategory) GetById(id_category uint) (*model.Category, error) {
 	return sc.repo.FindById(id_category)
 }
 
-func (sc *service) Create(parent_id uint, category_name, types, description string) (*model.Category, error) {
+func (sc *serviceCategory) Create(parent_id uint, category_name, types, description string) (*model.Category, error) {
 	slugged := slug.Make(category_name)
 
 	cat := &model.Category{
@@ -45,7 +45,7 @@ func (sc *service) Create(parent_id uint, category_name, types, description stri
 	return cat, err
 }
 
-func (sc *service) Update(id_category, parent_id uint, category_name, types, description string) (*model.Category, error) {
+func (sc *serviceCategory) Update(id_category, parent_id uint, category_name, types, description string) (*model.Category, error) {
 	cat, err := sc.repo.FindById(id_category)
 	if err != nil {
 		return nil, err
@@ -62,6 +62,6 @@ func (sc *service) Update(id_category, parent_id uint, category_name, types, des
 	return cat, err
 }
 
-func (sc *service) Delete(id uint) error {
+func (sc *serviceCategory) Delete(id uint) error {
 	return sc.repo.Delete(id)
 }
