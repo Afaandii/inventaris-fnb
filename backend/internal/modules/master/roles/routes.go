@@ -7,8 +7,8 @@ import (
 
 func RegisterRoutesRole(r *gin.Engine, db *gorm.DB) {
 	repo := NewRoleRepository(db)
-	service := NewService(repo)
-	handler := NewHandler(service)
+	service := NewServiceRole(repo)
+	handler := NewHandlerRole(service)
 
 	group := r.Group("/api/v1/roles")
 	{

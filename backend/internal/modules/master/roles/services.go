@@ -14,7 +14,7 @@ type serviceRole struct {
 	repo RoleRepository
 }
 
-func NewService(repo RoleRepository) ServiceRole {
+func NewServiceRole(repo RoleRepository) ServiceRole {
 	return &serviceRole{repo}
 }
 
