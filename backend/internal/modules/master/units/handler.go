@@ -20,7 +20,7 @@ func NewHandlerUnit(service ServiceUnit) *Handler {
 func (h *Handler) GetAll(ctx *gin.Context) {
 	unt, err := h.service.GetAll()
 	if err != nil {
-		response.Error(ctx, http.StatusBadRequest, "Failed to retrieved data unit!", err.Error())
+		response.Error(ctx, http.StatusInternalServerError, "Failed to retrieved data unit!", err.Error())
 		return
 	}
 

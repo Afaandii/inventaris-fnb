@@ -43,6 +43,12 @@ func Validate(s interface{}) map[string]string {
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a valid number!", fieldError.Field())
 			case "boolean":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a boolean (true or false)!", fieldError.Field())
+			case "alpha":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must contain alphabetic characters only!", fieldError.Field())
+			case "alphanum":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must contain letters and numbers only!", fieldError.Field())
+			case "len":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be exactly %s characters long!", fieldError.Field(), fieldError.Param())
 			default:
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s is invalid!", fieldError.Field())
 			}

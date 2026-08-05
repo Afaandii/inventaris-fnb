@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SupplierRegisterRoutes(r *gin.Engine, db *gorm.DB) {
+func RegisterSupplierRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewSupplierRepository(db)
 	service := NewServiceSupplier(repo)
 	handler := NewHandlerSupplier(service)
