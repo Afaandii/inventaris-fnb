@@ -18,7 +18,7 @@ type serviceCategory struct {
 	repo CategoryRepository
 }
 
-func NewService(repo CategoryRepository) ServiceCategory {
+func NewServiceRole(repo CategoryRepository) ServiceCategory {
 	return &serviceCategory{repo}
 }
 

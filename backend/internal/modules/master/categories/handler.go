@@ -13,7 +13,7 @@ type Handler struct {
 	service ServiceCategory
 }
 
-func NewHandler(service ServiceCategory) *Handler {
+func NewHandlerRole(service ServiceCategory) *Handler {
 	return &Handler{service}
 }
 
@@ -36,7 +36,7 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 	category, err := h.service.GetById(uint(id_category))
 	if err != nil {
-		response.Error(ctx, http.StatusInternalServerError, "Failed to retrieve data category", err.Error())
+		response.Error(ctx, http.StatusInternalServerError, "Failed to retrieve data category by id!", err.Error())
 		return
 	}
 
