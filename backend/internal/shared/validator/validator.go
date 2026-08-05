@@ -39,9 +39,10 @@ func Validate(s interface{}) map[string]string {
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a valid date format (YYYY-MM-DD)!", fieldError.Field())
 			case "numeric":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must contain only numbers!", fieldError.Field())
-
 			case "number":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a valid number!", fieldError.Field())
+			case "boolean":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a boolean (true or false)!", fieldError.Field())
 			default:
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s is invalid!", fieldError.Field())
 			}
