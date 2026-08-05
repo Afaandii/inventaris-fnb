@@ -2,6 +2,11 @@ package main
 
 import (
 	"backend/internal/modules/master/categories"
+	"backend/internal/modules/master/outlets"
+	"backend/internal/modules/master/roles"
+	"backend/internal/modules/master/suppliers"
+	"backend/internal/modules/master/units"
+	"backend/internal/modules/master/wirehouses"
 	"backend/internal/shared/config"
 	"backend/internal/shared/database"
 	"backend/internal/shared/middleware"
@@ -32,6 +37,11 @@ func main() {
 	r := gin.Default()
 	r.Use(middleware.CORSMiddleware())
 	categories.RegisterRoutesCategory(r, db)
+	outlets.RegisterOutletRoutes(r, db)
+	roles.RegisterRoutesRole(r, db)
+	suppliers.RegisterSupplierRoutes(r, db)
+	units.RegisterUnitRoute(r, db)
+	wirehouses.RegisterWirehouseRoute(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
