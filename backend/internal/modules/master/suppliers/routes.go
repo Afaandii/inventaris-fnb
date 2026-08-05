@@ -10,7 +10,7 @@ func SupplierRegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	service := NewServiceSupplier(repo)
 	handler := NewHandlerSupplier(service)
 
-	group := r.Group("/api/v1/supplier")
+	group := r.Group("/api/v1/suppliers")
 	{
 		group.GET("/", handler.GetAll)
 		group.GET("/:id_supplier", handler.GetById)
