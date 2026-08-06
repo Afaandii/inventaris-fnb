@@ -3,8 +3,10 @@ package outlets
 import (
 	"backend/internal/shared/response"
 	"backend/internal/shared/validator"
+	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/datatypes"
@@ -46,14 +48,13 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
-		OutletCode   string         `json:"outlet_code" validate:"required,min=3,max=255"`
-		OutletName   string         `json:"outlet_name" validate:"required,min=3,max=125"`
-		Address      string         `json:"address" validate:"required,min=3,max=150"`
-		City         string         `json:"city" validate:"required,min=3,max=150"`
-		OpeningHours datatypes.Time `json:"opening_hours" validate:"required,min=3,max=255,time"`
-		ClosingHours datatypes.Time `json:"closing_hours" validate:"required,min=3,max=255,time"`
-		PhoneNumber  string         `json:"phone_number" validate:"required,min=3,max=20,numeric"`
-		StatusOutlet string         `json:"status_outlet" validate:"required,min=3,max=150,oneof=open closed repaired"`
+		OutletName   string `json:"outlet_name" validate:"required,min=3,max=125"`
+		Address      string `json:"address" validate:"required,min=3,max=150"`
+		City         string `json:"city" validate:"required,min=3,max=150"`
+		OpeningHours string `json:"opening_hours" validate:"required,datetime=15:04"`
+		ClosingHours string `json:"closing_hours" validate:"required,datetime=15:04"`
+		PhoneNumber  string `json:"phone_number" validate:"required,min=3,max=20,numeric"`
+		StatusOutlet string `json:"status_outlet" validate:"required,min=3,max=150,oneof=active inactive renovation closed"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -66,7 +67,20 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	out, err := h.service.Create(req.OutletCode, req.OutletName, req.Address, req.City, req.OpeningHours, req.ClosingHours, req.PhoneNumber, req.StatusOutlet)
+	openTimeParse, err := time.Parse("15:04", req.OpeningHours)
+	if err != nil {
+		log.Print("Failed to parse opening time!", err)
+	}
+
+	closedTimeParse, err := time.Parse("15:04", req.OpeningHours)
+	if err != nil {
+		log.Print("Failed to parse closed time!", err)
+	}
+
+	openTime := datatypes.NewTime(openTimeParse.Hour(), openTimeParse.Minute(), 0, 0)
+	closedTime := datatypes.NewTime(closedTimeParse.Hour(), closedTimeParse.Minute(), 0, 0)
+
+	out, err := h.service.Create(req.OutletName, req.Address, req.City, openTime, closedTime, req.PhoneNumber, req.StatusOutlet)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to create data outlet!", err.Error())
 		return
@@ -83,14 +97,13 @@ func (h *Handler) Update(ctx *gin.Context) {
 	}
 
 	var req struct {
-		OutletCode   string         `json:"outlet_code" validate:"required,min=3,max=255"`
-		OutletName   string         `json:"outlet_name" validate:"required,min=3,max=125"`
-		Address      string         `json:"address" validate:"required,min=3,max=150"`
-		City         string         `json:"city" validate:"required,min=3,max=150"`
-		OpeningHours datatypes.Time `json:"opening_hours" validate:"required,min=3,max=255,time"`
-		ClosingHours datatypes.Time `json:"closing_hours" validate:"required,min=3,max=255,time"`
-		PhoneNumber  string         `json:"phone_number" validate:"required,min=3,max=20,numeric"`
-		StatusOutlet string         `json:"status_outlet" validate:"required,min=3,max=150,oneof=open closed repaired"`
+		OutletName   string `json:"outlet_name" validate:"required,min=3,max=125"`
+		Address      string `json:"address" validate:"required,min=3,max=150"`
+		City         string `json:"city" validate:"required,min=3,max=150"`
+		OpeningHours string `json:"opening_hours" validate:"required,min=3,max=255,datetime=15:04"`
+		ClosingHours string `json:"closing_hours" validate:"required,min=3,max=255,datetime=15:04"`
+		PhoneNumber  string `json:"phone_number" validate:"required,min=3,max=20,numeric"`
+		StatusOutlet string `json:"status_outlet" validate:"required,min=3,max=150,oneof=active inactive renovation closed"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -103,7 +116,19 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	out, err := h.service.Update(uint(id_outlet), req.OutletCode, req.OutletName, req.Address, req.City, req.OpeningHours, req.ClosingHours, req.PhoneNumber, req.StatusOutlet)
+	openTimeParse, err := time.Parse("15:04", req.OpeningHours)
+	if err != nil {
+		log.Print("Failed to parse opening time!", err)
+	}
+
+	closedTimeParse, err := time.Parse("15:04", req.ClosingHours)
+	if err != nil {
+		log.Print("Failed to parse closed time!", err)
+	}
+
+	openTime := datatypes.NewTime(openTimeParse.Hour(), openTimeParse.Minute(), 0, 0)
+	closedTime := datatypes.NewTime(closedTimeParse.Hour(), closedTimeParse.Minute(), 0, 0)
+	out, err := h.service.Update(uint(id_outlet), req.OutletName, req.Address, req.City, openTime, closedTime, req.PhoneNumber, req.StatusOutlet)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to updated data outlet!", err.Error())
 		return
