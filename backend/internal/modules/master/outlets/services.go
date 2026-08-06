@@ -2,6 +2,7 @@ package outlets
 
 import (
 	"backend/internal/shared/model"
+	"backend/pkg/helper"
 
 	"gorm.io/datatypes"
 )
@@ -9,8 +10,8 @@ import (
 type OutletService interface {
 	GetAll() ([]model.Outlets, error)
 	GetById(id_outlet uint) (*model.Outlets, error)
-	Create(outlet_code, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error)
-	Update(id_outlet uint, outlet_code, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error)
+	Create(outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error)
+	Update(id_outlet uint, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error)
 	Delete(id_outlet uint) error
 }
 
@@ -30,9 +31,16 @@ func (so *outletService) GetById(id_outlet uint) (*model.Outlets, error) {
 	return so.repo.GetById(id_outlet)
 }
 
-func (so *outletService) Create(outlet_code, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error) {
+func (so *outletService) Create(outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error) {
+	count, err := so.repo.CountTodayOutlets()
+	if err != nil {
+		return nil, err
+	}
+
+	generateCode := helper.GenerateCode(int(count))
+
 	out := &model.Outlets{
-		OutletCode:   outlet_code,
+		OutletCode:   generateCode,
 		OutletName:   outlet_name,
 		Address:      address,
 		City:         city,
@@ -42,18 +50,25 @@ func (so *outletService) Create(outlet_code, outlet_name, address, city string, 
 		StatusOutlet: status_outlet,
 	}
 
-	err := so.repo.Create(out)
+	err = so.repo.Create(out)
 
 	return out, err
 }
 
-func (so *outletService) Update(id_outlet uint, outlet_code, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error) {
+func (so *outletService) Update(id_outlet uint, outlet_name, address, city string, opening_hours, closing_hours datatypes.Time, phone_number, status_outlet string) (*model.Outlets, error) {
 	out, err := so.repo.GetById(id_outlet)
 	if err != nil {
 		return nil, err
 	}
 
-	out.OutletCode = outlet_code
+	count, err := so.repo.CountTodayOutlets()
+	if err != nil {
+		return nil, err
+	}
+
+	generateCode := helper.GenerateCode(int(count))
+
+	out.OutletCode = generateCode
 	out.OutletName = outlet_name
 	out.Address = address
 	out.City = city
