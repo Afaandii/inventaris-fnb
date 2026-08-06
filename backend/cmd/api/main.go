@@ -48,5 +48,5 @@ func main() {
 	}
 
 	fmt.Print("Server is running on port: ", cfg.PORT)
-	log.Fatal(http.ListenAndServe(":"+cfg.PORT, nil))
+	log.Fatal(http.ListenAndServe(":"+cfg.PORT, r))
 }
