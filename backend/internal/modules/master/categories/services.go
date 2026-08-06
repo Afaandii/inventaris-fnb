@@ -37,7 +37,7 @@ func (sc *serviceCategory) Create(parent_id uint, category_name, types, descript
 		ParentRef:    &parent_id,
 		CategoryName: category_name,
 		Slug:         slugged,
-		Types:        types,
+		Type:         types,
 		Description:  description,
 	}
 
@@ -55,7 +55,7 @@ func (sc *serviceCategory) Update(id_category, parent_id uint, category_name, ty
 	cat.ParentRef = &parent_id
 	cat.CategoryName = category_name
 	cat.Slug = slugged
-	cat.Types = types
+	cat.Type = types
 	cat.Description = description
 
 	err = sc.repo.Update(cat)

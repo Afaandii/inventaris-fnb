@@ -7,8 +7,9 @@ type Category struct {
 	ParentRef    *uint     `json:"parent_id" gorm:"column:parent_id"`
 	CategoryName string    `json:"category_name" gorm:"type:varchar(180);column:category_name"`
 	Slug         string    `json:"slug" gorm:"type:varchar(120);column:slug"`
-	Types        string    `json:"types" gorm:"type:varchar(80);column:types"`
+	Type         string    `json:"type" gorm:"type:type_categories;column:type"`
 	Description  string    `json:"description" gorm:"type:text;column:description"`
+	Status       string    `json:"status" gorm:"type:status_categories;default:'active';column:status"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }

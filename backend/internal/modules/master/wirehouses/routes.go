@@ -16,6 +16,6 @@ func RegisterWirehouseRoute(r *gin.Engine, db *gorm.DB) {
 		group.GET("/:id_wirehouse", handler.GetById)
 		group.POST("", handler.Create)
 		group.PUT("/:id_wirehouse", handler.Update)
-		group.PUT("/:id_wirehouse", handler.Delete)
+		group.DELETE("/:id_wirehouse", handler.Delete)
 	}
 }
