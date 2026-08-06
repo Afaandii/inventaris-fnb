@@ -10,7 +10,7 @@ var validate = validator.New()
 
 func Validate(s interface{}) map[string]string {
 	err := validate.Struct(s)
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 

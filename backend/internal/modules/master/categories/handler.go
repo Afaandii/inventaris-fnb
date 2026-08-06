@@ -47,8 +47,9 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		ParentId     uint   `json:"parent_id"`
 		CategoryName string `json:"category_name" validate:"required,min=3,max=200"`
-		Types        string `json:"types" validate:"required,oneof=products,max=120"`
-		Description  string `json:"description" validate:"min:3,max=500"`
+		Types        string `json:"type" validate:"required,oneof=ingredient product menu,max=120"`
+		Description  string `json:"description" validate:"min=3,max=500"`
+		Status       string `json:"status" validate:"required,min=3,max=80,oneof=active inactive"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -61,7 +62,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	category, err := h.service.Create(req.ParentId, req.CategoryName, req.Types, req.Description)
+	category, err := h.service.Create(req.ParentId, req.CategoryName, req.Types, req.Description, req.Status)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to create data category", err.Error())
 		return
@@ -71,7 +72,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 }
 
 func (h *Handler) Update(ctx *gin.Context) {
-	id_category, err := strconv.Atoi(ctx.Param("category_id"))
+	id_category, err := strconv.Atoi(ctx.Param("id_category"))
 	if err != nil {
 		response.Error(ctx, http.StatusBadRequest, "Invalid id Category!", nil)
 		return
@@ -80,8 +81,9 @@ func (h *Handler) Update(ctx *gin.Context) {
 	var req struct {
 		ParentId     uint   `json:"parent_id"`
 		CategoryName string `json:"category_name" validate:"required,min=3,max=200"`
-		Types        string `json:"types" validate:"required,oneof=products,max=120"`
-		Description  string `json:"description" validate:"min:3,max=500"`
+		Types        string `json:"type" validate:"required,oneof=ingredient product menu,max=120"`
+		Description  string `json:"description" validate:"min=3,max=500"`
+		Status       string `json:"status" validate:"required,min=3,max=80,oneof=active inactive"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -94,7 +96,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	category, err := h.service.Update(uint(id_category), req.ParentId, req.CategoryName, req.Types, req.Description)
+	category, err := h.service.Update(uint(id_category), req.ParentId, req.CategoryName, req.Types, req.Description, req.Status)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to update data category", err.Error())
 		return
@@ -104,7 +106,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 }
 
 func (h *Handler) Delete(ctx *gin.Context) {
-	id_category, err := strconv.Atoi(ctx.Param("category_id"))
+	id_category, err := strconv.Atoi(ctx.Param("id_category"))
 	if err != nil {
 		response.Error(ctx, http.StatusBadRequest, "Invalid id Category!", nil)
 		return

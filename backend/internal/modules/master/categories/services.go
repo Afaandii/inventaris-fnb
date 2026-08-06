@@ -9,8 +9,8 @@ import (
 type ServiceCategory interface {
 	GetAll() ([]model.Category, error)
 	GetById(id uint) (*model.Category, error)
-	Create(parent_id uint, category_name, types, description string) (*model.Category, error)
-	Update(id_category, parent_id uint, category_name, types, description string) (*model.Category, error)
+	Create(parent_id uint, category_name, types, description, status string) (*model.Category, error)
+	Update(id_category, parent_id uint, category_name, types, description, status string) (*model.Category, error)
 	Delete(id uint) error
 }
 
@@ -30,7 +30,7 @@ func (sc *serviceCategory) GetById(id_category uint) (*model.Category, error) {
 	return sc.repo.FindById(id_category)
 }
 
-func (sc *serviceCategory) Create(parent_id uint, category_name, types, description string) (*model.Category, error) {
+func (sc *serviceCategory) Create(parent_id uint, category_name, types, description, status string) (*model.Category, error) {
 	slugged := slug.Make(category_name)
 
 	cat := &model.Category{
@@ -39,13 +39,14 @@ func (sc *serviceCategory) Create(parent_id uint, category_name, types, descript
 		Slug:         slugged,
 		Type:         types,
 		Description:  description,
+		Status:       status,
 	}
 
 	err := sc.repo.Create(cat)
 	return cat, err
 }
 
-func (sc *serviceCategory) Update(id_category, parent_id uint, category_name, types, description string) (*model.Category, error) {
+func (sc *serviceCategory) Update(id_category, parent_id uint, category_name, types, description, status string) (*model.Category, error) {
 	cat, err := sc.repo.FindById(id_category)
 	if err != nil {
 		return nil, err
@@ -57,11 +58,12 @@ func (sc *serviceCategory) Update(id_category, parent_id uint, category_name, ty
 	cat.Slug = slugged
 	cat.Type = types
 	cat.Description = description
+	cat.Status = status
 
 	err = sc.repo.Update(cat)
 	return cat, err
 }
 
-func (sc *serviceCategory) Delete(id uint) error {
-	return sc.repo.Delete(id)
+func (sc *serviceCategory) Delete(id_category uint) error {
+	return sc.repo.Delete(id_category)
 }
