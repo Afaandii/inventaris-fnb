@@ -4,7 +4,7 @@ import "time"
 
 type Units struct {
 	IDUnit    uint      `json:"id_unit" gorm:"primaryKey;autoIncrement;column:id_unit"`
-	UnitCode  string    `json:"unit_code" gorm:"type:varchar(30);column:unit_code"`
+	UnitCode  string    `json:"unit_code" gorm:"type:varchar(255);column:unit_code"`
 	UnitName  string    `json:"unit_name" gorm:"type:varchar(120);column:unit_name"`
 	Type      string    `json:"type" gorm:"type:type_units;column:type"`
 	ShortName string    `json:"short_name" gorm:"type:varchar(20);column:short_name"`

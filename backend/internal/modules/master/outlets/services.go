@@ -37,7 +37,7 @@ func (so *outletService) Create(outlet_name, address, city string, opening_hours
 		return nil, err
 	}
 
-	generateCode := helper.GenerateCode(int(count))
+	generateCode := helper.GenerateCodeOutlet(int(count))
 
 	out := &model.Outlets{
 		OutletCode:   generateCode,
@@ -66,7 +66,7 @@ func (so *outletService) Update(id_outlet uint, outlet_name, address, city strin
 		return nil, err
 	}
 
-	generateCode := helper.GenerateCode(int(count))
+	generateCode := helper.GenerateCodeOutlet(int(count))
 
 	out.OutletCode = generateCode
 	out.OutletName = outlet_name
