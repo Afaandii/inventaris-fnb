@@ -4,8 +4,8 @@ import "time"
 
 type Suppliers struct {
 	IDSupplier     uint      `json:"id_supplier" gorm:"primaryKey;autoIncrement;column:id_supplier"`
-	Npwp           *string   `json:"npwp" gorm:"type:varchar(30);column:npwp"`
-	SupplierCode   string    `json:"supplier_code" gorm:"type:varchar(30);column:supplier_code"`
+	Npwp           *string   `json:"npwp" gorm:"type:varchar(16);column:npwp"`
+	SupplierCode   string    `json:"supplier_code" gorm:"type:varchar(255);column:supplier_code"`
 	SupplierName   string    `json:"supplier_name" gorm:"type:varchar(120);column:supplier_name"`
 	Email          string    `json:"email" gorm:"type:varchar(125);column:email"`
 	Address        string    `json:"address" gorm:"type:text;column:address"`

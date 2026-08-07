@@ -45,8 +45,7 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
-		Npwp           string `json:"npwp" validate:"required,min=3,max=200"`
-		SupplierCode   string `json:"supplier_code" validate:"required,min=3,max=200"`
+		Npwp           string `json:"npwp" validate:"required,min=3,max=16"`
 		SupplierName   string `json:"supplier_name" validate:"required,min=3,max=200"`
 		Email          string `json:"email" validate:"required,email"`
 		Address        string `json:"address" validate:"required,min=3,max=500"`
@@ -67,7 +66,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	supp, err := h.service.Create(req.Npwp, req.SupplierCode, req.SupplierName, req.Email, req.Address, req.City, req.ContactPerson, req.BankAccount, req.Notes, req.StatusSupplier)
+	supp, err := h.service.Create(req.Npwp, req.SupplierName, req.Email, req.Address, req.City, req.ContactPerson, req.BankAccount, req.Notes, req.StatusSupplier)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to create supplier", err.Error())
 		return
@@ -84,8 +83,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 	}
 
 	var req struct {
-		Npwp           string `json:"npwp" validate:"required,min=3,max=200"`
-		SupplierCode   string `json:"supplier_code" validate:"required,min=3,max=200"`
+		Npwp           string `json:"npwp" validate:"required,min=3,max=16"`
 		SupplierName   string `json:"supplier_name" validate:"required,min=3,max=200"`
 		Email          string `json:"email" validate:"required,email"`
 		Address        string `json:"address" validate:"required,min=3,max=500"`
@@ -106,7 +104,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	supp, err := h.service.Update(uint(id_supplier), req.Npwp, req.SupplierCode, req.SupplierName, req.Email, req.Address, req.City, req.ContactPerson, req.BankAccount, req.Notes, req.StatusSupplier)
+	supp, err := h.service.Update(uint(id_supplier), req.Npwp, req.SupplierName, req.Email, req.Address, req.City, req.ContactPerson, req.BankAccount, req.Notes, req.StatusSupplier)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to create supplier", err.Error())
 		return

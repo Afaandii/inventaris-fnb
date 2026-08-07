@@ -48,7 +48,7 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
-		OutletName   string `json:"outlet_name" validate:"required,min=3,max=125"`
+		OutletName   string `json:"outlet_name" validate:"required,min=3,max=255"`
 		Address      string `json:"address" validate:"required,min=3,max=150"`
 		City         string `json:"city" validate:"required,min=3,max=150"`
 		OpeningHours string `json:"opening_hours" validate:"required,datetime=15:04"`

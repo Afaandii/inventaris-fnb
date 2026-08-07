@@ -11,7 +11,7 @@ type Ingredients struct {
 	CategoryRef  uint             `json:"category_id" gorm:"column:category_id"`
 	UnitRef      uint             `json:"unit_id" gorm:"column:unit_id"`
 	SupplierRef  *uint            `json:"supplier_id" gorm:"column:supplier_id"`
-	IngreCode    string           `json:"ingre_code" gorm:"type:varchar(30);column:ingre_code"`
+	IngreCode    string           `json:"ingre_code" gorm:"type:varchar(255);column:ingre_code"`
 	IngreName    string           `json:"ingre_name" gorm:"type:varchar(120);column:ingre_name"`
 	Sku          *string          `json:"sku" gorm:"type:varchar(60);column:sku"`
 	Barcode      *string          `json:"barcode" gorm:"type:varchar(80);column:barcode"`

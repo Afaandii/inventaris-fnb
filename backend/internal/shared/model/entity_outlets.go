@@ -8,7 +8,7 @@ import (
 
 type Outlets struct {
 	IDOutlet     uint           `json:"id_outlet" gorm:"primaryKey;autoIncrement;column:id_outlet"`
-	OutletCode   string         `json:"outlet_code" gorm:"type:varchar(125);column:outlet_code"`
+	OutletCode   string         `json:"outlet_code" gorm:"type:varchar(255);column:outlet_code"`
 	OutletName   string         `json:"outlet_name" gorm:"type:varchar(125);column:outlet_name"`
 	Address      string         `json:"address" gorm:"type:text;column:address"`
 	City         string         `json:"city" gorm:"type:varchar(60);column:city"`

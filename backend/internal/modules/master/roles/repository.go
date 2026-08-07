@@ -38,11 +38,23 @@ func (req *roleRepository) FindById(id uint) (*model.Roles, error) {
 }
 
 func (req *roleRepository) Create(role *model.Roles) error {
-	return req.db.Create(role).Error
+	return req.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(role).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 }
 
 func (req *roleRepository) Update(role *model.Roles) error {
-	return req.db.Save(role).Error
+	return req.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Save(role).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 }
 
 func (req *roleRepository) Delete(id uint) error {
