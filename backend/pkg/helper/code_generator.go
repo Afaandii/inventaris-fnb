@@ -18,3 +18,10 @@ func GenerateCodeSupplier(lastNumber int) string {
 
 	return fmt.Sprintf("SUP-%s-%03d", today, nextNumber)
 }
+
+func GenerateCodeUnits(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("UNT-%s-%03d", today, nextNumber)
+}
