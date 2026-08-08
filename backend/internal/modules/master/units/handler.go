@@ -45,10 +45,9 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
-		UnitCode  string `json:"unit_code" validate:"required,min=3,max=255"`
 		UnitName  string `json:"unit_name" validate:"required,min=3,max=150"`
 		Type      string `json:"type" validate:"required,min=3,max=180"`
-		ShortName string `json:"short_name" validate:"required,min=3,max=80"`
+		ShortName string `json:"short_name" validate:"required,min=1,max=80"`
 		IsActive  bool   `json:"is_active" validate:"required,boolean"`
 	}
 
@@ -62,7 +61,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	unt, err := h.service.Create(req.UnitCode, req.UnitName, req.Type, req.ShortName, req.IsActive)
+	unt, err := h.service.Create(req.UnitName, req.Type, req.ShortName, req.IsActive)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed create data unit!", err.Error())
 		return
@@ -79,10 +78,9 @@ func (h *Handler) Update(ctx *gin.Context) {
 	}
 
 	var req struct {
-		UnitCode  string `json:"unit_code" validate:"required,min=3,max=255"`
 		UnitName  string `json:"unit_name" validate:"required,min=3,max=150"`
 		Type      string `json:"type" validate:"required,min=3,max=180"`
-		ShortName string `json:"short_name" validate:"required,min=3,max=80"`
+		ShortName string `json:"short_name" validate:"required,min=1,max=80"`
 		IsActive  bool   `json:"is_active" validate:"required,boolean"`
 	}
 
@@ -96,7 +94,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	unt, err := h.service.Update(uint(id_unit), req.UnitCode, req.UnitName, req.Type, req.ShortName, req.IsActive)
+	unt, err := h.service.Update(uint(id_unit), req.UnitName, req.Type, req.ShortName, req.IsActive)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed update data unit!", err.Error())
 		return
