@@ -1,1 +1,1 @@
-init application
+Application in development!
