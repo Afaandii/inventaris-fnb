@@ -2,6 +2,7 @@ package ingredients
 
 import (
 	"backend/internal/shared/model"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -12,6 +13,7 @@ type IngredientRepository interface {
 	Create(ingre *model.Ingredients) error
 	Update(ingre *model.Ingredients) error
 	Delete(id uint) error
+	CountTodayIngredients() (int64, error)
 }
 
 type ingredientRepository struct {
@@ -63,4 +65,16 @@ func (req *ingredientRepository) Update(ingre *model.Ingredients) error {
 
 func (req *ingredientRepository) Delete(id uint) error {
 	return req.db.Delete(model.Ingredients{}, "id_ingredient = ?", id).Error
+}
+
+func (req *ingredientRepository) CountTodayIngredients() (int64, error) {
+	var count int64
+	today := time.Now().Format("2006-01-02")
+
+	// Menghitung data yang dibuat hari ini berdasarkan created_at
+	err := req.db.Model(&model.Outlets{}).
+		Where("DATE(created_at) = ?", today).
+		Count(&count).Error
+
+	return count, err
 }

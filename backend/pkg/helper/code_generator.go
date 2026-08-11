@@ -25,3 +25,10 @@ func GenerateCodeUnits(lastNum int) string {
 
 	return fmt.Sprintf("UNT-%s-%03d", today, nextNumber)
 }
+
+func GenerateCodeIngredient(lastnum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastnum + 1
+
+	return fmt.Sprintf("INGR-%s-%03d", today, nextNumber)
+}
