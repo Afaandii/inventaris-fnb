@@ -21,6 +21,8 @@ func Validate(s interface{}) map[string]string {
 			switch fieldError.Tag() {
 			case "required":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be filled!", fieldError.Field())
+			case "string":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be a valid text/string!", fieldError.Field())
 			case "min":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be at least %s characters long!", fieldError.Field(), fieldError.Param())
 			case "max":
@@ -49,6 +51,16 @@ func Validate(s interface{}) map[string]string {
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must contain letters and numbers only!", fieldError.Field())
 			case "len":
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be exactly %s characters long!", fieldError.Field(), fieldError.Param())
+			case "omitempty":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s can be null or empty, but must be valid if provided!", fieldError.Field())
+			case "gte":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be greater than or equal to %s!", fieldError.Field(), fieldError.Param())
+			case "gt":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be greater than %s!", fieldError.Field(), fieldError.Param())
+			case "lte":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be less than or equal to %s!", fieldError.Field(), fieldError.Param())
+			case "lt":
+				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s must be less than %s!", fieldError.Field(), fieldError.Param())
 			default:
 				errorMessage[fieldError.Field()] = fmt.Sprintf("Field %s is invalid!", fieldError.Field())
 			}

@@ -48,15 +48,15 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		RoleId      uint      `json:"role_id" validate:"required,min=1,number"`
 		OutletId    uint      `json:"outlet_id" validate:"required,min=1,number"`
-		Name        string    `json:"name" validate:"required,min=4,max=120,alpha"`
-		Username    string    `json:"username" validate:"required,min=4,max=150,alpha"`
-		Email       string    `json:"email" validate:"required,min=4,max=100,alphanum"`
-		Password    string    `json:"password" validate:"required,min=8,max=80,alphanum"`
+		Name        string    `json:"name" validate:"required,min=4,max=120"`
+		Username    string    `json:"username" validate:"required,min=4,max=150"`
+		Email       string    `json:"email" validate:"required,min=4,max=100"`
+		Password    string    `json:"password" validate:"required,min=8,max=80"`
 		PhoneNumber string    `json:"phone_number" validate:"required,min=1,max=20,number"`
-		LastLogin   time.Time `json:"last_login" validate:"datetime=15:04"`
-		Avatar      string    `json:"avatar" validate:"min=3,max=255,alphanum"`
-		Status      string    `json:"status" validate:"required,min=3,max=120,alpha"`
-		IsActive    bool      `json:"is_active" validate:"min=1,boolean"`
+		LastLogin   time.Time `json:"last_login"`
+		Avatar      string    `json:"avatar" validate:"omitempty,max=255"`
+		Status      string    `json:"status" validate:"required,min=3,max=120"`
+		IsActive    bool      `json:"is_active" validate:"required,boolean"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -88,15 +88,15 @@ func (h *Handler) Update(ctx *gin.Context) {
 	var req struct {
 		RoleId      uint      `json:"role_id" validate:"required,min=1,number"`
 		OutletId    uint      `json:"outlet_id" validate:"required,min=1,number"`
-		Name        string    `json:"name" validate:"required,min=4,max=120,alpha"`
-		Username    string    `json:"username" validate:"required,min=4,max=150,alpha"`
-		Email       string    `json:"email" validate:"required,min=4,max=100,alphanum"`
-		Password    string    `json:"password" validate:"required,min=8,max=80,alphanum"`
+		Name        string    `json:"name" validate:"required,min=4,max=120"`
+		Username    string    `json:"username" validate:"required,min=4,max=150"`
+		Email       string    `json:"email" validate:"required,min=4,max=100"`
+		Password    string    `json:"password" validate:"required,min=8,max=80"`
 		PhoneNumber string    `json:"phone_number" validate:"required,min=1,max=20,number"`
-		LastLogin   time.Time `json:"last_login" validate:"datetime=15:04"`
-		Avatar      string    `json:"avatar" validate:"min=3,max=255,alphanum"`
-		Status      string    `json:"status" validate:"required,min=3,max=120,alpha"`
-		IsActive    bool      `json:"is_active" validate:"min=1,boolean"`
+		LastLogin   time.Time `json:"last_login"`
+		Avatar      string    `json:"avatar" validate:"omitempty,max=255"`
+		Status      string    `json:"status" validate:"required,min=3,max=120"`
+		IsActive    bool      `json:"is_active" validate:"required,boolean"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
