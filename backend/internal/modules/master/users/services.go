@@ -2,6 +2,7 @@ package users
 
 import (
 	"backend/internal/shared/model"
+	"backend/pkg/helper"
 	"time"
 )
 
@@ -30,13 +31,18 @@ func (us *serviceUser) GetById(id_user uint) (*model.Users, error) {
 }
 
 func (us *serviceUser) Create(role_id, outlet_id uint, name, username, email, password, phone_number string, last_login time.Time, avatar, status string, is_active bool) (*model.Users, error) {
+	passwordHash, err := helper.HashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
 	usr := &model.Users{
 		RoleRef:     role_id,
 		OutletRef:   &outlet_id,
 		Name:        name,
 		Username:    username,
 		Email:       email,
-		Password:    password,
+		Password:    passwordHash,
 		PhoneNumber: &phone_number,
 		LastLogin:   &last_login,
 		Avatar:      &avatar,
@@ -44,7 +50,7 @@ func (us *serviceUser) Create(role_id, outlet_id uint, name, username, email, pa
 		IsActive:    &is_active,
 	}
 
-	err := us.repo.Create(usr)
+	err = us.repo.Create(usr)
 
 	return usr, err
 }
@@ -55,12 +61,17 @@ func (us *serviceUser) Update(id_user uint, role_id, outlet_id uint, name, usern
 		return nil, err
 	}
 
+	passwordHash, err := helper.HashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
 	usr.RoleRef = role_id
 	usr.OutletRef = &outlet_id
 	usr.Name = name
 	usr.Username = username
 	usr.Email = email
-	usr.Password = password
+	usr.Password = passwordHash
 	usr.PhoneNumber = &phone_number
 	usr.LastLogin = &last_login
 	usr.Avatar = &avatar
