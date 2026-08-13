@@ -16,6 +16,8 @@ type Suppliers struct {
 	StatusSupplier string    `json:"status_supplier" gorm:"type:status_suppliers;default:'active';column:status_supplier"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
+
+	Ingredient []Ingredients `gorm:"foreignKey:SupplierRef;references:IDSupplier;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Suppliers) TableName() string {

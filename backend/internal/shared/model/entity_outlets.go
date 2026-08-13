@@ -18,6 +18,8 @@ type Outlets struct {
 	StatusOutlet string         `json:"status_outlet" gorm:"type:status_outlets;default:'active';column:status_outlet"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
+
+	Wirehouse []Wirehouse `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Outlets) TableName() string {

@@ -25,6 +25,10 @@ type Ingredients struct {
 	IsActive     bool             `json:"is_active" gorm:"type:bool;column:is_active"`
 	CreatedAt    time.Time        `json:"created_at"`
 	UpdatedAt    time.Time        `json:"updated_at"`
+
+	Category Category  `gorm:"foreignKey:CategoryRef;references:IDCategory;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	Unit     Units     `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	Supplier Suppliers `gorm:"foreignKey:SupplierRef;references:IDSupplier;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Ingredients) TableName() string {
