@@ -12,6 +12,8 @@ type Units struct {
 	IsActive  bool      `json:"is_active" gorm:"type:bool;column:is_active"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+
+	Ingredient []Ingredients `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Units) TableName() string {

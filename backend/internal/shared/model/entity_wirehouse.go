@@ -15,6 +15,9 @@ type Wirehouse struct {
 	Status        string    `json:"status" gorm:"type:status_wirehouses;default:'active';column:status"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+
+	User   Users   `gorm:"foreignKey:ManagerRef;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+	Outlet Outlets `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Wirehouse) TableName() string {

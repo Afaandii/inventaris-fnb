@@ -29,7 +29,8 @@ type Users struct {
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 
-	Role Roles `gorm:"foreignKey:RoleRef;references:IDRole;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	Role      Roles       `gorm:"foreignKey:RoleRef;references:IDRole;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	Wirehouse []Wirehouse `gorm:"foreignKey:ManagerRef;referencesIDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Users) TableName() string {

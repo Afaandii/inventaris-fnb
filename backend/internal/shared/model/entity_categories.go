@@ -12,6 +12,8 @@ type Category struct {
 	Status       string    `json:"status" gorm:"type:status_categories;default:'active';column:status"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+
+	Ingredient []Ingredients `gorm:"foreignKey:CategoryRef;references:IDCategory;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Category) TableName() string {
