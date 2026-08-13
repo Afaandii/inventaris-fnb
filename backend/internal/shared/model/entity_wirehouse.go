@@ -6,7 +6,7 @@ type Wirehouse struct {
 	IDWirehouse   uint      `json:"id_wirehouse" gorm:"primaryKey;autoIncrement;column:id_wirehouse"`
 	OutletRef     uint      `json:"outlet_id" gorm:"column:outlet_id"`
 	ManagerRef    *uint     `json:"manager_id" gorm:"column:manager_id"`
-	WirehouseCode string    `json:"wirehouse_code" gorm:"type:varchar(255);column:wirehouse_coode"`
+	WirehouseCode string    `json:"wirehouse_code" gorm:"type:varchar(255);column:wirehouse_code"`
 	WirehouseName string    `json:"wirehouse_name" gorm:"type:varchar(255);column:wirehouse_name"`
 	Address       string    `json:"address" gorm:"type:text;column:address"`
 	City          string    `json:"city" gorm:"type:varchar(60);column:city"`
