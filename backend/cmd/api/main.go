@@ -6,6 +6,7 @@ import (
 	"backend/internal/modules/master/roles"
 	"backend/internal/modules/master/suppliers"
 	"backend/internal/modules/master/units"
+	"backend/internal/modules/master/users"
 	"backend/internal/modules/master/wirehouses"
 	"backend/internal/shared/config"
 	"backend/internal/shared/database"
@@ -39,6 +40,7 @@ func main() {
 	categories.RegisterRoutesCategory(r, db)
 	outlets.RegisterOutletRoutes(r, db)
 	roles.RegisterRoutesRole(r, db)
+	users.RegisterUserRoutes(r, db)
 	suppliers.RegisterSupplierRoutes(r, db)
 	units.RegisterUnitRoute(r, db)
 	wirehouses.RegisterWirehouseRoute(r, db)

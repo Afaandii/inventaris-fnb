@@ -4,15 +4,6 @@ import (
 	"time"
 )
 
-type UserStatus string
-
-const (
-	StatusActive    UserStatus = "active"
-	StatusInactive  UserStatus = "inactive"
-	StatusSuspended UserStatus = "suspended"
-	StatusBanned    UserStatus = "banned"
-)
-
 type Users struct {
 	IDUser      uint       `json:"id_user" gorm:"primaryKey;autoIncrement;column:id_user"`
 	RoleRef     uint       `json:"role_id" gorm:"column:role_id"`
@@ -24,7 +15,7 @@ type Users struct {
 	PhoneNumber *string    `json:"phone_number" gorm:"type:varchar(25);column:phone_number;default:null"`
 	LastLogin   *time.Time `json:"last_login" gorm:"default:null;column:last_login"`
 	Avatar      *string    `json:"avatar" gorm:"default:null;type:text;column:avatar"`
-	Status      UserStatus `json:"status" gorm:"type:status_users;default:'active';column:status"`
+	Status      string     `json:"status" gorm:"type:status_users;default:'active';column:status"`
 	IsActive    *bool      `json:"is_active" gorm:"type:bool;column:is_active"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
