@@ -54,11 +54,23 @@ func (req *wirehouseRepository) GetById(id_wire uint) (*model.Wirehouse, error) 
 }
 
 func (req *wirehouseRepository) Create(wire *model.Wirehouse) error {
-	return req.db.Create(wire).Error
+	return req.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(wire).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 }
 
 func (req *wirehouseRepository) Update(wire *model.Wirehouse) error {
-	return req.db.Save(wire).Error
+	return req.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Save(wire).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 }
 
 func (req *wirehouseRepository) Delete(id_wire uint) error {
