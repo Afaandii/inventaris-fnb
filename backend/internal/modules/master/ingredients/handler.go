@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/shopspring/decimal"
 )
 
 type Handler struct {
@@ -46,20 +45,20 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
-		CategoryId       uint            `json:"category_id" validate:"required,number,min=1"`
-		UnitId           uint            `json:"unit_id" validate:"required,number,min=1"`
-		SupplierId       uint            `json:"supplier_id" validate:"required,number,min=1"`
-		IngreName        string          `json:"ingre_name" validate:"required,alpha,min=3,max=180"`
-		Sku              string          `json:"sku" validate:"required,min=1,max=180"`
-		Barcode          string          `json:"" validate:"required,alphanum,min=1,max=255"`
-		MinStok          decimal.Decimal `json:"min_stok" validate:"required,numeric"`
-		MaxStok          decimal.Decimal `json:"max_stok" validate:"required,numeric"`
-		CostPrice        decimal.Decimal `json:"cost_price" validate:"required,numeric"`
-		AverageCost      decimal.Decimal `json:"average_cost" validate:"required,numeric"`
-		IsPerishable     bool            `json:"is_perishable" validate:"required,boolean"`
-		ShelfLifeDay     int             `json:"shelf_life_day" validate:"required,number"`
-		StatusIngredient string          `json:"status_ingredient" validate:"required,min=3,max=180"`
-		IsActive         bool            `json:"is_active" validate:"required,boolean"`
+		CategoryId       uint    `json:"category_id" validate:"required,number,min=1"`
+		UnitId           uint    `json:"unit_id" validate:"required,number,min=1"`
+		SupplierId       uint    `json:"supplier_id" validate:"required,number,min=1"`
+		IngreName        string  `json:"ingre_name" validate:"required,min=3,max=180"`
+		Sku              string  `json:"sku" validate:"required,min=1,max=180"`
+		Barcode          string  `json:"" validate:"required,alphanum,min=1,max=255"`
+		MinStok          float64 `json:"min_stok" validate:"required,gte=0"`
+		MaxStok          float64 `json:"max_stok" validate:"required,gt=0"`
+		CostPrice        float64 `json:"cost_price" validate:"required,gte=0"`
+		AverageCost      float64 `json:"average_cost" validate:"required,gte=0"`
+		IsPerishable     bool    `json:"is_perishable" validate:"required,boolean"`
+		ShelfLifeDay     int     `json:"shelf_life_day" validate:"required,number"`
+		StatusIngredient string  `json:"status_ingredient" validate:"required,min=3,max=180"`
+		IsActive         bool    `json:"is_active" validate:"required,boolean"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -89,20 +88,20 @@ func (h *Handler) Update(ctx *gin.Context) {
 	}
 
 	var req struct {
-		CategoryId       uint            `json:"category_id" validate:"required,number,min=1"`
-		UnitId           uint            `json:"unit_id" validate:"required,number,min=1"`
-		SupplierId       uint            `json:"supplier_id" validate:"required,number,min=1"`
-		IngreName        string          `json:"ingre_name" validate:"required,alpha,min=3,max=180"`
-		Sku              string          `json:"sku" validate:"required,min=1,max=180"`
-		Barcode          string          `json:"" validate:"required,alphanum,min=1,max=255"`
-		MinStok          decimal.Decimal `json:"min_stok" validate:"required,numeric"`
-		MaxStok          decimal.Decimal `json:"max_stok" validate:"required,numeric"`
-		CostPrice        decimal.Decimal `json:"cost_price" validate:"required,numeric"`
-		AverageCost      decimal.Decimal `json:"average_cost" validate:"required,numeric"`
-		IsPerishable     bool            `json:"is_perishable" validate:"required,boolean"`
-		ShelfLifeDay     int             `json:"shelf_life_day" validate:"required,number"`
-		StatusIngredient string          `json:"status_ingredient" validate:"required,min=3,max=180"`
-		IsActive         bool            `json:"is_active" validate:"required,boolean"`
+		CategoryId       uint    `json:"category_id" validate:"required,number,min=1"`
+		UnitId           uint    `json:"unit_id" validate:"required,number,min=1"`
+		SupplierId       uint    `json:"supplier_id" validate:"required,number,min=1"`
+		IngreName        string  `json:"ingre_name" validate:"required,min=3,max=180"`
+		Sku              string  `json:"sku" validate:"required,min=1,max=180"`
+		Barcode          string  `json:"" validate:"required,alphanum,min=1,max=255"`
+		MinStok          float64 `json:"min_stok" validate:"required,numeric"`
+		MaxStok          float64 `json:"max_stok" validate:"required,numeric"`
+		CostPrice        float64 `json:"cost_price" validate:"required,numeric"`
+		AverageCost      float64 `json:"average_cost" validate:"required,numeric"`
+		IsPerishable     bool    `json:"is_perishable" validate:"required,boolean"`
+		ShelfLifeDay     int     `json:"shelf_life_day" validate:"required,number"`
+		StatusIngredient string  `json:"status_ingredient" validate:"required,min=3,max=180"`
+		IsActive         bool    `json:"is_active" validate:"required,boolean"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {

@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterUnitRoute(r *gin.Engine, db *gorm.DB) {
+func RegisterUnitRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewUnitRepository(db)
 	service := NewUnitService(repo)
 	handler := NewHandlerUnit(service)

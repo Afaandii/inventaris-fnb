@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/modules/master/categories"
+	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
 	"backend/internal/modules/master/roles"
 	"backend/internal/modules/master/suppliers"
@@ -37,13 +38,14 @@ func main() {
 	// register routes
 	r := gin.Default()
 	r.Use(middleware.CORSMiddleware())
-	categories.RegisterRoutesCategory(r, db)
+	categories.RegisterCategoryRoutes(r, db)
 	outlets.RegisterOutletRoutes(r, db)
-	roles.RegisterRoutesRole(r, db)
+	roles.RegisterRoleRoutes(r, db)
 	users.RegisterUserRoutes(r, db)
 	suppliers.RegisterSupplierRoutes(r, db)
-	units.RegisterUnitRoute(r, db)
-	wirehouses.RegisterWirehouseRoute(r, db)
+	units.RegisterUnitRoutes(r, db)
+	wirehouses.RegisterWirehouseRoutes(r, db)
+	ingredients.RegisterIngredientRoutes(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
