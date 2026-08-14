@@ -47,10 +47,9 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		OutletId      uint   `json:"outlet_id" validate:"required,number,min=1"`
 		ManagerId     uint   `json:"manager_id" validate:"required,number,min=1"`
-		WirehouseCode string `json:"wirehouse_code" validate:"required,min=8,max=255,alphanum"`
-		WirehouseName string `json:"wirehouse_name" validate:"required,min=8,max=180,alpha"`
-		Address       string `json:"address" validate:"required,min:8,max=120,alphanum"`
-		City          string `json:"city" validate:"required,min=6,max=80,alpha"`
+		WirehouseName string `json:"wirehouse_name" validate:"required,min=3,max=180"`
+		Address       string `json:"address" validate:"required,min=3,max=120"`
+		City          string `json:"city" validate:"required,min=3,max=80"`
 		PhoneNumber   string `json:"phone_number" validate:"required,max=20,alphanum"`
 		Type          string `json:"type" validate:"required,max=150,alpha"`
 		Status        string `json:"status" validate:"required,max=150,alpha"`
@@ -66,7 +65,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	wire, err := h.service.Create(req.OutletId, req.ManagerId, req.WirehouseCode, req.WirehouseName, req.Address, req.City, req.PhoneNumber, req.Type, req.Status)
+	wire, err := h.service.Create(req.OutletId, req.ManagerId, req.WirehouseName, req.Address, req.City, req.PhoneNumber, req.Type, req.Status)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to created wirehouse!", err.Error())
 		return
@@ -85,10 +84,9 @@ func (h *Handler) Update(ctx *gin.Context) {
 	var req struct {
 		OutletId      uint   `json:"outlet_id" validate:"required,number,min=1"`
 		ManagerId     uint   `json:"manager_id" validate:"required,number,min=1"`
-		WirehouseCode string `json:"wirehouse_code" validate:"required,min=8,max=255,alphanum"`
-		WirehouseName string `json:"wirehouse_name" validate:"required,min=8,max=180,alpha"`
-		Address       string `json:"address" validate:"required,min:8,max=120,alphanum"`
-		City          string `json:"city" validate:"required,min=6,max=80,alpha"`
+		WirehouseName string `json:"wirehouse_name" validate:"required,min=3,max=180"`
+		Address       string `json:"address" validate:"required,min=3,max=120"`
+		City          string `json:"city" validate:"required,min=3,max=80"`
 		PhoneNumber   string `json:"phone_number" validate:"required,max=20,alphanum"`
 		Type          string `json:"type" validate:"required,max=150,alpha"`
 		Status        string `json:"status" validate:"required,max=150,alpha"`
@@ -104,7 +102,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	wire, err := h.service.Update(uint(id_wire), req.OutletId, req.ManagerId, req.WirehouseCode, req.WirehouseName, req.Address, req.City, req.PhoneNumber, req.Type, req.Status)
+	wire, err := h.service.Update(uint(id_wire), req.OutletId, req.ManagerId, req.WirehouseName, req.Address, req.City, req.PhoneNumber, req.Type, req.Status)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to updated data wirehouse!", err.Error())
 		return
