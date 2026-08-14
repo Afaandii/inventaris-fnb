@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterWirehouseRoute(r *gin.Engine, db *gorm.DB) {
+func RegisterWirehouseRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewWirehouseRepository(db)
 	service := NewWirehouseService(repo)
 	handler := NewHandlerWirehouse(service)

@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterRoutesCategory(r *gin.Engine, db *gorm.DB) {
+func RegisterCategoryRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewCategoryRepository(db)
 	service := NewServiceRole(repo)
 	handler := NewHandlerRole(service)

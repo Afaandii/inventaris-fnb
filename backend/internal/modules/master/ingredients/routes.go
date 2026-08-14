@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterRouteIngredient(r *gin.Engine, db *gorm.DB) {
+func RegisterIngredientRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewIngredientRepository(db)
 	service := NewServiceIngredient(repo)
 	handler := NewHandlerIngredient(service)

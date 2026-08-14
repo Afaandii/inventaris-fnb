@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterRoutesRole(r *gin.Engine, db *gorm.DB) {
+func RegisterRoleRoutes(r *gin.Engine, db *gorm.DB) {
 	repo := NewRoleRepository(db)
 	service := NewServiceRole(repo)
 	handler := NewHandlerRole(service)
