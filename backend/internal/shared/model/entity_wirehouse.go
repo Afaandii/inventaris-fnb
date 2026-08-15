@@ -18,6 +18,8 @@ type Wirehouse struct {
 
 	User   Users   `gorm:"foreignKey:ManagerRef;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 	Outlet Outlets `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokBalance []StokBalances `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Wirehouse) TableName() string {
