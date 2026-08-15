@@ -12,16 +12,18 @@ import (
 func AutoMigrate(db *gorm.DB) {
 	/** Create enum type data **/
 	enums := helper.EnumMap{
-		"status_users":       {"active", "inactive", "suspended", "banned"},
-		"type_categories":    {"ingredient", "product", "menu"},
-		"status_categories":  {"active", "inactive"},
-		"type_units":         {"weight", "volume", "count", "package"},
-		"status_units":       {"active", "inactive"},
-		"status_outlets":     {"active", "inactive", "renovation", "closed"},
-		"status_suppliers":   {"active", "inactive", "blacklist"},
-		"status_ingredients": {"active", "inactive", "discontinued"},
-		"status_wirehouses":  {"active", "inactive", "maintenance", "closed"},
-		"type_wirehouses":    {"main", "kitchen", "bar", "storage"},
+		"status_users":         {"active", "inactive", "suspended", "banned"},
+		"type_categories":      {"ingredient", "product", "menu"},
+		"status_categories":    {"active", "inactive"},
+		"type_units":           {"weight", "volume", "count", "package"},
+		"status_units":         {"active", "inactive"},
+		"status_outlets":       {"active", "inactive", "renovation", "closed"},
+		"status_suppliers":     {"active", "inactive", "blacklist"},
+		"status_ingredients":   {"active", "inactive", "discontinued"},
+		"status_wirehouses":    {"active", "inactive", "maintenance", "closed"},
+		"type_wirehouses":      {"main", "kitchen", "bar", "storage"},
+		"reference_type_stmov": {"good_receipt", "stok_transfer", "stok_adjusment", "stok_opname", "waste", "production", "sales_order"},
+		"movement_type_stmov":  {"in", "out", "transfer", "adjustment"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
