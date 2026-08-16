@@ -8,11 +8,11 @@ import (
 
 type StokMovements struct {
 	IDStokMovement uint            `json:"id_stok_movement" gorm:"primaryKey;autoIncrement;column:id_stok_movement"`
-	WirehouseFrom  uint            `json:"wirehouse_from" gorm:"column:wirehouse_from"`
-	WirehouseTo    uint            `json:"wirehouse_to" gorm:"column:wirehouse_to"`
+	WirehouseFrom  *uint           `json:"wirehouse_from" gorm:"column:wirehouse_from;default:null"`
+	WirehouseTo    *uint           `json:"wirehouse_to" gorm:"column:wirehouse_to;default:null"`
 	IngredientRef  uint            `json:"ingredient_id" gorm:"column:ingredient_id"`
 	CreatedBy      uint            `json:"created_by" gorm:"column:created_by"`
-	RefenceId      uint            `json:"reference_id" gorm:"type:int;column:reference_id"`
+	RefenceId      *uint           `json:"reference_id" gorm:"type:int;column:reference_id;default:null"`
 	ReferenceType  string          `json:"reference_type" gorm:"type:reference_type_stmov;column:reference_type"`
 	MovementType   string          `json:"movement_type" gorm:"type:movement_type_stmov;column:movement_type"`
 	MovementDate   time.Time       `json:"movement_date" gorm:"column:movement_date"`
