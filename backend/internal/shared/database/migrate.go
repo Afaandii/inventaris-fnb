@@ -50,6 +50,8 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Users{},
 		&model.Wirehouse{},
 		&model.Ingredients{},
+		&model.StokBalances{},
+		&model.StokMovements{},
 	)
 
 	if err != nil {

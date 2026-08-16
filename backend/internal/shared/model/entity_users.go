@@ -22,6 +22,8 @@ type Users struct {
 
 	Role      Roles       `gorm:"foreignKey:RoleRef;references:IDRole;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 	Wirehouse []Wirehouse `gorm:"foreignKey:ManagerRef;referencesIDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokMovement []StokMovements `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Users) TableName() string {

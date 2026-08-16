@@ -31,6 +31,8 @@ type Ingredients struct {
 	Supplier Suppliers `gorm:"foreignKey:SupplierRef;references:IDSupplier;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokBalance []StokBalances `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokMovement []StokMovements `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Ingredients) TableName() string {
