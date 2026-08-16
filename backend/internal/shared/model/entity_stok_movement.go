@@ -22,6 +22,11 @@ type StokMovements struct {
 	Notes          string          `json:"notes" gorm:"type:TEXT;column:notes"`
 	CreatedAt      time.Time       `json:"created_at"`
 	UpdatedAt      time.Time       `json:"updated_at"`
+
+	WarehousesFrom Wirehouse   `gorm:"foreignKey:WirehouseFrom;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	WarehousesTo   Wirehouse   `gorm:"foreignKey:WirehouseTo;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	Ingredient     Ingredients `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	CreateBy       Users       `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (StokMovements) TableName() string {

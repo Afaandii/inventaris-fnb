@@ -20,6 +20,9 @@ type Wirehouse struct {
 	Outlet Outlets `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokBalance []StokBalances `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	MovementFrom []StokMovements `gorm:"foreignKey:WirehouseFrom;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	MovementTo   []StokMovements `gorm:"foreignKey:WirehouseTo;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Wirehouse) TableName() string {
