@@ -22,6 +22,7 @@ type Outlets struct {
 	Wirehouse []Wirehouse `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokAdjustment []StokAdjustments `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	StokTransfer   []StokTransfers   `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Outlets) TableName() string {
