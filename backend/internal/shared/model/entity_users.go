@@ -24,6 +24,11 @@ type Users struct {
 	Wirehouse []Wirehouse `gorm:"foreignKey:ManagerRef;referencesIDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokMovement []StokMovements `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokAdjustment []StokAdjustments `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	CreatedByUsr  []StokTransfers `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	ApprovedByUsr []StokTransfers `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Users) TableName() string {

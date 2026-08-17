@@ -23,6 +23,11 @@ type Wirehouse struct {
 
 	MovementFrom []StokMovements `gorm:"foreignKey:WirehouseFrom;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 	MovementTo   []StokMovements `gorm:"foreignKey:WirehouseTo;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokAdjustment []StokAdjustments `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	TransferFrom []StokTransfers `gorm:"foreignKey:WarehouseFrom;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	TransferTo   []StokTransfers `gorm:"foreignKey:WarehouseTo;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Wirehouse) TableName() string {
