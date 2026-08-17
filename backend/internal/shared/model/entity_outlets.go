@@ -20,6 +20,8 @@ type Outlets struct {
 	UpdatedAt    time.Time      `json:"updated_at"`
 
 	Wirehouse []Wirehouse `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokAdjustment []StokAdjustments `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Outlets) TableName() string {

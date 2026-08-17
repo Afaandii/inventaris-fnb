@@ -24,6 +24,8 @@ func AutoMigrate(db *gorm.DB) {
 		"type_wirehouses":      {"main", "kitchen", "bar", "storage"},
 		"reference_type_stmov": {"good_receipt", "stok_transfer", "stok_adjusment", "stok_opname", "waste", "production", "sales_order"},
 		"movement_type_stmov":  {"in", "out", "transfer", "adjustment"},
+		"status_transfers":     {"draft", "approved", "completed", "cancelled"},
+		"status_opnames":       {"draft", "approved", "completed"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
@@ -52,6 +54,8 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Ingredients{},
 		&model.StokBalances{},
 		&model.StokMovements{},
+		&model.StokAdjustments{},
+		&model.StokTransfers{},
 	)
 
 	if err != nil {
