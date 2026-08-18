@@ -13,7 +13,7 @@ type StokAdjustments struct {
 	UnitRef          uint            `json:"unit_id" gorm:"column:unit_id"`
 	WirehouseRef     uint            `json:"wirehouse_id" gorm:"column:wirehouse_id"`
 	CreatedBy        uint            `json:"created_by" gorm:"column:created_by"`
-	Qty              decimal.Decimal `json:"qty" gorm:"numeric(15,3);column:qty"`
+	Qty              decimal.Decimal `json:"qty" gorm:"type:numeric(15,3);column:qty"`
 	Reason           string          `json:"reason" gorm:"type:TEXT;column:reason"`
 	AdjustmentDate   time.Time       `json:"adjustment_date" gorm:"column:adjustment_date"`
 
