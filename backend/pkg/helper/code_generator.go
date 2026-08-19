@@ -39,3 +39,10 @@ func GenerateCodeIngredient(lastnum int) string {
 
 	return fmt.Sprintf("INGR-%s-%03d", today, nextNumber)
 }
+
+func GenerateCodeTransfer(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("TRF-%s-%04d", today, nextNumber)
+}

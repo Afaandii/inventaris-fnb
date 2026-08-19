@@ -3,6 +3,8 @@ package main
 import (
 	stokbalances "backend/internal/modules/inventory/stok_balances"
 	stokmovements "backend/internal/modules/inventory/stok_movements"
+	"backend/internal/modules/inventory/stok_adjustments"
+	"backend/internal/modules/inventory/stok_transfers"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -53,7 +55,9 @@ func main() {
 	stMovRepo := stokmovements.NewStokMovementRepository(db)
 	stMovService := stokmovements.NewStokMovementService(stMovRepo)
 	stokmovements.RegisterStokMovementRoutes(r, db, stMovService)
-	stokbalances.RegisterStokBalanceRoutes(r, db, stMovService)
+	stBalService := stokbalances.RegisterStokBalanceRoutes(r, db, stMovService)
+	stokadjustments.RegisterRoutes(r, db, stBalService)
+	stoktransfers.RegisterRoutes(r, db, stMovService)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
