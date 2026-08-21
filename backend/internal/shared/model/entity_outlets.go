@@ -23,6 +23,10 @@ type Outlets struct {
 
 	StokAdjustment []StokAdjustments `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 	StokTransfer   []StokTransfers   `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokOpname []StokOpnames `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	Waste []Wastes `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Outlets) TableName() string {

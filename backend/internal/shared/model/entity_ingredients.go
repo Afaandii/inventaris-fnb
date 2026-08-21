@@ -37,6 +37,8 @@ type Ingredients struct {
 	StokAdjustment []StokAdjustments `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokTransferItem []StokTransferItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Wate []Wastes `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Ingredients) TableName() string {
