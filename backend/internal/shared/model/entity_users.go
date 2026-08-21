@@ -29,6 +29,11 @@ type Users struct {
 
 	CreatedByUsr  []StokTransfers `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 	ApprovedByUsr []StokTransfers `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokOpnameCret   []StokOpnames `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+	StokOpnameApprov []StokOpnames `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Waste []Wastes `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Users) TableName() string {

@@ -28,6 +28,10 @@ type Wirehouse struct {
 
 	TransferFrom []StokTransfers `gorm:"foreignKey:WarehouseFrom;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 	TransferTo   []StokTransfers `gorm:"foreignKey:WarehouseTo;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokOpname []StokOpnames `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Waste []Wastes `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Wirehouse) TableName() string {
