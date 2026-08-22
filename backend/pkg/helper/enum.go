@@ -10,26 +10,36 @@ import (
 // EnumMap berisi pasangan nama enum dan list nilainya
 type EnumMap map[string][]string
 
-// CreatePostgresEnums membuat custom enum type di PostgreSQL jika belum ada
 func CreatePostgresEnums(db *gorm.DB, enums EnumMap) error {
-	var sqlBuilder strings.Builder
-	sqlBuilder.WriteString("DO $$ \nBEGIN\n")
-
-	for enumName, values := range enums {
-		// Format nilai enum menjadi 'val1', 'val2', 'val3'
-		formattedValues := make([]string, len(values))
-		for i, v := range values {
-			formattedValues[i] = fmt.Sprintf("'%s'", v)
-		}
-		enumList := strings.Join(formattedValues, ", ")
-
-		sqlBuilder.WriteString(fmt.Sprintf(`  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = '%s') THEN
-    CREATE TYPE %s AS ENUM (%s);
-  END IF;
-  `, enumName, enumName, enumList))
+	// Cek semua enum yang sudah ada dalam 1 query (< 2ms)
+	var existingEnums []string
+	err := db.Raw("SELECT typname FROM pg_type WHERE typtype = 'e'").Scan(&existingEnums).Error
+	if err != nil {
+		return err
 	}
 
-	sqlBuilder.WriteString("END $$;")
+	existingMap := make(map[string]bool)
+	for _, e := range existingEnums {
+		existingMap[e] = true
+	}
 
-	return db.Exec(sqlBuilder.String()).Error
+	// Buat enum satu per satu jika didatabase belum ada
+	for enumName, values := range enums {
+		// Skip jika menemukan enum name didalam mapping
+		if existingMap[enumName] {
+			continue
+		}
+
+		formattedValue := make([]string, len(values))
+		for i, v := range values {
+			formattedValue[i] = fmt.Sprintf("'%s'", v)
+		}
+		enumList := strings.Join(formattedValue, ", ")
+		query := fmt.Sprintf("CREATE TYPE %s AS ENUM (%s);", enumName, enumList)
+		if err := db.Exec(query).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
