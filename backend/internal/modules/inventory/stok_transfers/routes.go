@@ -1,7 +1,7 @@
 package stoktransfers
 
 import (
-	"backend/internal/modules/inventory/stok_movements"
+	stokmovements "backend/internal/modules/inventory/stok_movements"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB, movementService stokmovements.St
 	service := NewStokTransferService(db, repo, movementService)
 	handler := NewHandler(service)
 
-	group := r.Group("/api/v1/inventory/stock-transfers")
+	group := r.Group("/api/v1/inventory/stok-transfers")
 	{
 		group.GET("", handler.GetAll)
 		group.GET("/:id_stok_transfer", handler.GetByID)

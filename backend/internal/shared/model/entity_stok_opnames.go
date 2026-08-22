@@ -17,10 +17,11 @@ type StokOpnames struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 
 	// relations
-	Outlet         Outlets   `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
-	Wirehouse      Wirehouse `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
-	CreatedByOpnm  Users     `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
-	ApprovedByOpnm Users     `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Outlet         Outlets           `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Wirehouse      Wirehouse         `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	CreatedByOpnm  Users             `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	ApprovedByOpnm Users             `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	StokOpnameItem []StokOpnameItems `gorm:"foreignKey:OpnameRef;references:IDStokOpname;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (StokOpnames) TableName() string {
