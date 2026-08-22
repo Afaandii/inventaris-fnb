@@ -18,6 +18,8 @@ type Suppliers struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 
 	Ingredient []Ingredients `gorm:"foreignKey:SupplierRef;references:IDSupplier;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	PurchaseOrder []PurchaseOrders `gorm:"foreignKey:SupplierRef;references:IDSupplier;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Suppliers) TableName() string {

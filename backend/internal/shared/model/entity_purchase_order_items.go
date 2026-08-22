@@ -16,6 +16,12 @@ type PurchaseItems struct {
 	TotalPrice     decimal.Decimal `json:"total_price" gorm:"type:numeric(15,3);column:total_price"`
 	CreatedAt      time.Time       `json:"created_at"`
 	UpdatedAt      time.Time       `json:"updated_at"`
+
+	GoodReceiptItem []GoodReceiptItems `gorm:"foreignKey:PurchaseItemRef;references:IDPurchaseItem;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	Purchase   PurchaseOrders `gorm:"foreignKey:PurchaseRef;references:IDPurchase;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Ingredient Ingredients    `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Unit       Units          `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (PurchaseItems) TableName() string {

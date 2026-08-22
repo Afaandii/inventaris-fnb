@@ -34,6 +34,12 @@ type Users struct {
 	StokOpnameApprov []StokOpnames `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	Waste []Wastes `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	GoodReceiptRecei []GoodReceipts `gorm:"foreignKey:ReceivedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	GoodReceiptCheck []GoodReceipts `gorm:"foreignKey:CheckedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	PurchaseOrderCret  []PurchaseOrders `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	PurchaseOrderAppro []PurchaseOrders `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Users) TableName() string {

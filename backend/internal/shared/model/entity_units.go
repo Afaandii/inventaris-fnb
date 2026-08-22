@@ -22,6 +22,10 @@ type Units struct {
 	Waste []Wastes `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokOpnameItem []StokOpnameItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	GoodReceiptItems []GoodReceiptItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	PurchaseItem []PurchaseItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Units) TableName() string {

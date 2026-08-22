@@ -41,6 +41,10 @@ type Ingredients struct {
 	Wate []Wastes `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	StokOpnameItem []StokOpnameItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	GoodReceiptItem []GoodReceiptItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	PurchaseItem []PurchaseItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Ingredients) TableName() string {

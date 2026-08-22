@@ -22,6 +22,11 @@ type GoodReceiptItems struct {
 	Notes             string          `json:"notes" gorm:"type:TEXT;column:notes"`
 	CreatedAt         time.Time       `json:"created_at"`
 	UpdatedAt         time.Time       `json:"updated_at"`
+
+	GoodReceipt  GoodReceipts  `gorm:"foreignKey:GoodReceiptRef;references:IDGoodReceipt;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	PurchaseItem PurchaseItems `gorm:"foreignKey:PurchaseItemRef;references:IDPurchaseItem;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Ingredient   Ingredients   `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Unit         Units         `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (GoodReceiptItems) TableName() string {
