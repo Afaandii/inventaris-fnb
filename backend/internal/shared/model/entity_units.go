@@ -20,6 +20,8 @@ type Units struct {
 	StokTransferItem []StokTransferItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	Waste []Wastes `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	StokOpnameItem []StokOpnameItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Units) TableName() string {

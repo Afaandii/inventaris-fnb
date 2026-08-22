@@ -1,10 +1,12 @@
 package main
 
 import (
+	"backend/internal/modules/inventory/stok_adjustments"
 	stokbalances "backend/internal/modules/inventory/stok_balances"
 	stokmovements "backend/internal/modules/inventory/stok_movements"
-	"backend/internal/modules/inventory/stok_adjustments"
+	stokopnames "backend/internal/modules/inventory/stok_opnames"
 	"backend/internal/modules/inventory/stok_transfers"
+	"backend/internal/modules/inventory/wastes"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -58,6 +60,8 @@ func main() {
 	stBalService := stokbalances.RegisterStokBalanceRoutes(r, db, stMovService)
 	stokadjustments.RegisterRoutes(r, db, stBalService)
 	stoktransfers.RegisterRoutes(r, db, stMovService)
+	stokopnames.RegisterRoutes(r, db, stBalService)
+	wastes.RegisterRoutes(r, db, stBalService)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"

@@ -57,6 +57,9 @@ func AutoMigrate(db *gorm.DB) {
 		&model.StokAdjustments{},
 		&model.StokTransfers{},
 		&model.StokTransferItems{},
+		&model.StokOpnames{},
+		&model.StokOpnameItems{},
+		&model.Wastes{},
 	)
 
 	if err != nil {
