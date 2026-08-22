@@ -27,6 +27,8 @@ type Outlets struct {
 	StokOpname []StokOpnames `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 
 	Waste []Wastes `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	PurchaseOrder []PurchaseOrders `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Outlets) TableName() string {

@@ -32,6 +32,10 @@ type Wirehouse struct {
 	StokOpname []StokOpnames `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	Waste []Wastes `gorm:"foreignKey:WirehouseRef;references:IDWirehouse;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	GoodReceipt []GoodReceipts `gorm:"foreignKey:WarehouseRef;references:IDWirehouse;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	PurchaseOrder []PurchaseOrders `gorm:"foreignKey:WarehouseRef;references:IDWirehouse;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Wirehouse) TableName() string {
