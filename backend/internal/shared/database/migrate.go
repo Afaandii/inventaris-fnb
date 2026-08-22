@@ -26,6 +26,8 @@ func AutoMigrate(db *gorm.DB) {
 		"movement_type_stmov":  {"in", "out", "transfer", "adjustment"},
 		"status_transfers":     {"draft", "approved", "completed", "cancelled"},
 		"status_opnames":       {"draft", "approved", "completed"},
+		"status_receipts":      {"draft", "received", "partial", "completed", "cancelled"},
+		"status_purchases":     {"draft", "pending_approval", "approved", "partially_received", "completed", "cancelled", "rejected"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
