@@ -29,35 +29,15 @@ func NewGoodReceiptRepository(db *gorm.DB) GoodReceiptRepository {
 }
 
 func (r *goodReceiptRepository) CreateWithTx(tx *gorm.DB, gr *model.GoodReceipts) error {
-	return tx.Transaction(func(trans *gorm.DB) error {
-		err := trans.Create(gr).Error
-		if err != nil {
-			return nil
-		}
-
-		return nil
-	})
+	return tx.Create(gr).Error
 }
 
 func (r *goodReceiptRepository) CreateItemWithTx(tx *gorm.DB, item *model.GoodReceiptItems) error {
-	return tx.Transaction(func(trans *gorm.DB) error {
-		err := trans.Create(item).Error
-		if err != nil {
-			return nil
-		}
-
-		return nil
-	})
+	return tx.Create(item).Error
 }
 
 func (r *goodReceiptRepository) UpdateWithTx(tx *gorm.DB, gr *model.GoodReceipts) error {
-	return tx.Transaction(func(trans *gorm.DB) error {
-		if err := trans.Save(gr).Error; err != nil {
-			return nil
-		}
-
-		return nil
-	})
+	return tx.Model(gr).Where("id_good_receipt = ?", gr.IDGoodReceipt).Updates(gr).Error
 }
 
 func (r *goodReceiptRepository) GetAll(purchaseID, warehouseID uint, status string) ([]model.GoodReceipts, error) {
