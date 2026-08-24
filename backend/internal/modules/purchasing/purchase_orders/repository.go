@@ -28,13 +28,7 @@ func NewPurchaseOrderRepository(db *gorm.DB) PurchaseOrderRepository {
 }
 
 func (r *purchaseOrderRepository) CreateWithTx(tx *gorm.DB, po *model.PurchaseOrders) error {
-	return tx.Transaction(func(trans *gorm.DB) error {
-		if err := trans.Create(po).Error; err != nil {
-			return nil
-		}
-
-		return nil
-	})
+	return tx.Create(po).Error
 }
 
 func (r *purchaseOrderRepository) CreateItemWithTx(tx *gorm.DB, item *model.PurchaseItems) error {
@@ -48,13 +42,8 @@ func (r *purchaseOrderRepository) CreateItemWithTx(tx *gorm.DB, item *model.Purc
 }
 
 func (r *purchaseOrderRepository) UpdateWithTx(tx *gorm.DB, po *model.PurchaseOrders) error {
-	return tx.Transaction(func(trans *gorm.DB) error {
-		if err := trans.Save(po).Error; err != nil {
-			return nil
-		}
-
-		return nil
-	})
+	// untuk update by status saja jadi menyesuaikan value dari json
+	return tx.Model(po).Where("id_purchase = ?", po.IDPurchase).Updates(po).Error
 }
 
 func (r *purchaseOrderRepository) UpdateItemWithTx(tx *gorm.DB, item *model.PurchaseItems) error {

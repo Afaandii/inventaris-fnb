@@ -12,7 +12,7 @@ type PurchaseOrders struct {
 	SupplierRef    uint            `json:"supplier_id" gorm:"column:supplier_id"`
 	WarehouseRef   uint            `json:"warehouse_id" gorm:"column:warehouse_id"`
 	CreatedBy      uint            `json:"created_by" gorm:"column:created_by"`
-	ApprovedBy     uint            `json:"approved_by" gorm:"column:approved_by"`
+	ApprovedBy     uint            `json:"approved_by" gorm:"column:approved_by;default:null"`
 	PurchaseCode   string          `json:"purchase_code" gorm:"type:varchar(255);column:purchase_code" `
 	PONumber       string          `json:"po_number" gorm:"type:varchar(120);unique;column:po_number"`
 	TotalAmount    decimal.Decimal `json:"total_amount" gorm:"type:numeric(15,3);column:total_amount" `
