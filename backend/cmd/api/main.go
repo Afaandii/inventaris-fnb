@@ -7,6 +7,8 @@ import (
 	stokopnames "backend/internal/modules/inventory/stok_opnames"
 	"backend/internal/modules/inventory/stok_transfers"
 	"backend/internal/modules/inventory/wastes"
+	"backend/internal/modules/purchasing/good_receipts"
+	"backend/internal/modules/purchasing/purchase_orders"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -62,6 +64,10 @@ func main() {
 	stoktransfers.RegisterRoutes(r, db, stMovService)
 	stokopnames.RegisterRoutes(r, db, stBalService)
 	wastes.RegisterRoutes(r, db, stBalService)
+
+	// Register Purchasing Routes
+	purchaseorders.RegisterRoutes(r, db)
+	goodreceipts.RegisterRoutes(r, db, stBalService)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"

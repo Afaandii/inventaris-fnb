@@ -27,7 +27,7 @@ func AutoMigrate(db *gorm.DB) {
 		"status_transfers":     {"draft", "approved", "completed", "cancelled"},
 		"status_opnames":       {"draft", "approved", "completed"},
 		"status_receipts":      {"draft", "received", "partial", "completed", "cancelled"},
-		"status_purchases":     {"draft", "pending_approval", "approved", "partially_received", "completed", "cancelled", "rejected"},
+		"status_purchases":     {"draft", "pending", "approved", "partially_received", "completed", "cancelled", "rejected"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper

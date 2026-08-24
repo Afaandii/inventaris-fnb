@@ -53,3 +53,17 @@ func GenerateCodeOpname(lastNum int) string {
 
 	return fmt.Sprintf("OPN-%s-%04d", today, nextNumber)
 }
+
+func GenerateCodePO(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("PO-%s-%04d", today, nextNumber)
+}
+
+func GenerateCodeGoodReceipt(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("GR-%s-%04d", today, nextNumber)
+}
