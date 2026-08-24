@@ -1,7 +1,7 @@
 package goodreceipts
 
 import (
-	"backend/internal/modules/inventory/stok_balances"
+	stokbalances "backend/internal/modules/inventory/stok_balances"
 	"backend/internal/shared/model"
 	"backend/pkg/helper"
 	"errors"
@@ -39,7 +39,7 @@ type GoodReceiptService interface {
 	GetAll(purchaseID, warehouseID uint, status string) ([]model.GoodReceipts, error)
 	GetByID(id uint) (*model.GoodReceipts, error)
 	Create(input CreateGRInput) (*model.GoodReceipts, error)
-	UpdateStatus(id uint, status string, userID uint) (*model.GoodReceipts, error)
+	UpdateStatus(id uint, status string, checkedBy uint) (*model.GoodReceipts, error)
 }
 
 type goodReceiptService struct {
@@ -165,7 +165,7 @@ func (s *goodReceiptService) Create(input CreateGRInput) (*model.GoodReceipts, e
 	return s.repo.GetByID(gr.IDGoodReceipt)
 }
 
-func (s *goodReceiptService) UpdateStatus(id uint, status string, userID uint) (*model.GoodReceipts, error) {
+func (s *goodReceiptService) UpdateStatus(id uint, status string, checkedBy uint) (*model.GoodReceipts, error) {
 	tx := s.db.Begin()
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -211,7 +211,7 @@ func (s *goodReceiptService) UpdateStatus(id uint, status string, userID uint) (
 					item.BatchNo,
 					item.ExpiryDate,
 					item.UnitCost,
-					userID,
+					checkedBy,
 					gr.IDGoodReceipt,
 					"good_receipt",
 					fmt.Sprintf("Penerimaan barang dari GR #%s", gr.ReceiptNumber),
