@@ -175,6 +175,20 @@ func (s *purchaseOrderService) UpdateStatus(id uint, status string, userID uint)
 		po.ApprovedBy = userID
 		po.ApprovedAt = time.Now()
 
+	case "partially_received":
+		if currentStatus != "approved" && currentStatus != "partially_received" {
+			tx.Rollback()
+			return nil, errors.New("hanya PO berstatus approved atau partially_received yang dapat diproses parsial")
+		}
+		po.StatusPurchase = "partially_received"
+
+	case "completed":
+		if currentStatus != "approved" && currentStatus != "partially_received" {
+			tx.Rollback()
+			return nil, errors.New("hanya PO berstatus approved atau partially_received yang dapat diselesaikan")
+		}
+		po.StatusPurchase = "completed"
+
 	case "rejected":
 		if currentStatus != "pending" && currentStatus != "draft" {
 			tx.Rollback()

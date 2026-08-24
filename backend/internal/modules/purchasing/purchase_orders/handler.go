@@ -96,8 +96,8 @@ func (h *Handler) UpdateStatus(ctx *gin.Context) {
 	}
 
 	var req struct {
-		Status string `json:"status" validate:"required,oneof=pending approved rejected cancelled"`
-		UserID uint   `json:"user_id" validate:"required,number,min=1"`
+		Status     string `json:"status" validate:"required,oneof=pending approved partially_received completed rejected cancelled"`
+		ApprovedBy uint   `json:"approved_by" validate:"required,number,min=1"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -110,7 +110,7 @@ func (h *Handler) UpdateStatus(ctx *gin.Context) {
 		return
 	}
 
-	data, err := h.service.UpdateStatus(uint(id), req.Status, req.UserID)
+	data, err := h.service.UpdateStatus(uint(id), req.Status, req.ApprovedBy)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to update purchase order status!", err.Error())
 		return
