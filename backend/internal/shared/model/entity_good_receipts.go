@@ -10,7 +10,7 @@ type GoodReceipts struct {
 	CheckedBy       uint      `json:"checked_by" gorm:"column:checked_by"`
 	ReceiptNumber   string    `json:"receipt_number" gorm:"type:varchar(255);column:receipt_number"`
 	ReceivedDate    time.Time `json:"received_date" gorm:"column:received_date"`
-	SupplierInvoice string    `json:"supplier_invoice" gorm:"type:varchar(150);column:supplier_invoice"`
+	SupplierInvoice string    `json:"supplier_invoice" gorm:"type:varchar(255);column:supplier_invoice"`
 	StatusReceipt   string    `json:"status_receipt" gorm:"type:status_receipts;column:status_receipt"`
 	Notes           string    `json:"notes" gorm:"type:TEXT;column:notes"`
 	CreatedAt       time.Time `json:"created_at"`
