@@ -32,7 +32,7 @@ type StokTransferService interface {
 	GetAll(warehouseFrom, warehouseTo uint, status string) ([]model.StokTransfers, error)
 	GetByID(id uint) (*model.StokTransfers, error)
 	Create(input CreateTransferInput) (*model.StokTransfers, error)
-	UpdateStatus(id uint, status string, userID uint) (*model.StokTransfers, error)
+	UpdateStatus(id uint, status string, approvedBy uint) (*model.StokTransfers, error)
 }
 
 type stokTransferService struct {
@@ -176,7 +176,7 @@ func (s *stokTransferService) Create(input CreateTransferInput) (*model.StokTran
 	return s.repo.GetByID(transfer.IDStokTransfer)
 }
 
-func (s *stokTransferService) UpdateStatus(id uint, status string, userID uint) (*model.StokTransfers, error) {
+func (s *stokTransferService) UpdateStatus(id uint, status string, approvedBy uint) (*model.StokTransfers, error) {
 	// Jalankan transaksi database
 	tx := s.db.Begin()
 	if tx.Error != nil {
@@ -213,7 +213,7 @@ func (s *stokTransferService) UpdateStatus(id uint, status string, userID uint) 
 			tx.Rollback()
 			return nil, errors.New("hanya transfer berstatus draft yang dapat disetujui")
 		}
-		transfer.ApprovedBy = userID
+		transfer.ApprovedBy = approvedBy
 		transfer.Approved_at = time.Now()
 		transfer.StatusTransfer = "approved"
 
@@ -303,7 +303,7 @@ func (s *stokTransferService) UpdateStatus(id uint, status string, userID uint) 
 				transfer.WarehouseFrom,
 				transfer.WarehouseTo,
 				item.IngredientRef,
-				userID,
+				approvedBy,
 				transfer.IDStokTransfer,
 				"stok_transfer",
 				"transfer",

@@ -1,7 +1,7 @@
 package stokopnames
 
 import (
-	"backend/internal/modules/inventory/stok_balances"
+	stokbalances "backend/internal/modules/inventory/stok_balances"
 	"backend/internal/shared/model"
 	"backend/pkg/helper"
 	"errors"
@@ -31,7 +31,7 @@ type StokOpnameService interface {
 	GetByID(id uint) (*model.StokOpnames, error)
 	GetStockSummary(warehouseID uint) ([]WarehouseStockSummary, error)
 	Create(input CreateOpnameInput) (*model.StokOpnames, error)
-	UpdateStatus(id uint, status string, userID uint) (*model.StokOpnames, error)
+	UpdateStatus(id uint, status string, approvedBy uint) (*model.StokOpnames, error)
 }
 
 type stokOpnameService struct {
@@ -140,7 +140,7 @@ func (s *stokOpnameService) Create(input CreateOpnameInput) (*model.StokOpnames,
 	return s.repo.GetByID(opname.IDStokOpname)
 }
 
-func (s *stokOpnameService) UpdateStatus(id uint, status string, userID uint) (*model.StokOpnames, error) {
+func (s *stokOpnameService) UpdateStatus(id uint, status string, approvedBy uint) (*model.StokOpnames, error) {
 	tx := s.db.Begin()
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -169,7 +169,7 @@ func (s *stokOpnameService) UpdateStatus(id uint, status string, userID uint) (*
 
 	if status == "approved" {
 		opname.StatusOpname = "approved"
-		opname.ApprovedBy = userID
+		opname.ApprovedBy = approvedBy
 		opname.ApprovedAt = time.Now()
 
 	} else if status == "completed" {
@@ -196,7 +196,7 @@ func (s *stokOpnameService) UpdateStatus(id uint, status string, userID uint) (*
 					"",
 					time.Time{},
 					ingredient.AverageCost,
-					userID,
+					approvedBy,
 					opname.IDStokOpname,
 					"stok_opname",
 					fmt.Sprintf("Koreksi Opname (+%d): %s", diff, item.Remarks),
@@ -212,7 +212,7 @@ func (s *stokOpnameService) UpdateStatus(id uint, status string, userID uint) (*
 					item.IngredientRef,
 					opname.WirehouseRef,
 					uint(-diff),
-					userID,
+					approvedBy,
 					opname.IDStokOpname,
 					"stok_opname",
 					fmt.Sprintf("Koreksi Opname (%d): %s", diff, item.Remarks),
@@ -225,7 +225,7 @@ func (s *stokOpnameService) UpdateStatus(id uint, status string, userID uint) (*
 		}
 
 		opname.StatusOpname = "completed"
-		opname.ApprovedBy = userID
+		opname.ApprovedBy = approvedBy
 		opname.ApprovedAt = time.Now()
 	} else {
 		tx.Rollback()
