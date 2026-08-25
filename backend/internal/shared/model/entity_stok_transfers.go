@@ -8,7 +8,7 @@ type StokTransfers struct {
 	WarehouseFrom  uint      `json:"warehouse_from" gorm:"column:warehouse_from"`
 	WarehouseTo    uint      `json:"warehouse_to" gorm:"column:warehouse_to"`
 	CreatedBy      uint      `json:"created_by" gorm:"column:created_by"`
-	ApprovedBy     uint      `json:"approved_by" gorm:"approved_by"`
+	ApprovedBy     uint      `json:"approved_by" gorm:"approved_by;default:null"`
 	TransferCode   string    `json:"transfer_code" gorm:"type:varchar(255);column:transfer_code"`
 	TransferDate   time.Time `json:"transfer_date" gorm:"column:transfer_date"`
 	Approved_at    time.Time `json:"approved_at" gorm:"column:approved_at"`

@@ -68,7 +68,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		WarehouseID  uint    `json:"warehouse_id" validate:"required,number,min=1"`
 		IngredientID uint    `json:"ingredient_id" validate:"required,number,min=1"`
-		UserID       uint    `json:"user_id" validate:"required,number,min=1"`
+		CreatedBy    uint    `json:"created_by" validate:"required,number,min=1"`
 		Qty          float64 `json:"qty" validate:"required,numeric,gt=0"`
 		Reason       string  `json:"reason" validate:"required,min=3"`
 	}
@@ -83,7 +83,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	data, err := h.service.Create(req.WarehouseID, req.IngredientID, req.UserID, req.Qty, req.Reason)
+	data, err := h.service.Create(req.WarehouseID, req.IngredientID, req.CreatedBy, req.Qty, req.Reason)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to record waste!", err.Error())
 		return

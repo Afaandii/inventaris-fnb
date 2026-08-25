@@ -1,7 +1,7 @@
 package wastes
 
 import (
-	"backend/internal/modules/inventory/stok_balances"
+	stokbalances "backend/internal/modules/inventory/stok_balances"
 	"backend/internal/shared/model"
 	"errors"
 	"time"
@@ -13,7 +13,7 @@ import (
 type WasteService interface {
 	GetAll(warehouseID, ingredientID uint) ([]model.Wastes, error)
 	GetByID(id uint) (*model.Wastes, error)
-	Create(warehouseID, ingredientID, userID uint, qty float64, reason string) (*model.Wastes, error)
+	Create(warehouseID, ingredientID, createdBy uint, qty float64, reason string) (*model.Wastes, error)
 }
 
 type wasteService struct {
@@ -34,7 +34,7 @@ func (s *wasteService) GetByID(id uint) (*model.Wastes, error) {
 	return s.repo.GetByID(id)
 }
 
-func (s *wasteService) Create(warehouseID, ingredientID, userID uint, qty float64, reason string) (*model.Wastes, error) {
+func (s *wasteService) Create(warehouseID, ingredientID, createdBy uint, qty float64, reason string) (*model.Wastes, error) {
 	qtyNeeded := uint(qty)
 	if qtyNeeded == 0 {
 		return nil, errors.New("kuantitas waste harus lebih besar dari 0")
@@ -68,7 +68,7 @@ func (s *wasteService) Create(warehouseID, ingredientID, userID uint, qty float6
 		IngredientRef: ingredientID,
 		WirehouseRef:  warehouseID,
 		UnitRef:       ingredient.UnitRef,
-		CreatedBy:     userID,
+		CreatedBy:     createdBy,
 		Qty:           decimal.NewFromFloat(qty),
 		Reason:        reason,
 		WasteDate:     time.Now(),
@@ -85,7 +85,7 @@ func (s *wasteService) Create(warehouseID, ingredientID, userID uint, qty float6
 		ingredientID,
 		warehouseID,
 		qtyNeeded,
-		userID,
+		createdBy,
 		waste.IDWaste,
 		"waste",
 		reason,

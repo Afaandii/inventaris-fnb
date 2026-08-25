@@ -7,7 +7,7 @@ type StokOpnames struct {
 	OutletRef    uint      `json:"outlet_id" gorm:"column:outlet_id"`
 	WirehouseRef uint      `json:"wirehouse_id" gorm:"column:wirehouse_id"`
 	CreatedBy    uint      `json:"created_by" gorm:"column:created_by"`
-	ApprovedBy   uint      `json:"approved_by" gorm:"column:approved_by"`
+	ApprovedBy   uint      `json:"approved_by" gorm:"column:approved_by;default:null"`
 	OpnameCode   string    `json:"opname_code" gorm:"type:varchar(255);column:opname_code"`
 	OpnameDate   time.Time `json:"opname_date" gorm:"column:opname_date"`
 	ApprovedAt   time.Time `json:"approved_at" gorm:"column:approved_at"`
