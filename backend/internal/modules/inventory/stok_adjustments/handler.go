@@ -68,8 +68,8 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		WarehouseID  uint   `json:"warehouse_id" validate:"required,number,min=1"`
 		IngredientID uint   `json:"ingredient_id" validate:"required,number,min=1"`
-		UserID       uint   `json:"user_id" validate:"required,number,min=1"`
-		ActualQty    uint   `json:"actual_qty" validate:"required,number"`
+		CreatedBy    uint   `json:"created_by" validate:"required,number,min=1"`
+		Qty          uint   `json:"qty" validate:"required,number"`
 		Reason       string `json:"reason" validate:"required,min=3"`
 	}
 
@@ -83,7 +83,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	data, err := h.service.Create(req.WarehouseID, req.IngredientID, req.UserID, req.ActualQty, req.Reason)
+	data, err := h.service.Create(req.WarehouseID, req.IngredientID, req.CreatedBy, req.Qty, req.Reason)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "Failed to create stock adjustment!", err.Error())
 		return

@@ -1,7 +1,7 @@
 package stokadjustments
 
 import (
-	"backend/internal/modules/inventory/stok_balances"
+	stokbalances "backend/internal/modules/inventory/stok_balances"
 	"backend/internal/shared/model"
 	"errors"
 	"time"
@@ -13,7 +13,7 @@ import (
 type StokAdjustmentService interface {
 	GetAll(warehouseID, ingredientID uint) ([]model.StokAdjustments, error)
 	GetByID(id uint) (*model.StokAdjustments, error)
-	Create(warehouseID, ingredientID, userID uint, actualQty uint, reason string) (*model.StokAdjustments, error)
+	Create(warehouseID, ingredientID, createdBy uint, qty uint, reason string) (*model.StokAdjustments, error)
 }
 
 type stokAdjustmentService struct {
@@ -34,7 +34,7 @@ func (s *stokAdjustmentService) GetByID(id uint) (*model.StokAdjustments, error)
 	return s.repo.GetByID(id)
 }
 
-func (s *stokAdjustmentService) Create(warehouseID, ingredientID, userID uint, actualQty uint, reason string) (*model.StokAdjustments, error) {
+func (s *stokAdjustmentService) Create(warehouseID, ingredientID, createdBy uint, qty uint, reason string) (*model.StokAdjustments, error) {
 	// Start Transaction
 	tx := s.db.Begin()
 	if tx.Error != nil {
@@ -73,7 +73,7 @@ func (s *stokAdjustmentService) Create(warehouseID, ingredientID, userID uint, a
 		systemQty += b.AvailableQty
 	}
 
-	diff := int(actualQty) - int(systemQty)
+	diff := int(qty) - int(systemQty)
 
 	// 4. Buat record StokAdjustments
 	diffDecimal := decimal.NewFromInt(int64(diff))
@@ -82,7 +82,7 @@ func (s *stokAdjustmentService) Create(warehouseID, ingredientID, userID uint, a
 		IngredientRef:  ingredientID,
 		UnitRef:        ingredient.UnitRef,
 		WirehouseRef:   warehouseID,
-		CreatedBy:      userID,
+		CreatedBy:      createdBy,
 		Qty:            diffDecimal,
 		Reason:         reason,
 		AdjustmentDate: time.Now(),
@@ -101,12 +101,12 @@ func (s *stokAdjustmentService) Create(warehouseID, ingredientID, userID uint, a
 			ingredientID,
 			warehouseID,
 			uint(diff),
-			"",                      // Tanpa nomor batch khusus penyesuaian manual
-			time.Time{},             // Tanpa expired date
-			ingredient.AverageCost,  // unit_cost disetel otomatis ke AverageCost
-			userID,
+			"",                     // Tanpa nomor batch khusus penyesuaian manual
+			time.Time{},            // Tanpa expired date
+			ingredient.AverageCost, // unit_cost disetel otomatis ke AverageCost
+			createdBy,
 			adj.IDStokAdjustment,
-			"stok_adjusment",        // Sesuai enum postgres: "stok_adjusment"
+			"stok_adjusment", // Sesuai enum postgres: "stok_adjusment"
 			reason,
 		)
 		if err != nil {
@@ -120,9 +120,9 @@ func (s *stokAdjustmentService) Create(warehouseID, ingredientID, userID uint, a
 			ingredientID,
 			warehouseID,
 			uint(-diff),
-			userID,
+			createdBy,
 			adj.IDStokAdjustment,
-			"stok_adjusment",        // Sesuai enum postgres: "stok_adjusment"
+			"stok_adjusment", // Sesuai enum postgres: "stok_adjusment"
 			reason,
 		)
 		if err != nil {
