@@ -14,6 +14,8 @@ type Category struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 
 	Ingredient []Ingredients `gorm:"foreignKey:CategoryRef;references:IDCategory;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Product []Products `gorm:"foreignKey:CategoryRef;references:IDCategory;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Category) TableName() string {
