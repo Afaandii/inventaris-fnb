@@ -24,6 +24,8 @@ type Products struct {
 	MenuItem []MenuItems `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	Recipe []Recipes `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Production []Productions `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Products) TableName() string {
