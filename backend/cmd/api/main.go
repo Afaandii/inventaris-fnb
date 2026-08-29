@@ -9,6 +9,11 @@ import (
 	"backend/internal/modules/inventory/wastes"
 	"backend/internal/modules/purchasing/good_receipts"
 	"backend/internal/modules/purchasing/purchase_orders"
+	menuitems "backend/internal/modules/product/menu_items"
+	productvariants "backend/internal/modules/product/product_variants"
+	"backend/internal/modules/product/products"
+	recipeitems "backend/internal/modules/product/recipe_items"
+	"backend/internal/modules/product/recipes"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -68,6 +73,13 @@ func main() {
 	// Register Purchasing Routes
 	purchaseorders.RegisterRoutes(r, db)
 	goodreceipts.RegisterRoutes(r, db, stBalService)
+
+	// Register Product Routes
+	products.RegisterRoutes(r, db)
+	productvariants.RegisterRoutes(r, db)
+	recipes.RegisterRoutes(r, db)
+	recipeitems.RegisterRoutes(r, db)
+	menuitems.RegisterRoutes(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"

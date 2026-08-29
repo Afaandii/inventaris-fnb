@@ -15,7 +15,7 @@ type Recipes struct {
 	Instruction   string          `json:"instruction" gorm:"type:TEXT;column:instruction"`
 	RecipeVersion string          `json:"recipe_version" gorm:"type:varchar(30);column:recipe_version"`
 	Notes         string          `json:"notes" gorm:"type:TEXT;column:notes"`
-	IsActive      bool            `json:"is_active" gorm:"type:is_active;column:is_active"`
+	IsActive      bool            `json:"is_active" gorm:"type:boolean;column:is_active"`
 	CreatedAt     time.Time       `json:"created_at"`
 	UpdatedAt     time.Time       `json:"updated_at"`
 
