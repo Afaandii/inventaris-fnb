@@ -26,6 +26,8 @@ type Units struct {
 	GoodReceiptItems []GoodReceiptItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 
 	PurchaseItem []PurchaseItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	RecipeItem []RecipeItems `gorm:"foreignKey:UnitRef;references:IDUnit;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Units) TableName() string {

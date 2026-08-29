@@ -45,6 +45,8 @@ type Ingredients struct {
 	GoodReceiptItem []GoodReceiptItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 
 	PurchaseItem []PurchaseItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	RecipeItem []RecipeItems `gorm:"foreignKey:IngredientRef;references:IDIngredient;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Ingredients) TableName() string {

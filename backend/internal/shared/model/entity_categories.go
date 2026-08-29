@@ -1,7 +1,6 @@
 package model
 
 import "time"
-
 type Category struct {
 	IDCategory   uint      `json:"id_category" gorm:"primaryKey;autoIncrement;column:id_category"`
 	ParentRef    *uint     `json:"parent_id" gorm:"column:parent_id"`
