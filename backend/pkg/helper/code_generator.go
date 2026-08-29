@@ -67,3 +67,17 @@ func GenerateCodeGoodReceipt(lastNum int) string {
 
 	return fmt.Sprintf("GR-%s-%04d", today, nextNumber)
 }
+
+func GenerateCodeProduct(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("PRD-%s-%04d", today, nextNumber)
+}
+
+func GenerateCodeVariant(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("VAR-%s-%04d", today, nextNumber)
+}
