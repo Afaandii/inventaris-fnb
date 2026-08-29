@@ -33,6 +33,8 @@ type Outlets struct {
 	MenuItem []MenuItems `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 
 	Recipe []Recipes `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Production []Productions `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 }
 
 func (Outlets) TableName() string {
