@@ -10,7 +10,7 @@ type Products struct {
 	Slug           string    `json:"slug" gorm:"type:varchar(255);column:slug"`
 	Sku            string    `json:"sku" gorm:"type:varchar(120);column:sku"`
 	ProdType       string    `json:"prod_type" gorm:"type:type_products;column:prod_type"`
-	IsAvailable    string    `json:"is_available" gorm:"type:available_products;column:is_available"`
+	IsAvailable    bool      `json:"is_available" gorm:"type:boolean;column:is_available"`
 	IsActive       bool      `json:"is_active" gorm:"column:is_active"`
 	Description    string    `json:"description" gorm:"type:TEXT;column:description"`
 	ProdThumbnails string    `json:"prod_thumbnail" gorm:"type:TEXT;column:prod_thumbnail"`
@@ -18,6 +18,12 @@ type Products struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 
 	Category Category `gorm:"foreignKey:CategoryRef;references:IDCategory;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	ProductVariant []ProductVariants `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	MenuItem []MenuItems `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
+
+	Recipe []Recipes `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnDelete:CASCADE;OnUpdate:RESTRICT"`
 }
 
 func (Products) TableName() string {
