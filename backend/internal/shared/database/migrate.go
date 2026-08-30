@@ -29,6 +29,7 @@ func AutoMigrate(db *gorm.DB) {
 		"status_receipts":      {"draft", "received", "partial", "completed", "cancelled"},
 		"status_purchases":     {"draft", "pending", "approved", "partially_received", "completed", "cancelled", "rejected"},
 		"type_products":        {"raw", "prepared", "finished"},
+		"status_productions":   {"draft", "in_progress", "completed", "cancelled"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
@@ -72,6 +73,7 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Recipes{},
 		&model.RecipeItems{},
 		&model.MenuItems{},
+		&model.Productions{},
 	)
 
 	if err != nil {
