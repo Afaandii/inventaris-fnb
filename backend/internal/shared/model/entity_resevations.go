@@ -8,7 +8,7 @@ import (
 
 type Reservations struct {
 	IDReservation     uint           `json:"id_reservation" gorm:"primaryKey;autoIncrement;column:id_reservation"`
-	OutletID          uint           `json:"outlet_id" gorm:"column:outlet_id"`
+	OutletRef         uint           `json:"outlet_id" gorm:"column:outlet_id"`
 	TableRef          uint           `json:"table_id" gorm:"column:table_id"`
 	CreatedBy         uint           `json:"created_by" gorm:"column:created_by"`
 	ReservationCode   string         `json:"reservation_code" gorm:"type:varchar(255);column:reservation_code"`
@@ -21,6 +21,10 @@ type Reservations struct {
 	StatusReservation string         `json:"status_reservation" gorm:"type:status_reservations;default:'pending';column:status_reservation"`
 	CreatedAt         time.Time      `json:"created_at"`
 	UpdatedAt         time.Time      `json:"updated_at"`
+
+	Outlet       Outlets      `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+	DiningTable  DiningTables `gorm:"foreignKey:TableRef;references:IDDiningTable;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+	CreatedByUsr Users        `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (Reservations) TableName() string {

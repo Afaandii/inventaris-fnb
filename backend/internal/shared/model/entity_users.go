@@ -42,6 +42,8 @@ type Users struct {
 	PurchaseOrderAppro []PurchaseOrders `gorm:"foreignKey:ApprovedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
 
 	Production []Productions `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+
+	Reservation []Reservations `gorm:"foreignKey:CreatedBy;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (Users) TableName() string {

@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type DiningTable struct {
+type DiningTables struct {
 	IDDiningTable uint      `json:"id_dining_table" gorm:"primaryKey;autoIncrement;column:id_dining_table"`
 	OutletRef     uint      `json:"outlet_id" gorm:"column:outlet_id"`
 	Name          string    `json:"name" gorm:"type:varchar(120);column:name"`
@@ -10,8 +10,12 @@ type DiningTable struct {
 	Status        string    `json:"status_table" gorm:"type:status_dining_tables;column:status_table"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+
+	Outlet Outlets `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+
+	Reservation []Reservations `gorm:"foreignKey:TableRef;references:IDDiningTable;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
-func (DiningTable) TableName() string {
+func (DiningTables) TableName() string {
 	return "dining_tables"
 }
