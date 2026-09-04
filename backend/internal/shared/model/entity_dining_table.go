@@ -7,7 +7,7 @@ type DiningTables struct {
 	OutletRef     uint      `json:"outlet_id" gorm:"column:outlet_id"`
 	Name          string    `json:"name" gorm:"type:varchar(120);column:name"`
 	Capacity      int       `json:"capacity" gorm:"column:capacity"`
-	Status        string    `json:"status_table" gorm:"type:status_dining_tables;column:status_table"`
+	StatusTable   string    `json:"status_table" gorm:"type:status_dining_tables;column:status_table"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 

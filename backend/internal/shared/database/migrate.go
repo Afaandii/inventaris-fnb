@@ -31,6 +31,7 @@ func AutoMigrate(db *gorm.DB) {
 		"type_products":        {"raw", "prepared", "finished"},
 		"status_productions":   {"draft", "in_progress", "completed", "cancelled"},
 		"status_reservations":  {"pending", "confirmed", "seated", "completed", "cancelled", "no_show"},
+		"status_dining_tables": {"available", "reserved", "occupied", "cleaning", "inactive"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
