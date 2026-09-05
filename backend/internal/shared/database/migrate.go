@@ -76,6 +76,8 @@ func AutoMigrate(db *gorm.DB) {
 		&model.RecipeItems{},
 		&model.MenuItems{},
 		&model.Productions{},
+		&model.DiningTables{},
+		&model.Reservations{},
 	)
 
 	if err != nil {

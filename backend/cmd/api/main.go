@@ -15,6 +15,8 @@ import (
 	recipeitems "backend/internal/modules/product/recipe_items"
 	"backend/internal/modules/product/recipes"
 	"backend/internal/modules/production/productions"
+	diningtables "backend/internal/modules/reservations/dining_tables"
+	"backend/internal/modules/reservations/reservation"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -84,6 +86,10 @@ func main() {
 
 	// Register Production Routes
 	productions.RegisterRoutes(r, db, stBalService)
+
+	// Register Reservation Routes
+	diningtables.RegisterRoutes(r, db)
+	reservation.RegisterRoutes(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"

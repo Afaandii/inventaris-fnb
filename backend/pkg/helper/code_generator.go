@@ -81,3 +81,10 @@ func GenerateCodeVariant(lastNum int) string {
 
 	return fmt.Sprintf("VAR-%s-%04d", today, nextNumber)
 }
+
+func GenerateCodeReservation(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("RSV-%s-%04d", today, nextNumber)
+}
