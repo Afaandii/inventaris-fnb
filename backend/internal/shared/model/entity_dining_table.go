@@ -14,6 +14,8 @@ type DiningTables struct {
 	Outlet Outlets `gorm:"foreignKey:OutletRef;references:IDOutlet;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 
 	Reservation []Reservations `gorm:"foreignKey:TableRef;references:IDDiningTable;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+
+	SalesOrder []SalesOrders `gorm:"foreignKey:TableRef;references:IDDiningTable;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (DiningTables) TableName() string {
