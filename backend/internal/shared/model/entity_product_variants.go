@@ -19,7 +19,8 @@ type ProductVariants struct {
 	CreatedAt        time.Time       `json:"created_at"`
 	UpdateAt         time.Time       `json:"updated_at"`
 
-	Product Products `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	Product        Products          `gorm:"foreignKey:ProductRef;references:IDProduct;constraint:OnUpdate:RESTRICT;OnDelete:CASCADE"`
+	SalesOrderItem []SalesOrderItems `gorm:"foreignKey:ProdVarRef;references:IDProductVariant;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (ProductVariants) TableName() string {
