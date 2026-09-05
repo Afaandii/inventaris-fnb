@@ -88,3 +88,22 @@ func GenerateCodeReservation(lastNum int) string {
 
 	return fmt.Sprintf("RSV-%s-%04d", today, nextNumber)
 }
+
+func GenerateCodeSalesOrder(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("ORD-%s-%04d", today, nextNumber)
+}
+
+func GenerateQueueNumber(lastNum int) string {
+	nextNumber := lastNum + 1
+	return fmt.Sprintf("Q-%04d", nextNumber)
+}
+
+func GenerateCodePayment(lastNum int) string {
+	today := time.Now().Format("20060102")
+	nextNumber := lastNum + 1
+
+	return fmt.Sprintf("PAY-%s-%04d", today, nextNumber)
+}
