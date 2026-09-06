@@ -20,6 +20,7 @@ import (
 	"backend/internal/modules/sales/payments"
 	salesorderitems "backend/internal/modules/sales/sales_order_items"
 	salesorders "backend/internal/modules/sales/sales_orders"
+	"backend/internal/modules/reports"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
 	"backend/internal/modules/master/outlets"
@@ -98,6 +99,9 @@ func main() {
 	salesorders.RegisterRoutes(r, db, stBalService)
 	salesorderitems.RegisterRoutes(r, db)
 	payments.RegisterRoutes(r, db)
+
+	// Register Reports Routes
+	reports.RegisterRoutes(r, db)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
