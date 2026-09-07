@@ -89,6 +89,7 @@ func AutoMigrate(db *gorm.DB) {
 		&model.SalesOrders{},
 		&model.SalesOrderItems{},
 		&model.Payments{},
+		&model.AuditLogs{},
 	)
 
 	if err != nil {

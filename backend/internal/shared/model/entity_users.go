@@ -47,7 +47,7 @@ type Users struct {
 
 	SalesOrder []SalesOrders `gorm:"foreignKey:CashierRef;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 
-	AuditLog []AuditLogs `gorm:"foreignKey:UserRef;references:IDUsers;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+	AuditLog []AuditLogs `gorm:"foreignKey:UserRef;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (Users) TableName() string {

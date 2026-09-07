@@ -20,7 +20,7 @@ type AuditLogs struct {
 	RequestID   string     `json:"request_id" gorm:"type:varchar(255);column:request_id"`
 	CreatedAt   time.Time  `json:"created_at"`
 
-	User Users `gorm:"foreignKey:UserRef;references:IDUsers;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
+	User Users `gorm:"foreignKey:UserRef;references:IDUser;constraint:OnUpdate:RESTRICT,OnDelete:CASCADE"`
 }
 
 func (AuditLogs) TableName() string {
