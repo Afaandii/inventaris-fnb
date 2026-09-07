@@ -38,6 +38,8 @@ func AutoMigrate(db *gorm.DB) {
 		"payment_methods":        {"cash", "card", "qris", "bank_transfer", "debit_card", "credit_card", "e_wallet"},
 		"payment_providers":      {"midtrans", "xendit", "tripay", "doku", "manual"},
 		"status_payments":        {"pending", "paid", "failed", "cancelled", "refunded"},
+		"modules":                {"master", "inventory", "purchasing", "product", "production", "reservations", "sales", "auth", "settings", "reports"},
+		"entities_types":         {"ingredient", "product", "menu_item", "user", "role", "category", "unit", "outlet", "supplier", "wirehouse", "stok_balance", "stok_movement", "stok_adjustment", "stok_transfer", "stok_opname", "waste", "purchase_order", "good_receipt", "recipe", "production", "dining_table", "reservation", "sales_order", "payment"},
 	}
 
 	// 2. Eksekusi pembuatannya lewat helper
