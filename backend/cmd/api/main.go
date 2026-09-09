@@ -21,6 +21,7 @@ import (
 	salesorderitems "backend/internal/modules/sales/sales_order_items"
 	salesorders "backend/internal/modules/sales/sales_orders"
 	"backend/internal/modules/reports"
+	"backend/internal/modules/auth"
 	auditlogs "backend/internal/shared/audit_logs"
 	"backend/internal/modules/master/categories"
 	"backend/internal/modules/master/ingredients"
@@ -105,7 +106,10 @@ func main() {
 	reports.RegisterRoutes(r, db)
 
 	// Register Audit Log Routes
-	auditlogs.RegisterRoutes(r, db)
+	auditService := auditlogs.RegisterRoutes(r, db)
+
+	// Register Auth Routes
+	auth.RegisterRoutes(r, db, auditService)
 
 	if cfg.PORT == "" {
 		cfg.PORT = "8080"
