@@ -55,7 +55,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 		MaxStok          float64 `json:"max_stok" validate:"required,gt=0"`
 		CostPrice        float64 `json:"cost_price" validate:"required,gte=0"`
 		AverageCost      float64 `json:"average_cost" validate:"required,gte=0"`
-		IsPerishable     bool    `json:"is_perishable" validate:"required,boolean"`
+		IsPerishable     bool    `json:"is_perishable" validate:"boolean"`
 		ShelfLifeDay     int     `json:"shelf_life_day" validate:"required,number"`
 		StatusIngredient string  `json:"status_ingredient" validate:"required,min=3,max=180"`
 		IsActive         bool    `json:"is_active" validate:"required,boolean"`
@@ -98,7 +98,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		MaxStok          float64 `json:"max_stok" validate:"required,numeric"`
 		CostPrice        float64 `json:"cost_price" validate:"required,numeric"`
 		AverageCost      float64 `json:"average_cost" validate:"required,numeric"`
-		IsPerishable     bool    `json:"is_perishable" validate:"required,boolean"`
+		IsPerishable     bool    `json:"is_perishable" validate:"boolean"`
 		ShelfLifeDay     int     `json:"shelf_life_day" validate:"required,number"`
 		StatusIngredient string  `json:"status_ingredient" validate:"required,min=3,max=180"`
 		IsActive         bool    `json:"is_active" validate:"required,boolean"`

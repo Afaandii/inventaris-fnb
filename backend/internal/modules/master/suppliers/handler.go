@@ -106,11 +106,11 @@ func (h *Handler) Update(ctx *gin.Context) {
 
 	supp, err := h.service.Update(uint(id_supplier), req.Npwp, req.SupplierName, req.Email, req.Address, req.City, req.ContactPerson, req.BankAccount, req.Notes, req.StatusSupplier)
 	if err != nil {
-		response.Error(ctx, http.StatusInternalServerError, "Failed to create supplier", err.Error())
+		response.Error(ctx, http.StatusInternalServerError, "Failed to update supplier", err.Error())
 		return
 	}
 
-	response.Success(ctx, http.StatusCreated, "Supplier created successfully!", supp)
+	response.Success(ctx, http.StatusOK, "Supplier updated successfully!", supp)
 }
 
 func (h *Handler) Delete(ctx *gin.Context) {
