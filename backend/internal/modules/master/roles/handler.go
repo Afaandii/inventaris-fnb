@@ -47,7 +47,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var req struct {
 		RoleName    string `json:"role_name" validate:"required,min=3,max=200"`
 		DisplayName string `json:"display_name" validate:"required,min=3,max=200"`
-		Description string `json:"description" validate:"min:3,max=500"`
+		Description string `json:"description" validate:"min=3,max=500"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -79,7 +79,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 	var req struct {
 		RoleName    string `json:"role_name" validate:"required,min=3,max=200"`
 		DisplayName string `json:"display_name" validate:"required,min=3,max=200"`
-		Description string `json:"description" validate:"min:3,max=500"`
+		Description string `json:"description" validate:"min=3,max=500"`
 	}
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
