@@ -308,9 +308,9 @@ func TestReports_PurchasingProductionReservation(t *testing.T) {
 	mockService := &MockReportService{
 		PurchaseOrdersData: []model.PurchaseOrders{
 			{
-				IDPurchaseOrder: 1,
-				OrderNumber:     "PO-20261030-001",
-				StatusOrder:     "approved",
+				IDPurchase:     1,
+				PONumber:       "PO-20261030-001",
+				StatusPurchase: "approved",
 			},
 		},
 		GoodReceiptsData: []model.GoodReceipts{
