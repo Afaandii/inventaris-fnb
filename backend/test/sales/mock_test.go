@@ -2,7 +2,6 @@ package sales_test
 
 import (
 	payments "backend/internal/modules/sales/payments"
-	salesorderitems "backend/internal/modules/sales/sales_order_items"
 	salesorders "backend/internal/modules/sales/sales_orders"
 	"backend/internal/shared/model"
 	"time"
@@ -60,19 +59,19 @@ func (m *MockSalesOrderService) Create(input salesorders.CreateSalesOrderInput) 
 		custName = "Guest"
 	}
 	order := &model.SalesOrders{
-		IDSalesOrder:   1,
-		OutletRef:      input.OutletID,
-		TableRef:       input.TableID,
-		CashierRef:     input.CashierID,
-		OrderNumber:    "SO-20261028-001",
-		OrderType:      input.OrderType,
-		CustomerName:   custName,
-		QueueNumber:    "A-001",
-		StatusOrders:   "confirmed",
-		PaymentStatus:  "unpaid",
-		TotalAmount:    decimal.NewFromFloat(50000),
-		Notes:          input.Notes,
-		OrderDate:      time.Now(),
+		IDSalesOrder:  1,
+		OutletRef:     input.OutletID,
+		TableRef:      input.TableID,
+		CashierRef:    input.CashierID,
+		OrderNumber:   "SO-20261028-001",
+		OrderType:     input.OrderType,
+		CustomerName:  custName,
+		QueueNumber:   "A-001",
+		StatusOrders:  "confirmed",
+		PaymentStatus: "unpaid",
+		TotalAmount:   decimal.NewFromFloat(50000),
+		Notes:         input.Notes,
+		OrderDate:     time.Now(),
 	}
 	return order, nil
 }
