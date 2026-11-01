@@ -16,7 +16,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden bg-background text-foreground antialiased transition-colors duration-200">
+    <div className="min-h-screen bg-background text-foreground antialiased transition-colors duration-200">
       {/* Sidebar */}
       <Sidebar
         collapsed={collapsed}
@@ -29,7 +29,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <div
-        className={`flex flex-col min-h-screen max-w-full overflow-x-hidden transition-all duration-300 ease-in-out ${
+        className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
           collapsed ? 'lg:pl-16' : 'lg:pl-64'
         }`}
       >
