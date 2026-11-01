@@ -1,38 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   DollarSign,
   AlertTriangle,
   Utensils,
   Truck,
   Calendar,
-  Filter,
   Download,
   CheckCircle2,
   PieChart,
-} from 'lucide-react';
-import { StatCard } from '@/components/dashboard/StatCard';
-import { SalesTrendChart } from '@/components/dashboard/SalesTrendChart';
-import { LowStockWidget } from '@/components/dashboard/LowStockWidget';
-import { RecentActivity } from '@/components/dashboard/RecentActivity';
-import { QuickActions } from '@/components/dashboard/QuickActions';
-import { useTranslation } from '@/hooks/useTranslation';
+} from "lucide-react";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { SalesTrendChart } from "@/components/dashboard/SalesTrendChart";
+import { LowStockWidget } from "@/components/dashboard/LowStockWidget";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DashboardPage: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
-  const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month'>('today');
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    "today" | "week" | "month"
+  >("today");
 
   const formattedDate = new Intl.DateTimeFormat(
-    currentLanguage === 'id' ? 'id-ID' : 'en-US',
+    currentLanguage === "id" ? "id-ID" : "en-US",
     {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    },
   ).format(new Date());
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden">
       {/* Top Banner / Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
@@ -59,33 +60,33 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center p-0.5 rounded-xl bg-muted/50 border border-border/50">
             <button
               type="button"
-              onClick={() => setSelectedPeriod('today')}
+              onClick={() => setSelectedPeriod("today")}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                selectedPeriod === 'today'
-                  ? 'bg-card text-foreground shadow-2xs font-semibold'
-                  : 'text-muted-foreground hover:text-foreground'
+                selectedPeriod === "today"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.common.today}
             </button>
             <button
               type="button"
-              onClick={() => setSelectedPeriod('week')}
+              onClick={() => setSelectedPeriod("week")}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                selectedPeriod === 'week'
-                  ? 'bg-card text-foreground shadow-2xs font-semibold'
-                  : 'text-muted-foreground hover:text-foreground'
+                selectedPeriod === "week"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.common.thisWeek}
             </button>
             <button
               type="button"
-              onClick={() => setSelectedPeriod('month')}
+              onClick={() => setSelectedPeriod("month")}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                selectedPeriod === 'month'
-                  ? 'bg-card text-foreground shadow-2xs font-semibold'
-                  : 'text-muted-foreground hover:text-foreground'
+                selectedPeriod === "month"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.common.thisMonth}
@@ -174,10 +175,14 @@ export const DashboardPage: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold tracking-tight text-foreground">
-                    {currentLanguage === 'id' ? 'Kesehatan Inventaris' : 'Inventory Health'}
+                    {currentLanguage === "id"
+                      ? "Kesehatan Inventaris"
+                      : "Inventory Health"}
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    {currentLanguage === 'id' ? 'Total 124 Bahan Baku Terdaftar' : 'Total 124 Registered Ingredients'}
+                    {currentLanguage === "id"
+                      ? "Total 124 Bahan Baku Terdaftar"
+                      : "Total 124 Registered Ingredients"}
                   </p>
                 </div>
               </div>
@@ -188,42 +193,57 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="text-muted-foreground font-medium">
-                    {currentLanguage === 'id' ? 'Stok Aman (> 50%)' : 'Safe Stock (> 50%)'}
+                    {currentLanguage === "id"
+                      ? "Stok Aman (> 50%)"
+                      : "Safe Stock (> 50%)"}
                   </span>
                   <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                     108 Bahan (87%)
                   </span>
                 </div>
                 <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
-                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: '87%' }} />
+                  <div
+                    className="bg-emerald-500 h-full rounded-full"
+                    style={{ width: "87%" }}
+                  />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="text-muted-foreground font-medium">
-                    {currentLanguage === 'id' ? 'Stok Menipis (20% - 50%)' : 'Low Stock (20% - 50%)'}
+                    {currentLanguage === "id"
+                      ? "Stok Menipis (20% - 50%)"
+                      : "Low Stock (20% - 50%)"}
                   </span>
                   <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
                     12 Bahan (10%)
                   </span>
                 </div>
                 <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
-                  <div className="bg-amber-500 h-full rounded-full" style={{ width: '10%' }} />
+                  <div
+                    className="bg-amber-500 h-full rounded-full"
+                    style={{ width: "10%" }}
+                  />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="text-muted-foreground font-medium">
-                    {currentLanguage === 'id' ? 'Stok Kritis / Habis (< 20%)' : 'Critical / Out (< 20%)'}
+                    {currentLanguage === "id"
+                      ? "Stok Kritis / Habis (< 20%)"
+                      : "Critical / Out (< 20%)"}
                   </span>
                   <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
                     4 Bahan (3%)
                   </span>
                 </div>
                 <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
-                  <div className="bg-rose-500 h-full rounded-full" style={{ width: '3%' }} />
+                  <div
+                    className="bg-rose-500 h-full rounded-full"
+                    style={{ width: "3%" }}
+                  />
                 </div>
               </div>
             </div>
@@ -231,12 +251,15 @@ export const DashboardPage: React.FC = () => {
 
           <div className="p-3.5 rounded-xl bg-muted/40 border border-border/50 mt-6">
             <span className="text-xs font-medium text-foreground block">
-              💡 {currentLanguage === 'id' ? 'Rekomendasi Otomatis' : 'Auto Recommendation'}
+              💡{" "}
+              {currentLanguage === "id"
+                ? "Rekomendasi Otomatis"
+                : "Auto Recommendation"}
             </span>
             <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">
-              {currentLanguage === 'id'
-                ? 'Segera proses PO untuk Daging Sirloin & Fresh Milk sebelum jam operasional malam dimulai.'
-                : 'Process PO immediately for Sirloin & Fresh Milk before dinner operational shift starts.'}
+              {currentLanguage === "id"
+                ? "Segera proses PO untuk Daging Sirloin & Fresh Milk sebelum jam operasional malam dimulai."
+                : "Process PO immediately for Sirloin & Fresh Milk before dinner operational shift starts."}
             </p>
           </div>
         </div>

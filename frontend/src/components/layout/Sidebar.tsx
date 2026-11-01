@@ -1,22 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { ChevronDown, Flame, X } from "lucide-react";
 import {
-  LayoutDashboard,
-  Boxes,
-  Database,
-  UtensilsCrossed,
-  ChefHat,
-  Truck,
-  ReceiptText,
-  CalendarCheck,
-  BarChart3,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Flame,
-  AlertCircle,
-  X,
-} from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
+  navigationData,
+  type MenuItem,
+  type SubMenuItem,
+} from "@/data/navigation";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -24,6 +12,7 @@ interface SidebarProps {
   mobileOpen: boolean;
   setMobileOpen: (value: boolean) => void;
   activePath?: string;
+  onNavigate?: (path: string) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -31,103 +20,83 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCollapsed,
   mobileOpen,
   setMobileOpen,
-  activePath = '/dashboard',
+  activePath = "/dashboard",
+  onNavigate,
 }) => {
-  const { t } = useTranslation();
+  // Prevent background page from scrolling when mobile sidebar is open
+  useEffect(() => {
+    if (mobileOpen) {
+      const originalOverflow = document.body.style.overflow;
+      const originalTouchAction = document.body.style.touchAction;
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
 
-  const menuItems = [
-    {
-      id: 'dashboard',
-      label: t.common.dashboard,
-      icon: LayoutDashboard,
-      path: '/dashboard',
-      badge: null,
-    },
-    {
-      id: 'inventory',
-      label: t.common.inventory,
-      icon: Boxes,
-      path: '/inventory',
-      badge: { text: '3 Kritis', variant: 'destructive' as const },
-    },
-    {
-      id: 'masterData',
-      label: t.common.masterData,
-      icon: Database,
-      path: '/master-data',
-      badge: null,
-    },
-    {
-      id: 'products',
-      label: t.common.products,
-      icon: UtensilsCrossed,
-      path: '/products',
-      badge: null,
-    },
-    {
-      id: 'production',
-      label: t.common.production,
-      icon: ChefHat,
-      path: '/production',
-      badge: null,
-    },
-    {
-      id: 'purchasing',
-      label: t.common.purchasing,
-      icon: Truck,
-      path: '/purchasing',
-      badge: null,
-    },
-    {
-      id: 'sales',
-      label: t.common.sales,
-      icon: ReceiptText,
-      path: '/sales',
-      badge: null,
-    },
-    {
-      id: 'reservations',
-      label: t.common.reservations,
-      icon: CalendarCheck,
-      path: '/reservations',
-      badge: null,
-    },
-    {
-      id: 'reports',
-      label: t.common.reports,
-      icon: BarChart3,
-      path: '/reports',
-      badge: null,
-    },
-    {
-      id: 'settings',
-      label: t.common.settings,
-      icon: Settings,
-      path: '/settings',
-      badge: null,
-    },
-  ];
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.touchAction = originalTouchAction;
+      };
+    }
+  }, [mobileOpen]);
+
+  // Keep track of expanded submenus in expanded mode
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
+    master: false,
+    inventory: false,
+    product: false,
+  });
+
+  const toggleSubmenu = (menuId: string) => {
+    if (collapsed) {
+      // Auto expand sidebar if collapsed when opening a dropdown
+      setCollapsed(false);
+      setExpandedMenus((prev) => ({ ...prev, [menuId]: true }));
+      return;
+    }
+
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [menuId]: !prev[menuId],
+    }));
+  };
+
+  const handleItemClick = (
+    path: string,
+    hasSubItems: boolean,
+    menuId: string,
+  ) => {
+    if (hasSubItems) {
+      toggleSubmenu(menuId);
+    } else {
+      setMobileOpen(false);
+      if (onNavigate) {
+        onNavigate(path);
+      }
+    }
+  };
 
   return (
     <>
       {/* Mobile backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity touch-none"
           onClick={() => setMobileOpen(false)}
+          onTouchMove={(e) => e.preventDefault()}
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col border-r border-border/70 bg-card/95 backdrop-blur-md transition-all duration-300 ease-in-out ${
-          collapsed ? 'w-20' : 'w-64'
-        } ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col border-r border-border/70 bg-card/98 backdrop-blur-md transition-all duration-300 ease-in-out overscroll-contain touch-pan-y ${
+          collapsed ? "w-16" : "w-64"
+        } ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-border/60">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 shadow-md shadow-orange-500/20 text-white shrink-0">
+        <div className="flex items-center justify-between h-16 px-3 border-b border-border/60 shrink-0">
+          <div
+            className={`flex items-center gap-2.5 overflow-hidden ${collapsed ? "mx-auto" : ""}`}
+          >
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 shadow-md shadow-orange-500/20 text-white shrink-0">
               <Flame className="w-5 h-5 fill-white/20" />
             </div>
             {!collapsed && (
@@ -135,22 +104,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-sm font-bold tracking-tight text-foreground truncate">
                   RESTO VIBE
                 </span>
-                <span className="text-[11px] font-medium text-muted-foreground truncate">
+                <span className="text-[10px] font-medium text-muted-foreground truncate">
                   FnB Inventory OS
                 </span>
               </div>
             )}
           </div>
-
-          {/* Desktop collapse toggle */}
-          <button
-            type="button"
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md border border-border/70 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            title={collapsed ? 'Perluas Menu' : 'Perkecil Menu'}
-          >
-            {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
-          </button>
 
           {/* Mobile close toggle */}
           <button
@@ -164,73 +123,142 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Navigation list */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-muted">
-          {!collapsed && (
-            <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Operasional FnB
-            </div>
-          )}
-
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activePath === item.path;
-
+        <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y px-2 py-3 space-y-4 scrollbar-hover">
+          {navigationData.map((group) => {
             return (
-              <a
-                key={item.id}
-                href={item.path}
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Router / state transition placeholder
-                  setMobileOpen(false);
-                }}
-                title={collapsed ? item.label : undefined}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative ${
-                  isActive
-                    ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25 font-semibold'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/80'
-                }`}
-              >
-                <Icon
-                  className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
-                    isActive ? 'text-primary-foreground' : 'text-muted-foreground group-hover:text-foreground'
-                  }`}
-                />
-
+              <div key={group.groupName} className="space-y-1">
                 {!collapsed && (
-                  <span className="truncate flex-1 tracking-tight">{item.label}</span>
+                  <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                    {group.groupName}
+                  </div>
                 )}
 
-                {!collapsed && item.badge && (
-                  <span
-                    className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                      item.badge.variant === 'destructive'
-                        ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20'
-                        : 'bg-muted text-muted-foreground'
-                    }`}
-                  >
-                    {item.badge.text}
-                  </span>
+                {collapsed && (
+                  <div className="my-1.5 border-t border-border/40 w-6 mx-auto" />
                 )}
 
-                {/* Collapsed active dot indicator */}
-                {collapsed && isActive && (
-                  <span className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary-foreground" />
-                )}
-              </a>
+                {group.items.map((item: MenuItem) => {
+                  const Icon = item.icon;
+                  const hasSubItems = Boolean(
+                    item.items && item.items.length > 0,
+                  );
+                  const isExpanded = Boolean(expandedMenus[item.id]);
+
+                  // Check if this item or any of its sub-items is active
+                  const isItemActive =
+                    activePath === item.path ||
+                    (item.items?.some(
+                      (sub: SubMenuItem) => activePath === sub.path,
+                    ) ??
+                      false);
+
+                  // Collapsed mode: Compact square icon button (Shadcn Admin style)
+                  if (collapsed) {
+                    return (
+                      <div key={item.id} className="flex justify-center py-0.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleItemClick(item.path, hasSubItems, item.id)
+                          }
+                          title={item.title}
+                          className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                            isItemActive
+                              ? "bg-accent text-accent-foreground font-semibold shadow-xs"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  // Expanded mode: Standard full-width navigation item
+                  return (
+                    <div key={item.id} className="space-y-1">
+                      {/* Parent Menu Item */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleItemClick(item.path, hasSubItems, item.id)
+                        }
+                        className={`w-full group flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all text-left ${
+                          isItemActive && !hasSubItems
+                            ? "bg-accent text-accent-foreground font-semibold shadow-xs"
+                            : isItemActive && hasSubItems
+                              ? "bg-accent/70 text-foreground font-semibold"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Icon
+                            className={`w-4 h-4 shrink-0 transition-transform ${
+                              isItemActive
+                                ? "text-accent-foreground"
+                                : "text-muted-foreground group-hover:text-foreground"
+                            }`}
+                          />
+                          <span className="truncate tracking-tight">
+                            {item.title}
+                          </span>
+                        </div>
+
+                        {hasSubItems && (
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 shrink-0 ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </button>
+
+                      {/* Dropdown Sub-menu Items (Shadcn Accordion style) */}
+                      {hasSubItems && isExpanded && (
+                        <div className="pl-6 pr-1 py-1 space-y-0.5 relative before:absolute before:left-4 before:top-1 before:bottom-1 before:w-px before:bg-border/70">
+                          {item.items?.map((sub: SubMenuItem) => {
+                            const isSubActive = activePath === sub.path;
+
+                            return (
+                              <a
+                                key={sub.id}
+                                href={sub.path}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setMobileOpen(false);
+                                  if (onNavigate) {
+                                    onNavigate(sub.path);
+                                  }
+                                }}
+                                className={`block px-2.5 py-1.5 rounded-md text-xs transition-colors truncate ${
+                                  isSubActive
+                                    ? "bg-accent text-accent-foreground font-semibold shadow-2xs"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                                }`}
+                              >
+                                {sub.title}
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             );
           })}
         </div>
 
         {/* User / Branch Footer */}
-        <div className="p-3 border-t border-border/60">
+        <div className="p-2 border-t border-border/60 shrink-0">
           <div
-            className={`flex items-center gap-3 p-2 rounded-xl bg-muted/40 border border-border/40 ${
-              collapsed ? 'justify-center' : ''
+            className={`flex items-center gap-2.5 p-1.5 rounded-lg bg-muted/40 border border-border/40 ${
+              collapsed ? "justify-center" : ""
             }`}
           >
-            <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-inner">
+            <div className="relative shrink-0">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-[11px] shadow-inner">
                 AD
               </div>
               <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-card" />
@@ -242,7 +270,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   Admin Kitchen
                 </span>
                 <span className="text-[10px] text-muted-foreground truncate">
-                  {t.common.branch}
+                  Resto Vibe HQ
                 </span>
               </div>
             )}
