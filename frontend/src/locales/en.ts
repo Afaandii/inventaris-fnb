@@ -1,14 +1,12 @@
-import type { TranslationType } from './id';
-
-export const en: TranslationType = {
+export const en = {
   common: {
     dashboard: 'Dashboard',
-    inventory: 'Inventory & Stock',
+    inventory: 'Inventory',
     masterData: 'Master Data',
-    products: 'Products & Menu',
-    production: 'Kitchen Production',
-    purchasing: 'Purchasing (PO)',
-    sales: 'Sales / POS',
+    products: 'Products',
+    production: 'Production',
+    purchasing: 'Purchasing',
+    sales: 'Sales',
     reservations: 'Reservations',
     reports: 'Reports',
     settings: 'Settings',
@@ -42,10 +40,87 @@ export const en: TranslationType = {
     id: 'Bahasa Indonesia',
     en: 'English',
   },
+  navigation: {
+    // Group Names
+    'General': 'General',
+    'Master Data': 'Master Data',
+    'Inventory': 'Inventory',
+    'Product': 'Product',
+    'Production': 'Production',
+    'Purchasing': 'Purchasing',
+    'Sales': 'Sales',
+    'Reservations': 'Reservations',
+    'Reports': 'Reports',
+    'Settings': 'Settings',
+
+    // Parent Menu Items
+    'dashboard': 'Dashboard',
+    'master': 'Master Data',
+    'inventory': 'Inventory',
+    'product': 'Product',
+    'production': 'Production',
+    'purchasing': 'Purchasing',
+    'sales': 'Sales',
+    'reservations': 'Reservations',
+    'reports': 'Reports',
+    'settings': 'Settings',
+
+    // Master Submenu Items
+    'mst-categories': 'Categories',
+    'mst-ingredients': 'Ingredients',
+    'mst-outlets': 'Outlets',
+    'mst-warehouses': 'Warehouses',
+    'mst-suppliers': 'Suppliers',
+    'mst-units': 'Units',
+    'mst-roles': 'Roles',
+    'mst-users': 'Users',
+
+    // Inventory Submenu Items
+    'inv-balances': 'Balances',
+    'inv-movements': 'Movements',
+    'inv-adjustments': 'Adjustments',
+    'inv-transfers': 'Transfers',
+    'inv-opnames': 'Opnames',
+    'inv-wastes': 'Wastes',
+
+    // Product Submenu Items
+    'prod-menu-items': 'Menu Items',
+    'prod-products': 'Products',
+    'prod-variants': 'Product Variants',
+    'prod-recipes': 'Recipes',
+    'prod-recipe-items': 'Recipe Items',
+
+    // Production Submenu Items
+    'prod-productions': 'Productions',
+
+    // Purchasing Submenu Items
+    'pur-orders': 'Purchase Orders',
+    'pur-receipts': 'Good Receipts',
+
+    // Sales Submenu Items
+    'sales-orders': 'Sales Orders',
+    'sales-items': 'Order Items',
+    'sales-payments': 'Payments',
+
+    // Reservations Submenu Items
+    'res-tables': 'Dining Tables',
+    'res-reservation': 'Reservations',
+
+    // Reports Submenu Items
+    'rep-sales': 'Sales',
+    'rep-inventory': 'Inventory',
+    'rep-purchasing': 'Purchasing',
+    'rep-production': 'Production',
+    'rep-reservations': 'Reservations',
+
+    // Settings Submenu Items
+    'set-store': 'Store',
+    'set-security': 'Security',
+  },
   dashboard: {
     welcome: 'Welcome Back',
     subtitle: 'Here is an operational summary and inventory stock health for today.',
-    todaySales: 'Today\'s Sales',
+    todaySales: "Today's Sales",
     todaySalesDesc: '+14.2% compared to yesterday',
     criticalStock: 'Critical Stock',
     criticalStockDesc: 'Requires immediate restock',
@@ -74,5 +149,56 @@ export const en: TranslationType = {
     statusLow: 'Low',
     statusOut: 'Out of Stock',
     daysLeft: 'Est. Depletion',
+  },
+  categories: {
+    title: 'Category Management',
+    subtitle: 'Manage hierarchical structure of raw ingredients, kitchen production, and restaurant menu items.',
+    addCategory: 'Add Category',
+    editCategory: 'Edit Category',
+    detailCategory: 'Category Details',
+    deleteCategory: 'Delete Category',
+    deleteConfirmTitle: 'Delete Category?',
+    deleteConfirmDesc: 'Are you sure you want to delete this category? Ingredients and menu items linked to this category may be affected.',
+    colId: 'ID',
+    colName: 'Category Name',
+    colSlug: 'URL Slug',
+    colParent: 'Parent Category',
+    colType: 'Type',
+    colStatus: 'Status',
+    colDescription: 'Description',
+    colCreatedAt: 'Created At',
+    colUpdatedAt: 'Updated At',
+    colActions: 'Actions',
+    typeIngredient: 'Ingredient',
+    typeProduct: 'Product',
+    typeMenu: 'Menu Item',
+    statusActive: 'Active',
+    statusInactive: 'Inactive',
+    rootCategory: 'Root (Top-level)',
+    noParent: 'No Parent',
+    btnSave: 'Save Category',
+    btnSaving: 'Saving...',
+    btnUpdate: 'Save Changes',
+    btnCancel: 'Cancel',
+    btnDelete: 'Delete Category',
+    btnDeleting: 'Deleting...',
+    btnClose: 'Close',
+    filterAll: 'All Types',
+    filterAllStatus: 'All Statuses',
+    totalCategories: 'Total Categories',
+    activeCategories: 'Active Categories',
+    ingredientCount: 'Ingredients',
+    menuCount: 'Menu Items',
+    productCount: 'Products',
+    searchPlaceholder: 'Search category name, slug, type...',
+    emptyTitle: 'No Categories Found',
+    emptyDesc: 'No category records match your current search criteria.',
+    formNamePlaceholder: 'E.g., Meat & Poultry, Fresh Produce, Coffee...',
+    formDescPlaceholder: 'Enter description of this category usage in kitchen or store...',
+    validationRequired: 'This field is required',
+    validationMinLength: 'Minimum 3 characters',
+    toastCreateSuccess: 'Category added successfully!',
+    toastUpdateSuccess: 'Category updated successfully!',
+    toastDeleteSuccess: 'Category deleted successfully!',
   },
 };

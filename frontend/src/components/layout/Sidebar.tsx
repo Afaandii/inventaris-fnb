@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronDown, Flame, X } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   navigationData,
   type MenuItem,
@@ -23,6 +24,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activePath = "/dashboard",
   onNavigate,
 }) => {
+  const { t } = useTranslation();
+
+  const getNavTitle = (key: string, fallback: string) => {
+    return (t.navigation as Record<string, string>)?.[key] ?? fallback;
+  };
+
   // Prevent background page from scrolling when mobile sidebar is open
   useEffect(() => {
     if (mobileOpen) {
@@ -40,10 +47,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // Keep track of expanded submenus in expanded mode
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
-    master: false,
+    master: true,
     inventory: false,
     product: false,
   });
+
+  // Automatically expand the submenu containing the active path
+  useEffect(() => {
+    navigationData.forEach((group) => {
+      group.items.forEach((item) => {
+        if (item.items && item.items.some((sub) => sub.path === activePath)) {
+          setExpandedMenus((prev) => ({ ...prev, [item.id]: true }));
+        }
+      });
+    });
+  }, [activePath]);
 
   const toggleSubmenu = (menuId: string) => {
     if (collapsed) {
@@ -125,11 +143,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation list */}
         <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y px-2 py-3 space-y-4 scrollbar-hover">
           {navigationData.map((group) => {
+            const groupTitle = getNavTitle(group.groupName, group.groupName);
+
             return (
               <div key={group.groupName} className="space-y-1">
                 {!collapsed && (
                   <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-                    {group.groupName}
+                    {groupTitle}
                   </div>
                 )}
 
@@ -139,6 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {group.items.map((item: MenuItem) => {
                   const Icon = item.icon;
+                  const itemTitle = getNavTitle(item.id, item.title);
                   const hasSubItems = Boolean(
                     item.items && item.items.length > 0,
                   );
@@ -161,7 +182,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           onClick={() =>
                             handleItemClick(item.path, hasSubItems, item.id)
                           }
-                          title={item.title}
+                          title={itemTitle}
                           className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
                             isItemActive
                               ? "bg-accent text-accent-foreground font-semibold shadow-xs"
@@ -200,7 +221,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             }`}
                           />
                           <span className="truncate tracking-tight">
-                            {item.title}
+                            {itemTitle}
                           </span>
                         </div>
 
@@ -217,6 +238,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       {hasSubItems && isExpanded && (
                         <div className="pl-6 pr-1 py-1 space-y-0.5 relative before:absolute before:left-4 before:top-1 before:bottom-1 before:w-px before:bg-border/70">
                           {item.items?.map((sub: SubMenuItem) => {
+                            const subTitle = getNavTitle(sub.id, sub.title);
                             const isSubActive = activePath === sub.path;
 
                             return (
@@ -236,7 +258,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                                 }`}
                               >
-                                {sub.title}
+                                {subTitle}
                               </a>
                             );
                           })}

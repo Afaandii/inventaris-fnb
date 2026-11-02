@@ -22,26 +22,31 @@ export const SearchCommandModal: React.FC<SearchCommandModalProps> = ({
   onClose,
   onNavigate,
 }) => {
-  const { currentLanguage } = useTranslation();
+  const { currentLanguage, t } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const getNavTitle = (key: string, fallback: string) => {
+    return (t.navigation as Record<string, string>)?.[key] ?? fallback;
+  };
 
   // Flatten all navigation items with hierarchy
   const allItems: FlattenedItem[] = React.useMemo(() => {
     const list: FlattenedItem[] = [];
 
     navigationData.forEach((group) => {
-      const groupName = group.groupName;
+      const groupName = getNavTitle(group.groupName, group.groupName);
 
       group.items.forEach((item) => {
-        const itemTitle = item.title;
+        const itemTitle = getNavTitle(item.id, item.title);
 
         if (item.items && item.items.length > 0) {
           item.items.forEach((sub: SubMenuItem) => {
+            const subTitle = getNavTitle(sub.id, sub.title);
             list.push({
               id: sub.id,
-              title: `${itemTitle} › ${sub.title}`,
+              title: `${itemTitle} › ${subTitle}`,
               group: groupName,
               path: sub.path,
               isSubItem: true,
@@ -60,7 +65,7 @@ export const SearchCommandModal: React.FC<SearchCommandModalProps> = ({
     });
 
     return list;
-  }, []);
+  }, [t]);
 
   // Filter items by query
   const filteredItems = React.useMemo(() => {

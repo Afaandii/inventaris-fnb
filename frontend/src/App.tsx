@@ -1,15 +1,21 @@
-import React from 'react';
-import { AdminLayout } from '@/components/layout/AdminLayout';
-import { DashboardPage } from '@/pages/DashboardPage';
-import { useTheme } from '@/hooks/useTheme';
+import { useState } from "react";
+import { AdminLayout } from "@/components/layout/AdminLayout";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { CategoriesPage } from "@/pages/CategoriesPage";
+import { useTheme } from "@/hooks/useTheme";
 
 export function App() {
-  // Initialize theme synchronization (light, dark, system listener)
   useTheme();
 
+  const [currentPath, setCurrentPath] = useState("/master/categories");
+
   return (
-    <AdminLayout>
-      <DashboardPage />
+    <AdminLayout currentPath={currentPath} onNavigate={setCurrentPath}>
+      {currentPath === "/master/categories" ? (
+        <CategoriesPage />
+      ) : (
+        <DashboardPage />
+      )}
     </AdminLayout>
   );
 }
