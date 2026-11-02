@@ -4,15 +4,27 @@ import { Navbar } from './Navbar';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
+  currentPath?: string;
+  onNavigate?: (path: string) => void;
 }
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+export const AdminLayout: React.FC<AdminLayoutProps> = ({
+  children,
+  currentPath: controlledPath,
+  onNavigate: controlledNavigate,
+}) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [currentPath, setCurrentPath] = useState('/dashboard');
+  const [internalPath, setInternalPath] = useState('/dashboard');
+
+  const activePath = controlledPath ?? internalPath;
 
   const handleNavigate = (path: string) => {
-    setCurrentPath(path);
+    if (controlledNavigate) {
+      controlledNavigate(path);
+    } else {
+      setInternalPath(path);
+    }
   };
 
   return (
@@ -23,7 +35,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         setCollapsed={setCollapsed}
         mobileOpen={mobileOpen}
         setMobileOpen={setMobileOpen}
-        activePath={currentPath}
+        activePath={activePath}
         onNavigate={handleNavigate}
       />
 
