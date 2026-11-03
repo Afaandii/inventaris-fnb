@@ -169,7 +169,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   const isItemActive =
                     activePath === item.path ||
                     (item.items?.some(
-                      (sub: SubMenuItem) => activePath === sub.path,
+                      (sub: SubMenuItem) =>
+                        activePath === sub.path ||
+                        (sub.path !== '/dashboard' && activePath.startsWith(sub.path)),
                     ) ??
                       false);
 
@@ -239,7 +241,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className="pl-6 pr-1 py-1 space-y-0.5 relative before:absolute before:left-4 before:top-1 before:bottom-1 before:w-px before:bg-border/70">
                           {item.items?.map((sub: SubMenuItem) => {
                             const subTitle = getNavTitle(sub.id, sub.title);
-                            const isSubActive = activePath === sub.path;
+                            const isSubActive =
+                              activePath === sub.path ||
+                              (sub.path !== '/dashboard' && activePath.startsWith(sub.path));
 
                             return (
                               <a

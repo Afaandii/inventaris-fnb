@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Plus,
   Layers,
@@ -7,62 +7,72 @@ import {
   ChefHat,
   CheckCircle2,
   ChevronRight,
-} from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
-import { initialCategories } from "@/data/mockCategories";
-import { categoryService } from "@/services/categoryService";
-import { CategoryTable } from "@/components/categories/CategoryTable";
-import { CategoryFormModal } from "@/components/categories/CategoryFormModal";
-import { CategoryDetailModal } from "@/components/categories/CategoryDetailModal";
-import { CategoryDeleteDialog } from "@/components/categories/CategoryDeleteDialog";
+  RefreshCw,
+} from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { initialCategories } from '@/data/mockCategories';
+import { categoryService } from '@/services/categoryService';
+import { CategoryTable } from '@/components/categories/CategoryTable';
+import { CategoryDeleteDialog } from '@/components/categories/CategoryDeleteDialog';
 import {
   CategoryFilterModal,
   type CategoryFilterCriteria,
-} from "@/components/categories/CategoryFilterModal";
-import type { Category, CategoryFormData } from "@/types/category";
+} from '@/components/categories/CategoryFilterModal';
+import { CategoryFormPage } from '@/pages/categories/CategoryFormPage';
+import { CategoryDetailPage } from '@/pages/categories/CategoryDetailPage';
+import type { Category } from '@/types/category';
 
-export const CategoriesPage: React.FC = () => {
+interface CategoriesPageProps {
+  currentPath?: string;
+  onNavigate?: (path: string) => void;
+}
+
+export const CategoriesPage: React.FC<CategoriesPageProps> = ({
+  currentPath = '/master/categories',
+  onNavigate,
+}) => {
   const { t } = useTranslation();
+
+  const handleNavigate = useCallback(
+    (path: string) => {
+      if (onNavigate) {
+        onNavigate(path);
+      }
+    },
+    [onNavigate],
+  );
 
   // State categories data from backend
   const [categories, setCategories] = useState<Category[]>(initialCategories);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLiveBackend, setIsLiveBackend] = useState(false);
 
   // Filter criteria state
   const [filterCriteria, setFilterCriteria] = useState<CategoryFilterCriteria>({
-    dateFrom: "",
-    dateTo: "",
-    status: "all",
-    type: "all",
+    dateFrom: '',
+    dateTo: '',
+    status: 'all',
+    type: 'all',
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // Modals state
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [detailCategory, setDetailCategory] = useState<Category | null>(null);
-
+  // Delete dialog state
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletingCategory, setDeletingCategory] = useState<Category | null>(
-    null,
-  );
+  const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
 
   // Toast feedback state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
-  };
+  }, []);
 
   // Fetch categories dynamically from Golang backend
   const loadCategories = useCallback(async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const res = await categoryService.getAll();
       setCategories(res.data);
@@ -70,7 +80,7 @@ export const CategoriesPage: React.FC = () => {
     } catch {
       setIsLiveBackend(false);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   }, []);
 
@@ -78,40 +88,42 @@ export const CategoriesPage: React.FC = () => {
     loadCategories();
   }, [loadCategories]);
 
-  // Count active filters
+  // Route sub-page detection
+  const isCreateRoute = currentPath === '/master/categories/create';
+  const isEditRoute = currentPath.startsWith('/master/categories/edit/');
+  const isDetailRoute = currentPath.startsWith('/master/categories/detail/');
+
+  // Count active filters (ALWAYS CALLED - NEVER SKIPPED)
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filterCriteria.dateFrom) count++;
     if (filterCriteria.dateTo) count++;
-    if (filterCriteria.status !== "all") count++;
-    if (filterCriteria.type !== "all") count++;
+    if (filterCriteria.status !== 'all') count++;
+    if (filterCriteria.type !== 'all') count++;
     return count;
   }, [filterCriteria]);
 
-  // Stat counters (computed from full categories list)
+  // Stat counters (ALWAYS CALLED - NEVER SKIPPED)
   const stats = useMemo(() => {
     const total = categories.length;
-    const ingredient = categories.filter((c) => c.type === "ingredient").length;
-    const menu = categories.filter((c) => c.type === "menu").length;
-    const product = categories.filter((c) => c.type === "product").length;
-    const active = categories.filter((c) => c.status === "active").length;
+    const ingredient = categories.filter((c) => c.type === 'ingredient').length;
+    const menu = categories.filter((c) => c.type === 'menu').length;
+    const product = categories.filter((c) => c.type === 'product').length;
+    const active = categories.filter((c) => c.status === 'active').length;
 
     return { total, ingredient, menu, product, active };
   }, [categories]);
 
-  // Filtered categories according to criteria
+  // Filtered categories according to criteria (ALWAYS CALLED - NEVER SKIPPED)
   const filteredCategories = useMemo(() => {
     return categories.filter((cat) => {
       // Filter by Status
-      if (
-        filterCriteria.status !== "all" &&
-        cat.status !== filterCriteria.status
-      ) {
+      if (filterCriteria.status !== 'all' && cat.status !== filterCriteria.status) {
         return false;
       }
 
       // Filter by Type
-      if (filterCriteria.type !== "all" && cat.type !== filterCriteria.type) {
+      if (filterCriteria.type !== 'all' && cat.type !== filterCriteria.type) {
         return false;
       }
 
@@ -133,106 +145,63 @@ export const CategoriesPage: React.FC = () => {
     });
   }, [categories, filterCriteria]);
 
-  // Modal Handlers
-  const handleOpenCreate = () => {
-    setEditingCategory(null);
-    setIsFormOpen(true);
-  };
-
-  const handleOpenEdit = (category: Category) => {
-    setEditingCategory(category);
-    setIsFormOpen(true);
-  };
-
-  const handleOpenDetail = (category: Category) => {
-    setDetailCategory(category);
-    setIsDetailOpen(true);
-  };
-
-  const handleOpenDelete = (category: Category) => {
-    setDeletingCategory(category);
-    setIsDeleteOpen(true);
-  };
-
-  // Submit create or edit
-  const handleFormSubmit = async (
-    formData: CategoryFormData,
-    id_category?: number,
-  ) => {
-    const now = new Date().toISOString();
-
-    if (id_category) {
-      // Edit existing
+  // Delete category handler
+  const handleDeleteConfirm = useCallback(
+    async (category: Category) => {
       try {
         if (isLiveBackend) {
-          const updated = await categoryService.update(id_category, formData);
-          setCategories((prev) =>
-            prev.map((c) => (c.id_category === id_category ? updated : c)),
-          );
-        } else {
-          setCategories((prev) =>
-            prev.map((c) =>
-              c.id_category === id_category
-                ? {
-                    ...c,
-                    ...formData,
-                    updated_at: now,
-                  }
-                : c,
-            ),
-          );
+          await categoryService.delete(category.id_category);
         }
-        showToast(t.categories.toastUpdateSuccess);
+        setCategories((prev) => prev.filter((c) => c.id_category !== category.id_category));
+        showToast(t.categories.toastDeleteSuccess);
       } catch {
-        showToast("Gagal memperbarui kategori di backend");
+        showToast('Gagal menghapus kategori');
+      } finally {
+        setIsDeleteOpen(false);
+        setDeletingCategory(null);
       }
-    } else {
-      // Create new
-      try {
-        if (isLiveBackend) {
-          const created = await categoryService.create(formData);
-          setCategories((prev) => [created, ...prev]);
-        } else {
-          const nextId =
-            categories.length > 0
-              ? Math.max(...categories.map((c) => c.id_category)) + 1
-              : 1;
+    },
+    [isLiveBackend, showToast, t.categories.toastDeleteSuccess],
+  );
 
-          const newCategory: Category = {
-            id_category: nextId,
-            ...formData,
-            created_at: now,
-            updated_at: now,
-          };
-          setCategories((prev) => [newCategory, ...prev]);
-        }
-        showToast(t.categories.toastCreateSuccess);
-      } catch {
-        showToast("Gagal menambahkan kategori ke backend");
-      }
-    }
+  // CONDITIONAL SUB-PAGE RETURNS (Placed strictly AFTER all hooks)
+  if (isCreateRoute) {
+    return (
+      <CategoryFormPage
+        mode="create"
+        onNavigate={handleNavigate}
+        onSuccess={(msg) => {
+          showToast(msg);
+          loadCategories();
+        }}
+      />
+    );
+  }
 
-    setIsFormOpen(false);
-    setEditingCategory(null);
-  };
+  if (isEditRoute) {
+    const editId = Number(currentPath.split('/edit/')[1]);
+    return (
+      <CategoryFormPage
+        mode="edit"
+        categoryId={editId}
+        onNavigate={handleNavigate}
+        onSuccess={(msg) => {
+          showToast(msg);
+          loadCategories();
+        }}
+      />
+    );
+  }
 
-  // Delete category
-  const handleDeleteConfirm = async (category: Category) => {
-    try {
-      if (isLiveBackend) {
-        await categoryService.delete(category.id_category);
-      }
-      setCategories((prev) =>
-        prev.filter((c) => c.id_category !== category.id_category),
-      );
-      showToast(t.categories.toastDeleteSuccess);
-    } catch {
-      showToast("Gagal menghapus kategori");
-    } finally {
-      setIsDeleteOpen(false);
-      setDeletingCategory(null);
-    }
-  };
+  if (isDetailRoute) {
+    const detailId = Number(currentPath.split('/detail/')[1]);
+    return (
+      <CategoryDetailPage
+        categoryId={detailId}
+        onNavigate={handleNavigate}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
@@ -255,29 +224,34 @@ export const CategoriesPage: React.FC = () => {
         </span>
       </div>
 
-      {/* Page Header */}
+      {/* Page Header (Clean: Folder Icon & Live API Badge Removed) */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                  {t.categories.title}
-                </h1>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t.categories.subtitle}
-              </p>
-            </div>
-          </div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            {t.categories.title}
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {t.categories.subtitle}
+          </p>
         </div>
 
         {/* Primary Action Buttons */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Add Category button */}
+          {/* Refresh Data button */}
           <button
             type="button"
-            onClick={handleOpenCreate}
+            onClick={loadCategories}
+            disabled={isLoading}
+            title="Muat Ulang Data dari Backend"
+            className="flex items-center justify-center w-9 h-9 rounded-xl border border-border/70 bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-all shadow-2xs disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+          </button>
+
+          {/* Add Category button -> navigates directly to /master/categories/create */}
+          <button
+            type="button"
+            onClick={() => handleNavigate('/master/categories/create')}
             className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
@@ -291,9 +265,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Total Categories */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">
-              {t.categories.totalCategories}
-            </span>
+            <span className="text-xs font-medium">{t.categories.totalCategories}</span>
             <Layers className="w-4 h-4 text-primary" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -309,9 +281,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Bahan Baku */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">
-              {t.categories.ingredientCount}
-            </span>
+            <span className="text-xs font-medium">{t.categories.ingredientCount}</span>
             <Boxes className="w-4 h-4 text-indigo-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -327,9 +297,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Menu Sajian */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">
-              {t.categories.menuCount}
-            </span>
+            <span className="text-xs font-medium">{t.categories.menuCount}</span>
             <UtensilsCrossed className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -345,9 +313,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Produk / Packaging */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">
-              {t.categories.productCount}
-            </span>
+            <span className="text-xs font-medium">{t.categories.productCount}</span>
             <ChefHat className="w-4 h-4 text-amber-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -365,9 +331,12 @@ export const CategoriesPage: React.FC = () => {
       <CategoryTable
         categories={filteredCategories}
         allCategories={categories}
-        onDetail={handleOpenDetail}
-        onEdit={handleOpenEdit}
-        onDelete={handleOpenDelete}
+        onDetail={(cat) => handleNavigate(`/master/categories/detail/${cat.id_category}`)}
+        onEdit={(cat) => handleNavigate(`/master/categories/edit/${cat.id_category}`)}
+        onDelete={(cat) => {
+          setDeletingCategory(cat);
+          setIsDeleteOpen(true);
+        }}
         onOpenFilter={() => setIsFilterModalOpen(true)}
         activeFilterCount={activeFilterCount}
       />
@@ -380,44 +349,12 @@ export const CategoriesPage: React.FC = () => {
         onApply={(newCriteria) => setFilterCriteria(newCriteria)}
         onReset={() =>
           setFilterCriteria({
-            dateFrom: "",
-            dateTo: "",
-            status: "all",
-            type: "all",
+            dateFrom: '',
+            dateTo: '',
+            status: 'all',
+            type: 'all',
           })
         }
-      />
-
-      {/* Create / Edit Form Modal */}
-      <CategoryFormModal
-        isOpen={isFormOpen}
-        initialData={editingCategory}
-        categoriesList={categories}
-        onClose={() => {
-          setIsFormOpen(false);
-          setEditingCategory(null);
-        }}
-        onSubmit={handleFormSubmit}
-      />
-
-      {/* Category Detail Modal */}
-      <CategoryDetailModal
-        isOpen={isDetailOpen}
-        category={detailCategory}
-        parentName={
-          detailCategory?.parent_id
-            ? categories.find((c) => c.id_category === detailCategory.parent_id)
-                ?.category_name
-            : undefined
-        }
-        onClose={() => {
-          setIsDetailOpen(false);
-          setDetailCategory(null);
-        }}
-        onEdit={(cat) => {
-          setIsDetailOpen(false);
-          handleOpenEdit(cat);
-        }}
       />
 
       {/* Delete Confirmation Dialog */}
