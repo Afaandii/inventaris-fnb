@@ -11,8 +11,8 @@ export function App() {
 
   return (
     <AdminLayout currentPath={currentPath} onNavigate={setCurrentPath}>
-      {currentPath === "/master/categories" ? (
-        <CategoriesPage />
+      {currentPath.startsWith("/master/categories") ? (
+        <CategoriesPage currentPath={currentPath} onNavigate={setCurrentPath} />
       ) : (
         <DashboardPage />
       )}

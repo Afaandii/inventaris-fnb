@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import DataTable, { type DataTableRef } from 'datatables.net-react';
 import DT from 'datatables.net-dt';
 import 'datatables.net-dt/css/dataTables.dataTables.css';
-import { Eye, Pencil, Trash2, Search, Filter } from 'lucide-react';
+import { Eye, Pencil, Trash2, Search, Filter, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { Category } from '@/types/category';
 
@@ -32,6 +32,22 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageSize, setPageSize] = useState(10);
+  const [mobilePage, setMobilePage] = useState(1);
+
+  // Expanded rows state for mobile device mode
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  const toggleRow = (id: number) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   // Quick lookup for parent category names
   const categoryMap = useMemo(() => {
@@ -46,6 +62,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
+    setMobilePage(1);
     dtRef.current?.dt()?.search(query).draw();
   };
 
@@ -53,6 +70,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const size = Number(e.target.value);
     setPageSize(size);
+    setMobilePage(1);
     dtRef.current?.dt()?.page.len(size).draw();
   };
 
@@ -63,7 +81,27 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
     }
   }, [categories, searchQuery]);
 
-  // DataTables Column Definitions
+  // Mobile filtered & paginated data
+  const mobileFilteredData = useMemo(() => {
+    if (!searchQuery.trim()) return categories;
+    const q = searchQuery.toLowerCase().trim();
+    return categories.filter(
+      (c) =>
+        c.category_name.toLowerCase().includes(q) ||
+        c.slug.toLowerCase().includes(q) ||
+        c.type.toLowerCase().includes(q) ||
+        c.status.toLowerCase().includes(q) ||
+        (categoryMap.get(c.parent_id ?? 0) || '').toLowerCase().includes(q),
+    );
+  }, [categories, searchQuery, categoryMap]);
+
+  const totalMobilePages = Math.max(1, Math.ceil(mobileFilteredData.length / pageSize));
+  const mobilePaginatedList = useMemo(() => {
+    const start = (mobilePage - 1) * pageSize;
+    return mobileFilteredData.slice(start, start + pageSize);
+  }, [mobileFilteredData, mobilePage, pageSize]);
+
+  // DataTables Column Definitions (For Desktop Mode)
   const columns = useMemo(() => {
     return [
       {
@@ -103,7 +141,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
     ];
   }, [t]);
 
-  // Custom Rendering Slots for React components
+  // Custom Rendering Slots for React components (Desktop)
   const slots = useMemo(() => {
     return {
       // Column 0: No (clean number without #, without badge)
@@ -215,13 +253,12 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
     };
   }, [categoryMap, t, onDetail, onEdit, onDelete]);
 
-  // DataTables Options Configuration
+  // DataTables Options Configuration (Desktop)
   const options = useMemo(() => {
     return {
       responsive: true,
       pageLength: pageSize,
       order: [[0, 'asc']],
-      // Hide default top search & length controls to use our custom paired controls
       layout: {
         topStart: null,
         topEnd: null,
@@ -251,6 +288,19 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
       },
     };
   }, [pageSize, currentLanguage, t]);
+
+  const getTypeText = (type: Category['type']) => {
+    switch (type) {
+      case 'ingredient':
+        return t.categories.typeIngredient;
+      case 'menu':
+        return t.categories.typeMenu;
+      case 'product':
+        return t.categories.typeProduct;
+      default:
+        return '—';
+    }
+  };
 
   return (
     <div className="w-full rounded-2xl border border-border/70 bg-card/60 backdrop-blur-md shadow-xs p-4 sm:p-5 space-y-4">
@@ -309,8 +359,8 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
         </div>
       </div>
 
-      {/* DataTable Container */}
-      <div className="w-full overflow-x-auto fnb-datatable-wrapper">
+      {/* 1. Desktop Mode (Multi-column DataTable for md screens and above) */}
+      <div className="hidden md:block w-full overflow-x-auto fnb-datatable-wrapper">
         <DataTable
           ref={dtRef}
           data={categories}
@@ -319,6 +369,165 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
           slots={slots}
           className="display w-full border-collapse"
         />
+      </div>
+
+      {/* 2. Device / Mobile Mode (Expand Row System - Zero Horizontal Scroll!) */}
+      <div className="block md:hidden space-y-2">
+        {mobilePaginatedList.length === 0 ? (
+          <div className="py-8 text-center text-xs text-muted-foreground">
+            {t.categories.emptyTitle}
+          </div>
+        ) : (
+          mobilePaginatedList.map((cat, idx) => {
+            const isExpanded = expandedRows.has(cat.id_category);
+            const rowNumber = (mobilePage - 1) * pageSize + idx + 1;
+            const parentName = cat.parent_id
+              ? categoryMap.get(cat.parent_id) || `Induk #${cat.parent_id}`
+              : '—';
+
+            return (
+              <div
+                key={cat.id_category}
+                className="rounded-xl border border-border/70 bg-card/80 overflow-hidden transition-all shadow-2xs"
+              >
+                {/* Main Row Header (Always Visible - Tap to Expand) */}
+                <div
+                  onClick={() => toggleRow(cat.id_category)}
+                  className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/30 transition-colors select-none"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                    {/* Expand Toggle Chevron */}
+                    <button
+                      type="button"
+                      aria-label="Toggle Expand Row"
+                      className="w-6 h-6 rounded-md flex items-center justify-center bg-muted/60 text-muted-foreground hover:text-foreground shrink-0 transition-transform duration-200"
+                    >
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isExpanded ? 'rotate-180 text-foreground' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <span className="font-mono text-xs text-muted-foreground shrink-0">
+                      {rowNumber}
+                    </span>
+
+                    <span className="font-semibold text-xs text-foreground truncate">
+                      {cat.category_name}
+                    </span>
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div className="shrink-0">
+                    {cat.status === 'active' ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>{t.categories.statusActive}</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-normal text-muted-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                        <span>{t.categories.statusInactive}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Expanded Row Content (Smooth Accordion Dropdown) */}
+                {isExpanded && (
+                  <div className="px-3 pb-3 pt-2 border-t border-border/50 bg-muted/20 space-y-3 animate-in fade-in duration-150">
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-[10px] text-muted-foreground block">
+                          {t.categories.colParent}
+                        </span>
+                        <span className="font-medium text-foreground truncate block">
+                          {parentName}
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="text-[10px] text-muted-foreground block">
+                          {t.categories.colType}
+                        </span>
+                        <span className="font-medium text-foreground block">
+                          {getTypeText(cat.type)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Actions Row */}
+                    <div className="flex items-center justify-between pt-2 border-t border-border/40">
+                      <span className="text-[10px] text-muted-foreground">
+                        {t.categories.colActions}:
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onDetail(cat)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border/70 bg-card hover:bg-muted text-xs text-foreground font-medium shadow-2xs"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Detail</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onEdit(cat)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border/70 bg-card hover:bg-indigo-500/10 text-xs text-indigo-600 dark:text-indigo-400 font-medium shadow-2xs"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onDelete(cat)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-border/70 bg-card hover:bg-destructive/10 text-xs text-destructive font-medium shadow-2xs"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Hapus</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+
+        {/* Mobile Pagination Controls */}
+        <div className="flex items-center justify-between pt-3 text-xs text-muted-foreground">
+          <span>
+            {currentLanguage === 'id'
+              ? `Halaman ${mobilePage} dari ${totalMobilePages}`
+              : `Page ${mobilePage} of ${totalMobilePages}`}
+          </span>
+
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              disabled={mobilePage <= 1}
+              onClick={() => setMobilePage((p) => Math.max(1, p - 1))}
+              className="h-8 px-2.5 rounded-lg border border-border/70 bg-card text-foreground disabled:opacity-40 transition-colors"
+            >
+              ‹
+            </button>
+            <span className="h-8 px-3 rounded-lg bg-foreground text-background font-bold flex items-center justify-center">
+              {mobilePage}
+            </span>
+            <button
+              type="button"
+              disabled={mobilePage >= totalMobilePages}
+              onClick={() => setMobilePage((p) => Math.min(totalMobilePages, p + 1))}
+              className="h-8 px-2.5 rounded-lg border border-border/70 bg-card text-foreground disabled:opacity-40 transition-colors"
+            >
+              ›
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
