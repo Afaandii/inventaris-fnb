@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Search, PanelLeft } from 'lucide-react';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
-import { LanguageToggle } from '@/components/common/LanguageToggle';
-import { ProfileDropdown } from '@/components/common/ProfileDropdown';
-import { SearchCommandModal } from '@/components/common/SearchCommandModal';
-import { useTranslation } from '@/hooks/useTranslation';
+import React, { useState, useEffect } from "react";
+import { Search, PanelLeft } from "lucide-react";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { LanguageToggle } from "@/components/common/LanguageToggle";
+import { ProfileDropdown } from "@/components/common/ProfileDropdown";
+import { SearchCommandModal } from "@/components/common/SearchCommandModal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface NavbarProps {
   collapsed: boolean;
@@ -25,14 +25,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Global keyboard shortcut for Command Palette (⌘K or Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setIsSearchOpen((prev) => !prev);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => setCollapsed(!collapsed)}
             className="hidden lg:flex items-center justify-center w-9 h-9 rounded-lg border border-border/70 bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            title={collapsed ? 'Buka Sidebar' : 'Tutup Sidebar'}
+            title={collapsed ? "Buka Sidebar" : "Tutup Sidebar"}
             aria-label="Toggle Sidebar"
           >
             <PanelLeft className="w-4 h-4" />
@@ -65,11 +65,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 h-9 px-2.5 sm:px-3 rounded-lg border border-border/70 bg-card/60 hover:bg-card text-xs text-muted-foreground transition-all text-left flex-1 min-w-0 max-w-sm"
+            className="flex items-center gap-2 h-9 px-2.5 sm:px-3 rounded-lg border border-border/70 bg-card/60 hover:bg-card text-xs text-muted-foreground transition-all text-left flex-1 min-w-0 max-w-sm cursor-pointer"
           >
             <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-muted-foreground" />
             <span className="truncate sm:hidden">
-              {currentLanguage === 'id' ? 'Cari...' : 'Search...'}
+              {currentLanguage === "id" ? "Cari..." : "Search..."}
             </span>
             <span className="hidden sm:inline truncate">
               {t.common.searchPlaceholder}
