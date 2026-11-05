@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { categoryService } from "@/services/categoryService";
 import type {
@@ -13,7 +14,7 @@ import $ from "jquery";
 interface CategoryFormPageProps {
   mode: "create" | "edit";
   categoryId?: number;
-  onNavigate: (path: string) => void;
+  onNavigate?: (path: string) => void;
   onSuccess?: (message: string) => void;
 }
 
@@ -23,8 +24,19 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
   onNavigate,
   onSuccess,
 }) => {
-  const { t } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const effectiveCategoryId = categoryId ?? (id ? Number(id) : undefined);
   const isEdit = mode === "edit";
+
+  const handleNavigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+    } else {
+      navigate(path);
+    }
+  };
 
   const [categoryName, setCategoryName] = useState("");
   const [slug, setSlug] = useState("");
@@ -81,7 +93,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         }
         $parent.select2({
           width: "100%",
-          placeholder: "Pilih Kategori Induk",
+          placeholder: t.categories.parentPlaceholder,
           allowClear: true,
           minimumResultsForSearch: 0, // Always show the search input inside dropdown
         });
@@ -104,7 +116,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         }
         $type.select2({
           width: "100%",
-          placeholder: "Pilih Tipe Kategori",
+          placeholder: t.categories.typePlaceholder,
           minimumResultsForSearch: 0, // Always show the search input inside dropdown
         });
 
@@ -149,7 +161,13 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         }
       }
     };
-  }, [isLoading, categoriesList]);
+  }, [
+    isLoading,
+    categoriesList,
+    currentLanguage,
+    t.categories.parentPlaceholder,
+    t.categories.typePlaceholder,
+  ]);
 
   // Synchronize parentId state to Select2
   useEffect(() => {
@@ -190,8 +208,8 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         if (!isMounted) return;
         setCategoriesList(data);
 
-        if (isEdit && categoryId) {
-          const cat = data.find((c) => c.id_category === categoryId);
+        if (isEdit && effectiveCategoryId) {
+          const cat = data.find((c) => c.id_category === effectiveCategoryId);
           if (cat) {
             setCategoryName(cat.category_name);
             setSlug(cat.slug);
@@ -201,7 +219,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
             setDescription(cat.description || "");
           } else {
             // Try fetching single category from backend
-            const single = await categoryService.getById(categoryId);
+            const single = await categoryService.getById(effectiveCategoryId);
             if (single && isMounted) {
               setCategoryName(single.category_name);
               setSlug(single.slug);
@@ -214,7 +232,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         }
       } catch {
         if (isMounted) {
-          setServerError("Gagal memuat data dari server.");
+          setServerError(t.categories.errorServerGeneric);
         }
       } finally {
         if (isMounted) {
@@ -228,7 +246,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [isEdit, categoryId]);
+  }, [isEdit, effectiveCategoryId, t.categories.errorServerGeneric]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -242,13 +260,13 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!categoryName.trim()) {
-      newErrors.categoryName = "Nama kategori wajib diisi";
+      newErrors.categoryName = t.categories.validationNameRequired;
     } else if (categoryName.trim().length < 3) {
-      newErrors.categoryName = "Nama kategori minimal 3 karakter";
+      newErrors.categoryName = t.categories.validationNameMin;
     }
 
     if (description.length > 500) {
-      newErrors.description = "Deskripsi maksimal 500 karakter";
+      newErrors.description = t.categories.validationDescMax;
     }
 
     setErrors(newErrors);
@@ -272,8 +290,8 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
     };
 
     try {
-      if (isEdit && categoryId) {
-        await categoryService.update(categoryId, formData);
+      if (isEdit && effectiveCategoryId) {
+        await categoryService.update(effectiveCategoryId, formData);
         if (onSuccess) {
           onSuccess(t.categories.toastUpdateSuccess);
         }
@@ -283,12 +301,10 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
           onSuccess(t.categories.toastCreateSuccess);
         }
       }
-      onNavigate("/master/categories");
+      handleNavigate("/master/categories");
     } catch (err: unknown) {
       const msg =
-        err instanceof Error
-          ? err.message
-          : "Terjadi kesalahan saat menyimpan data";
+        err instanceof Error ? err.message : t.categories.errorSaveGeneric;
       setServerError(msg);
     } finally {
       setIsSubmitting(false);
@@ -298,17 +314,17 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
   // Available parent options: root categories and not self in edit mode
   const parentOptions = useMemo(() => {
     return categoriesList.filter((cat) => {
-      if (isEdit && cat.id_category === categoryId) {
+      if (isEdit && cat.id_category === effectiveCategoryId) {
         return false;
       }
       return cat.parent_id === null;
     });
-  }, [categoriesList, isEdit, categoryId]);
+  }, [categoriesList, isEdit, effectiveCategoryId]);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-xs text-muted-foreground">
-        <p>Memuat data formulir...</p>
+        <p>{t.categories.loadingForm}</p>
       </div>
     );
   }
@@ -319,16 +335,16 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <button
           type="button"
-          onClick={() => onNavigate("/master/categories")}
-          className="hover:text-foreground transition-colors"
+          onClick={() => handleNavigate("/master/categories")}
+          className="hover:text-foreground transition-colors cursor-pointer"
         >
           {t.common.masterData}
         </button>
         <span>/</span>
         <button
           type="button"
-          onClick={() => onNavigate("/master/categories")}
-          className="hover:text-foreground transition-colors"
+          onClick={() => handleNavigate("/master/categories")}
+          className="hover:text-foreground transition-colors cursor-pointer"
         >
           {t.categories.title}
         </button>
@@ -339,26 +355,29 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
       </div>
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-border/60 pb-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             {isEdit ? t.categories.editCategory : t.categories.addCategory}
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
             {isEdit
-              ? `Perbarui rincian kategori #${categoryId} di bawah ini.`
-              : "Isi formulir di bawah ini untuk menambahkan kategori baru ke sistem inventaris."}
+              ? t.categories.editSubtitle.replace(
+                  "{id}",
+                  String(effectiveCategoryId ?? ""),
+                )
+              : t.categories.createSubtitle}
           </p>
         </div>
 
         {/* Back Button with Arrow Left */}
         <button
           type="button"
-          onClick={() => onNavigate("/master/categories")}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all group"
+          onClick={() => handleNavigate("/master/categories")}
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-6 py-3 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all group cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-          <span>Kembali</span>
+          <span>{t.categories.btnBack}</span>
         </button>
       </div>
 
@@ -378,7 +397,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         <div className="space-y-1.5 w-full">
           <div className="flex items-center justify-between">
             <label className="text-xs font-semibold text-foreground">
-              Nama Kategori *
+              {t.categories.labelCategoryName} *
             </label>
             <span className="text-[10px] text-muted-foreground">
               {categoryName.length}/180
@@ -404,12 +423,13 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
 
         {/* Field 2: Slug (12 Columns / Full Width Readonly Input) */}
         <div className="space-y-1.5 w-full">
-          <label className="text-xs font-semibold text-foreground">Slug</label>
+          <label className="text-xs font-semibold text-foreground">
+            {t.categories.labelSlug}
+          </label>
           <input
             type="text"
             readOnly
             value={slug}
-            placeholder="slug-kategori"
             className="w-full h-10 px-3.5 rounded-xl border border-border/70 bg-muted/40 text-muted-foreground text-xs font-mono cursor-not-allowed outline-none select-none"
           />
         </div>
@@ -417,7 +437,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         {/* Field 3: Kategori Induk (12 Columns / Full Width with Select2) */}
         <div className="space-y-1.5 w-full">
           <label className="text-xs font-semibold text-foreground">
-            Kategori Induk
+            {t.categories.labelParent}
           </label>
           <select
             ref={parentSelectRef}
@@ -428,10 +448,16 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
             }}
             className="w-full"
           >
-            <option value="">Root (Kategori Utama / Tanpa Induk)</option>
+            <option value="">{t.categories.parentRootOption}</option>
             {parentOptions.map((parent) => (
               <option key={parent.id_category} value={parent.id_category}>
-                {parent.category_name} ({parent.type})
+                {parent.category_name} (
+                {parent.type === "ingredient"
+                  ? t.categories.typeIngredient
+                  : parent.type === "menu"
+                    ? t.categories.typeMenu
+                    : t.categories.typeProduct}
+                )
               </option>
             ))}
           </select>
@@ -440,7 +466,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         {/* Field 4: Tipe Kategori (12 Columns / Full Width with Select2) */}
         <div className="space-y-1.5 w-full">
           <label className="text-xs font-semibold text-foreground">
-            Tipe Kategori *
+            {t.categories.labelType} *
           </label>
           <select
             ref={typeSelectRef}
@@ -451,14 +477,10 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
             className="w-full"
           >
             <option value="ingredient">
-              {t.categories.typeIngredient} — Bahan Baku / Mentah
+              {t.categories.typeIngredientOption}
             </option>
-            <option value="menu">
-              {t.categories.typeMenu} — Hidangan Menu Makanan / Minuman
-            </option>
-            <option value="product">
-              {t.categories.typeProduct} — Kemasan, Barang Jadi & Merchandise
-            </option>
+            <option value="menu">{t.categories.typeMenuOption}</option>
+            <option value="product">{t.categories.typeProductOption}</option>
           </select>
         </div>
 
@@ -466,7 +488,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         <div className="space-y-1.5 w-full">
           <div className="flex items-center justify-between">
             <label className="text-xs font-semibold text-foreground">
-              Deskripsi Kategori
+              {t.categories.labelDescription}
             </label>
             <span className="text-[10px] text-muted-foreground">
               {description.length}/500
@@ -477,6 +499,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
             onChange={(e) => setDescription(e.target.value)}
             maxLength={500}
             rows={5}
+            placeholder={t.categories.formDescPlaceholder}
             className="w-full p-3 rounded-xl border border-border/70 bg-background text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none transition-all"
           />
         </div>
@@ -484,7 +507,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
         {/* Field 6: Status Kategori (12 Columns / Full Width, below Deskripsi) */}
         <div className="space-y-1.5 w-full">
           <label className="text-xs font-semibold text-foreground">
-            Status Kategori *
+            {t.categories.labelStatus} *
           </label>
           <div className="grid grid-cols-2 gap-2 h-10 p-1 rounded-xl border border-border/70 bg-muted/30 w-full">
             <button
@@ -496,7 +519,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
                   : "text-muted-foreground hover:text-foreground font-medium"
               }`}
             >
-              Aktif
+              {t.categories.statusActive}
             </button>
             <button
               type="button"
@@ -507,31 +530,31 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
                   : "text-muted-foreground hover:text-foreground font-medium"
               }`}
             >
-              Nonaktif
+              {t.categories.statusInactive}
             </button>
           </div>
         </div>
 
-        {/* Action Buttons (Left unchanged as requested) */}
+        {/* Action Buttons (Keeping user's exact styling: justify-between, cursor-pointer, border-border/60) */}
         <div className="flex items-center justify-between gap-3 pt-4 border-border/60">
           <button
             type="button"
-            onClick={() => onNavigate("/master/categories")}
+            onClick={() => handleNavigate("/master/categories")}
             disabled={isSubmitting}
-            className="px-5 py-2.5 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all disabled:opacity-50 cursor-pointer"
+            className="px-10 py-3 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all disabled:opacity-50 cursor-pointer"
           >
-            Batal
+            {t.categories.btnCancel}
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+            className="px-10 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? t.categories.btnSaving
               : isEdit
-                ? "Simpan Perubahan"
-                : "Simpan Kategori"}
+                ? t.categories.btnUpdate
+                : t.categories.btnSave}
           </button>
         </div>
       </form>

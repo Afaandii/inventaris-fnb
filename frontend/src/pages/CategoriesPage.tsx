@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Plus,
   Layers,
@@ -8,19 +9,19 @@ import {
   CheckCircle2,
   ChevronRight,
   RefreshCw,
-} from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
-import { initialCategories } from '@/data/mockCategories';
-import { categoryService } from '@/services/categoryService';
-import { CategoryTable } from '@/components/categories/CategoryTable';
-import { CategoryDeleteDialog } from '@/components/categories/CategoryDeleteDialog';
+} from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { initialCategories } from "@/data/mockCategories";
+import { categoryService } from "@/services/categoryService";
+import { CategoryTable } from "@/components/categories/CategoryTable";
+import { CategoryDeleteDialog } from "@/components/categories/CategoryDeleteDialog";
 import {
   CategoryFilterModal,
   type CategoryFilterCriteria,
-} from '@/components/categories/CategoryFilterModal';
-import { CategoryFormPage } from '@/pages/categories/CategoryFormPage';
-import { CategoryDetailPage } from '@/pages/categories/CategoryDetailPage';
-import type { Category } from '@/types/category';
+} from "@/components/categories/CategoryFilterModal";
+import { CategoryFormPage } from "@/pages/categories/CategoryFormPage";
+import { CategoryDetailPage } from "@/pages/categories/CategoryDetailPage";
+import type { Category } from "@/types/category";
 
 interface CategoriesPageProps {
   currentPath?: string;
@@ -28,18 +29,21 @@ interface CategoriesPageProps {
 }
 
 export const CategoriesPage: React.FC<CategoriesPageProps> = ({
-  currentPath = '/master/categories',
+  currentPath = "/master/categories",
   onNavigate,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleNavigate = useCallback(
     (path: string) => {
       if (onNavigate) {
         onNavigate(path);
+      } else {
+        navigate(path);
       }
     },
-    [onNavigate],
+    [onNavigate, navigate],
   );
 
   // State categories data from backend
@@ -49,16 +53,18 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
 
   // Filter criteria state
   const [filterCriteria, setFilterCriteria] = useState<CategoryFilterCriteria>({
-    dateFrom: '',
-    dateTo: '',
-    status: 'all',
-    type: 'all',
+    dateFrom: "",
+    dateTo: "",
+    status: "all",
+    type: "all",
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Delete dialog state
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
+  const [deletingCategory, setDeletingCategory] = useState<Category | null>(
+    null,
+  );
 
   // Toast feedback state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -85,31 +91,48 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
   }, []);
 
   useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
+    let isMounted = true;
+    const fetchInitialCategories = async () => {
+      try {
+        const res = await categoryService.getAll();
+        if (isMounted) {
+          setCategories(res.data);
+          setIsLiveBackend(res.isLive);
+        }
+      } catch {
+        if (isMounted) {
+          setIsLiveBackend(false);
+        }
+      }
+    };
+    fetchInitialCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Route sub-page detection
-  const isCreateRoute = currentPath === '/master/categories/create';
-  const isEditRoute = currentPath.startsWith('/master/categories/edit/');
-  const isDetailRoute = currentPath.startsWith('/master/categories/detail/');
+  const isCreateRoute = currentPath === "/master/categories/create";
+  const isEditRoute = currentPath.startsWith("/master/categories/edit/");
+  const isDetailRoute = currentPath.startsWith("/master/categories/detail/");
 
   // Count active filters (ALWAYS CALLED - NEVER SKIPPED)
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filterCriteria.dateFrom) count++;
     if (filterCriteria.dateTo) count++;
-    if (filterCriteria.status !== 'all') count++;
-    if (filterCriteria.type !== 'all') count++;
+    if (filterCriteria.status !== "all") count++;
+    if (filterCriteria.type !== "all") count++;
     return count;
   }, [filterCriteria]);
 
   // Stat counters (ALWAYS CALLED - NEVER SKIPPED)
   const stats = useMemo(() => {
     const total = categories.length;
-    const ingredient = categories.filter((c) => c.type === 'ingredient').length;
-    const menu = categories.filter((c) => c.type === 'menu').length;
-    const product = categories.filter((c) => c.type === 'product').length;
-    const active = categories.filter((c) => c.status === 'active').length;
+    const ingredient = categories.filter((c) => c.type === "ingredient").length;
+    const menu = categories.filter((c) => c.type === "menu").length;
+    const product = categories.filter((c) => c.type === "product").length;
+    const active = categories.filter((c) => c.status === "active").length;
 
     return { total, ingredient, menu, product, active };
   }, [categories]);
@@ -118,12 +141,15 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
   const filteredCategories = useMemo(() => {
     return categories.filter((cat) => {
       // Filter by Status
-      if (filterCriteria.status !== 'all' && cat.status !== filterCriteria.status) {
+      if (
+        filterCriteria.status !== "all" &&
+        cat.status !== filterCriteria.status
+      ) {
         return false;
       }
 
       // Filter by Type
-      if (filterCriteria.type !== 'all' && cat.type !== filterCriteria.type) {
+      if (filterCriteria.type !== "all" && cat.type !== filterCriteria.type) {
         return false;
       }
 
@@ -152,10 +178,12 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         if (isLiveBackend) {
           await categoryService.delete(category.id_category);
         }
-        setCategories((prev) => prev.filter((c) => c.id_category !== category.id_category));
+        setCategories((prev) =>
+          prev.filter((c) => c.id_category !== category.id_category),
+        );
         showToast(t.categories.toastDeleteSuccess);
       } catch {
-        showToast('Gagal menghapus kategori');
+        showToast("Gagal menghapus kategori");
       } finally {
         setIsDeleteOpen(false);
         setDeletingCategory(null);
@@ -179,7 +207,7 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
   }
 
   if (isEditRoute) {
-    const editId = Number(currentPath.split('/edit/')[1]);
+    const editId = Number(currentPath.split("/edit/")[1]);
     return (
       <CategoryFormPage
         mode="edit"
@@ -194,12 +222,9 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
   }
 
   if (isDetailRoute) {
-    const detailId = Number(currentPath.split('/detail/')[1]);
+    const detailId = Number(currentPath.split("/detail/")[1]);
     return (
-      <CategoryDetailPage
-        categoryId={detailId}
-        onNavigate={handleNavigate}
-      />
+      <CategoryDetailPage categoryId={detailId} onNavigate={handleNavigate} />
     );
   }
 
@@ -245,14 +270,16 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
             title="Muat Ulang Data dari Backend"
             className="flex items-center justify-center w-9 h-9 rounded-xl border border-border/70 bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-all shadow-2xs disabled:opacity-50"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`}
+            />
           </button>
 
           {/* Add Category button -> navigates directly to /master/categories/create */}
           <button
             type="button"
-            onClick={() => handleNavigate('/master/categories/create')}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            onClick={() => handleNavigate("/master/categories/create")}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
             <span>{t.categories.addCategory}</span>
@@ -265,7 +292,9 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         {/* Total Categories */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">{t.categories.totalCategories}</span>
+            <span className="text-xs font-medium">
+              {t.categories.totalCategories}
+            </span>
             <Layers className="w-4 h-4 text-primary" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -281,7 +310,9 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         {/* Bahan Baku */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">{t.categories.ingredientCount}</span>
+            <span className="text-xs font-medium">
+              {t.categories.ingredientCount}
+            </span>
             <Boxes className="w-4 h-4 text-indigo-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -297,7 +328,9 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         {/* Menu Sajian */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">{t.categories.menuCount}</span>
+            <span className="text-xs font-medium">
+              {t.categories.menuCount}
+            </span>
             <UtensilsCrossed className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -313,7 +346,9 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         {/* Produk / Packaging */}
         <div className="p-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xs shadow-xs space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">{t.categories.productCount}</span>
+            <span className="text-xs font-medium">
+              {t.categories.productCount}
+            </span>
             <ChefHat className="w-4 h-4 text-amber-500" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -331,8 +366,12 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
       <CategoryTable
         categories={filteredCategories}
         allCategories={categories}
-        onDetail={(cat) => handleNavigate(`/master/categories/detail/${cat.id_category}`)}
-        onEdit={(cat) => handleNavigate(`/master/categories/edit/${cat.id_category}`)}
+        onDetail={(cat) =>
+          handleNavigate(`/master/categories/detail/${cat.id_category}`)
+        }
+        onEdit={(cat) =>
+          handleNavigate(`/master/categories/edit/${cat.id_category}`)
+        }
         onDelete={(cat) => {
           setDeletingCategory(cat);
           setIsDeleteOpen(true);
@@ -349,10 +388,10 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
         onApply={(newCriteria) => setFilterCriteria(newCriteria)}
         onReset={() =>
           setFilterCriteria({
-            dateFrom: '',
-            dateTo: '',
-            status: 'all',
-            type: 'all',
+            dateFrom: "",
+            dateTo: "",
+            status: "all",
+            type: "all",
           })
         }
       />
