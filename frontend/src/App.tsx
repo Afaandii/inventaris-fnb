@@ -11,10 +11,14 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { CategoriesPage } from "@/pages/CategoriesPage";
 import { CategoryFormPage } from "@/pages/categories/CategoryFormPage";
 import { CategoryDetailPage } from "@/pages/categories/CategoryDetailPage";
+import { IngredientsPage } from "@/pages/IngredientsPage";
+import { IngredientFormPage } from "@/pages/ingredients/IngredientFormPage";
+import { IngredientDetailPage } from "@/pages/ingredients/IngredientDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
 const MASTER_ROUTES = [
+  // Categories Management Routes
   {
     path: "/master/categories",
     element: (navigate: (path: string) => void) => (
@@ -37,6 +41,31 @@ const MASTER_ROUTES = [
     path: "/master/categories/detail/:id",
     element: (navigate: (path: string) => void) => (
       <CategoryDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Ingredients Management Routes
+  {
+    path: "/master/ingredients",
+    element: (navigate: (path: string) => void) => (
+      <IngredientsPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/ingredients/create",
+    element: (navigate: (path: string) => void) => (
+      <IngredientFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/ingredients/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <IngredientFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/ingredients/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <IngredientDetailPage onNavigate={navigate} />
     ),
   },
 ];
