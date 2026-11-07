@@ -223,7 +223,7 @@ export const en = {
     noParent: "No Parent",
     btnSave: "Save",
     btnSaving: "Saving...",
-    btnUpdate: "Save Changes",
+    btnUpdate: "Save",
     btnCancel: "Cancel",
     btnDelete: "Delete Category",
     btnDeleting: "Deleting...",
@@ -249,14 +249,17 @@ export const en = {
   },
   ingredients: {
     title: "Ingredient Management",
-    subtitle: "Manage raw kitchen ingredients, stock limits, costs, suppliers, and shelf life.",
+    subtitle:
+      "Manage raw kitchen ingredients, stock limits, costs, suppliers, and shelf life.",
     addIngredient: "Add Ingredient",
     editIngredient: "Edit Ingredient",
     detailIngredient: "Ingredient Details",
     deleteIngredient: "Delete Ingredient",
     deleteConfirmTitle: "Delete Ingredient?",
-    deleteConfirmDesc: "Are you sure you want to delete this ingredient? Recipes and stock balances linked to this ingredient may be affected.",
-    createSubtitle: "Fill in the form below to add a new raw ingredient to the inventory system.",
+    deleteConfirmDesc:
+      "Are you sure you want to delete this ingredient? Recipes and stock balances linked to this ingredient may be affected.",
+    createSubtitle:
+      "Fill in the form below to add a new raw ingredient to the inventory system.",
     editSubtitle: "Update ingredient #{id} details below.",
     btnBack: "Back",
     btnEditData: "Edit Ingredient Data",
@@ -322,7 +325,8 @@ export const en = {
     labelCostPrice: "Cost Price (IDR)",
     labelAverageCost: "Average Cost (IDR)",
     labelIsPerishable: "Perishable Item?",
-    perishableHelp: "Check whether this ingredient easily spoils or expires quickly.",
+    perishableHelp:
+      "Check whether this ingredient easily spoils or expires quickly.",
     labelShelfLife: "Shelf Life (Days)",
     labelStatusIngredient: "Ingredient Classification",
     statusIngredientPlaceholder: "Select Classification",
@@ -330,7 +334,8 @@ export const en = {
     semiFinishedOption: "Semi-Finished Prep",
     finishedOption: "Ready-to-Use",
     labelStatus: "Operational Status",
-    statusHelp: "Inactive ingredients will be hidden from new recipe drafting and purchase orders.",
+    statusHelp:
+      "Inactive ingredients will be hidden from new recipe drafting and purchase orders.",
     detailTitle: "Ingredient Details",
     detailIdInfo: "ID: {id} | Code: {code} | SKU: {sku}",
     sectionMainInfo: "Basic Identification",
@@ -340,8 +345,8 @@ export const en = {
     sectionTimestamps: "System Timestamps",
     btnBack: "Back",
     btnCancel: "Cancel",
-    btnSave: "Save Ingredient",
-    btnUpdate: "Save Changes",
+    btnSave: "Save",
+    btnUpdate: "Save",
     btnSaving: "Saving...",
     btnEditData: "Edit Ingredient Data",
     toastCreateSuccess: "Ingredient added successfully!",
@@ -352,12 +357,12 @@ export const en = {
     validationCategoryRequired: "Category selection is required",
     validationUnitRequired: "Unit selection is required",
     validationMinStockRequired: "Minimum stock cannot be negative",
-    validationMaxStockRequired: "Maximum stock must be greater than minimum stock",
+    validationMaxStockRequired:
+      "Maximum stock must be greater than minimum stock",
     validationCostRequired: "Cost price cannot be negative",
     errorServerGeneric: "Failed to load data from server.",
     errorSaveGeneric: "An error occurred while saving ingredient data.",
     loadingDetail: "Loading ingredient details...",
     loadingForm: "Loading ingredient form...",
   },
-
 };

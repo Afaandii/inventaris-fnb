@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ingredientService } from "@/services/ingredientService";
 import { categoryService } from "@/services/categoryService";
-import type {
-  IngredientFormData,
-  Unit,
-  Supplier,
-} from "@/types/ingredient";
+import { IngredientFormSkeleton } from "@/components/ingredients/IngredientSkeleton";
+import { IngredientServer502 } from "@/components/ingredients/IngredientServer502";
+import type { Ingredient, IngredientFormData, Unit, Supplier } from "@/types/ingredient";
 import type { Category } from "@/types/category";
 import $ from "jquery";
 
@@ -61,7 +59,8 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
   const [unitsList, setUnitsList] = useState<Unit[]>([]);
   const [suppliersList, setSuppliersList] = useState<Supplier[]>([]);
 
-  const [isLoading, setIsLoading] = useState(isEdit);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isServerDown, setIsServerDown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -109,7 +108,9 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         $cat.off("change.ing_sync").on("change.ing_sync", () => {
           const val = $cat.val();
           setCategoryId(
-            val === "" || val === null || val === undefined ? null : Number(val),
+            val === "" || val === null || val === undefined
+              ? null
+              : Number(val),
           );
         });
       }
@@ -130,7 +131,9 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         $unit.off("change.ing_sync").on("change.ing_sync", () => {
           const val = $unit.val();
           setUnitId(
-            val === "" || val === null || val === undefined ? null : Number(val),
+            val === "" || val === null || val === undefined
+              ? null
+              : Number(val),
           );
         });
       }
@@ -151,7 +154,9 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         $sup.off("change.ing_sync").on("change.ing_sync", () => {
           const val = $sup.val();
           setSupplierId(
-            val === "" || val === null || val === undefined ? null : Number(val),
+            val === "" || val === null || val === undefined
+              ? null
+              : Number(val),
           );
         });
       }
@@ -277,60 +282,82 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
     }
   }, [statusIngredient, isLoading]);
 
-  // Load initial dropdown options & existing ingredient data if edit
+  // Load initial dropdown options & existing ingredient data if edit with 3-second skeleton & 502 check
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    setIsServerDown(false);
+    const startTime = Date.now();
+
+    try {
+      const [catRes, unitRes, supRes] = await Promise.all([
+        categoryService.getAll(),
+        ingredientService.getUnits(),
+        ingredientService.getSuppliers(),
+      ]);
+
+      let editItem: Ingredient | null = null;
+      let editLive = true;
+
+      if (isEdit && effectiveIngredientId) {
+        const itemRes = await ingredientService.getById(effectiveIngredientId);
+        editItem = itemRes.data;
+        editLive = itemRes.isLive;
+      }
+
+      // Maintain skeleton loading for ~3 seconds
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+      }
+
+      // Check if backend returned valid live response
+      if (!unitRes.isLive || !catRes.isLive || (isEdit && (!editLive || !editItem))) {
+        setIsServerDown(true);
+        return;
+      }
+
+      setCategoriesList(catRes.data);
+      setUnitsList(unitRes.data);
+      setSuppliersList(supRes.data);
+
+      if (isEdit && editItem) {
+        setIngreName(editItem.ingre_name);
+        setIngreCode(editItem.ingre_code);
+        setCategoryId(editItem.category_id);
+        setUnitId(editItem.unit_id);
+        setSupplierId(editItem.supplier_id ?? null);
+        setSku(editItem.sku || "");
+        setBarcode(editItem.barcode || "");
+        setMinStok(editItem.min_stok);
+        setMaxStok(editItem.max_stok);
+        setCostPrice(editItem.cost_price);
+        setAverageCost(editItem.average_cost);
+        setIsPerishable(editItem.is_perishable);
+        setShelfLifeDay(editItem.shelf_life_day);
+        setStatusIngredient(editItem.status_ingredient || "raw");
+        setIsActive(editItem.is_active);
+      }
+    } catch {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+      }
+      setIsServerDown(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isEdit, effectiveIngredientId]);
+
   useEffect(() => {
     let isMounted = true;
-
-    const loadData = async () => {
-      try {
-        const [catRes, unitRes, supRes] = await Promise.all([
-          categoryService.getAll(),
-          ingredientService.getUnits(),
-          ingredientService.getSuppliers(),
-        ]);
-
-        if (!isMounted) return;
-        setCategoriesList(catRes.data);
-        setUnitsList(unitRes);
-        setSuppliersList(supRes);
-
-        if (isEdit && effectiveIngredientId) {
-          const item = await ingredientService.getById(effectiveIngredientId);
-          if (item && isMounted) {
-            setIngreName(item.ingre_name);
-            setIngreCode(item.ingre_code);
-            setCategoryId(item.category_id);
-            setUnitId(item.unit_id);
-            setSupplierId(item.supplier_id ?? null);
-            setSku(item.sku || "");
-            setBarcode(item.barcode || "");
-            setMinStok(item.min_stok);
-            setMaxStok(item.max_stok);
-            setCostPrice(item.cost_price);
-            setAverageCost(item.average_cost);
-            setIsPerishable(item.is_perishable);
-            setShelfLifeDay(item.shelf_life_day);
-            setStatusIngredient(item.status_ingredient || "raw");
-            setIsActive(item.is_active);
-          }
-        }
-      } catch {
-        if (isMounted) {
-          setServerError(t.ingredients.errorServerGeneric);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadData();
-
+    if (isMounted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadData();
+    }
     return () => {
       isMounted = false;
     };
-  }, [isEdit, effectiveIngredientId, t.ingredients.errorServerGeneric]);
+  }, [loadData]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -411,11 +438,11 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-xs text-muted-foreground">
-        <p>{t.ingredients.loadingForm}</p>
-      </div>
-    );
+    return <IngredientFormSkeleton />;
+  }
+
+  if (isServerDown) {
+    return <IngredientServer502 onRetry={loadData} />;
   }
 
   return (
@@ -447,7 +474,9 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-border/60 pb-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            {isEdit ? t.ingredients.editIngredient : t.ingredients.addIngredient}
+            {isEdit
+              ? t.ingredients.editIngredient
+              : t.ingredients.addIngredient}
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
             {isEdit
@@ -618,7 +647,7 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         </div>
 
         {/* Field 6 & 7: SKU & Barcode (2 Columns on sm+, 1 Column on Mobile) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               {t.ingredients.labelSku}
@@ -781,7 +810,9 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
               min="0"
               step="1"
               value={shelfLifeDay}
-              onChange={(e) => setShelfLifeDay(parseInt(e.target.value, 10) || 0)}
+              onChange={(e) =>
+                setShelfLifeDay(parseInt(e.target.value, 10) || 0)
+              }
               className="w-full h-10 px-3.5 rounded-xl border border-border/70 bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all hover:border-border"
             />
           </div>
@@ -835,9 +866,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
               {t.ingredients.statusInactive}
             </button>
           </div>
-          <p className="text-[11px] text-muted-foreground">
-            {t.ingredients.statusHelp}
-          </p>
         </div>
 
         {/* Action Buttons */}

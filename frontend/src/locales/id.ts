@@ -224,7 +224,7 @@ export const id = {
     noParent: "Tidak Ada Induk",
     btnSave: "Simpan",
     btnSaving: "Menyimpan...",
-    btnUpdate: "Simpan Perubahan",
+    btnUpdate: "Simpan",
     btnCancel: "Batal",
     btnDelete: "Hapus Kategori",
     btnDeleting: "Menghapus...",
@@ -251,20 +251,23 @@ export const id = {
   },
   ingredients: {
     title: "Manajemen Bahan Baku",
-    subtitle: "Kelola bahan baku mentah dapur, batasan stok, biaya, supplier rekanan, dan masa simpan.",
+    subtitle:
+      "Kelola bahan baku mentah dapur, batasan stok, biaya, supplier rekanan, dan masa simpan.",
     addIngredient: "Tambah Bahan Baku",
     editIngredient: "Edit Bahan Baku",
     detailIngredient: "Detail Bahan Baku",
     deleteIngredient: "Hapus Bahan Baku",
     deleteConfirmTitle: "Hapus Bahan Baku?",
-    deleteConfirmDesc: "Apakah Anda yakin ingin menghapus bahan baku ini? Resep menu dan saldo stok yang terhubung dengan bahan ini dapat terpengaruh.",
-    createSubtitle: "Isi formulir di bawah ini untuk menambahkan bahan baku baru ke sistem inventaris.",
+    deleteConfirmDesc:
+      "Apakah Anda yakin ingin menghapus bahan baku ini? Resep menu dan saldo stok yang terhubung dengan bahan ini dapat terpengaruh.",
+    createSubtitle:
+      "Isi formulir di bawah ini untuk menambahkan bahan baku baru ke sistem inventaris.",
     editSubtitle: "Perbarui rincian bahan baku #{id} di bawah ini.",
     btnBack: "Kembali",
     btnEditData: "Ubah Data Bahan Baku",
-    btnSave: "Simpan Bahan Baku",
+    btnSave: "Simpan",
     btnSaving: "Menyimpan...",
-    btnUpdate: "Simpan Perubahan",
+    btnUpdate: "Simpan",
     btnCancel: "Batal",
     btnDelete: "Hapus Bahan Baku",
     btnDeleting: "Menghapus...",
@@ -301,19 +304,23 @@ export const id = {
     totalSuppliers: "Supplier Terhubung",
     searchPlaceholder: "Cari nama bahan, kode, SKU...",
     emptyTitle: "Bahan Baku Tidak Ditemukan",
-    emptyDesc: "Tidak ada data bahan baku yang cocok dengan kriteria pencarian Anda.",
-    formNamePlaceholder: "Contoh: Daging Sapi Tenderloin, Fresh Milk, Biji Kopi...",
+    emptyDesc:
+      "Tidak ada data bahan baku yang cocok dengan kriteria pencarian Anda.",
+    formNamePlaceholder:
+      "Contoh: Daging Sapi Tenderloin, Fresh Milk, Biji Kopi...",
     formSkuPlaceholder: "Contoh: SKU-WGY-001",
     formBarcodePlaceholder: "Contoh: 8991234567890",
     labelIngredientName: "Nama Bahan Baku",
     labelCode: "Kode Bahan Baku",
-    codeHelp: "Dihasilkan secara otomatis oleh sistem untuk pelacakan inventaris.",
+    codeHelp:
+      "Dihasilkan secara otomatis oleh sistem untuk pelacakan inventaris.",
     labelCategory: "Kategori Bahan",
     categoryPlaceholder: "Pilih Kategori",
     categoryHelp: "Pilih klasifikasi kategori untuk bahan baku ini.",
     labelUnit: "Satuan Ukuran (Unit)",
     unitPlaceholder: "Pilih Satuan",
-    unitHelp: "Satuan dasar yang digunakan untuk hitungan resep dan stok opname.",
+    unitHelp:
+      "Satuan dasar yang digunakan untuk hitungan resep dan stok opname.",
     labelSupplier: "Pemasok Utama (Supplier)",
     supplierPlaceholder: "Pilih Pemasok",
     supplierHelp: "Vendor atau pemasok yang menyediakan bahan baku ini.",
@@ -324,7 +331,8 @@ export const id = {
     labelCostPrice: "Harga Beli Satuan (Rp)",
     labelAverageCost: "Biaya Rata-Rata / COGS (Rp)",
     labelIsPerishable: "Bahan Mudah Basi / Rusak?",
-    perishableHelp: "Tentukan apakah bahan baku ini memiliki risiko cepat kedaluwarsa.",
+    perishableHelp:
+      "Tentukan apakah bahan baku ini memiliki risiko cepat kedaluwarsa.",
     labelShelfLife: "Masa Simpan (Hari)",
     labelStatusIngredient: "Klasifikasi Bahan Baku",
     statusIngredientPlaceholder: "Pilih Klasifikasi",
@@ -332,7 +340,8 @@ export const id = {
     semiFinishedOption: "Bahan Setengah Jadi (Semi-Finished)",
     finishedOption: "Bahan Siap Pakai (Ready-to-Use)",
     labelStatus: "Status Operasional",
-    statusHelp: "Bahan nonaktif tidak akan muncul di opsi penyusunan resep atau PO pembelian.",
+    statusHelp:
+      "Bahan nonaktif tidak akan muncul di opsi penyusunan resep atau PO pembelian.",
     detailTitle: "Detail Bahan Baku",
     detailIdInfo: "Nomor ID: {id} | Kode: {code} | SKU: {sku}",
     sectionMainInfo: "Informasi Utama & Identifikasi",
@@ -342,8 +351,8 @@ export const id = {
     sectionTimestamps: "Riwayat Waktu Data",
     btnBack: "Kembali",
     btnCancel: "Batal",
-    btnSave: "Simpan Bahan Baku",
-    btnUpdate: "Simpan Perubahan",
+    btnSave: "Simpan",
+    btnUpdate: "Simpan",
     btnSaving: "Menyimpan...",
     btnEditData: "Ubah Data Bahan Baku",
     toastCreateSuccess: "Bahan baku berhasil ditambahkan!",
@@ -353,15 +362,16 @@ export const id = {
     validationNameMin: "Nama bahan baku minimal 3 karakter",
     validationCategoryRequired: "Kategori wajib dipilih",
     validationUnitRequired: "Satuan unit wajib dipilih",
-    validationMinStockRequired: "Batas stok minimum tidak boleh bernilai negatif",
-    validationMaxStockRequired: "Batas stok maksimum harus lebih besar dari stok minimum",
+    validationMinStockRequired:
+      "Batas stok minimum tidak boleh bernilai negatif",
+    validationMaxStockRequired:
+      "Batas stok maksimum harus lebih besar dari stok minimum",
     validationCostRequired: "Harga beli tidak boleh bernilai negatif",
     errorServerGeneric: "Gagal memuat data dari server.",
     errorSaveGeneric: "Terjadi kesalahan saat menyimpan data bahan baku.",
     loadingDetail: "Memuat rincian bahan baku...",
     loadingForm: "Memuat formulir bahan baku...",
   },
-
 } as const;
 
 export type TranslationType = typeof id;

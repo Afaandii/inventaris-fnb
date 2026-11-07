@@ -23,6 +23,8 @@ import {
 } from "@/components/ingredients/IngredientFilterModal";
 import { IngredientFormPage } from "@/pages/ingredients/IngredientFormPage";
 import { IngredientDetailPage } from "@/pages/ingredients/IngredientDetailPage";
+import { IngredientTableSkeleton } from "@/components/ingredients/IngredientSkeleton";
+import { IngredientServer502 } from "@/components/ingredients/IngredientServer502";
 import type { Ingredient, Unit } from "@/types/ingredient";
 import type { Category } from "@/types/category";
 
@@ -53,7 +55,8 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
   const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [units, setUnits] = useState<Unit[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isServerDown, setIsServerDown] = useState(false);
   const [isLiveBackend, setIsLiveBackend] = useState(false);
 
   // Filter criteria state
@@ -83,24 +86,44 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch ingredients dynamically from Golang backend
+  // Fetch ingredients dynamically from Golang backend with 3-second skeleton & 502 detection
   const loadIngredients = useCallback(async () => {
     setIsLoading(true);
+    setIsServerDown(false);
+    const startTime = Date.now();
+
     try {
       const [ingRes, catRes, unitRes] = await Promise.all([
         ingredientService.getAll(),
         categoryService.getAll(),
         ingredientService.getUnits(),
       ]);
-      setIngredients(ingRes.data);
-      setIsLiveBackend(ingRes.isLive);
-      if (catRes.data && catRes.data.length > 0) {
-        setCategories(catRes.data);
+
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
       }
-      if (unitRes && unitRes.length > 0) {
-        setUnits(unitRes);
+
+      if (!ingRes.isLive) {
+        setIsServerDown(true);
+        setIsLiveBackend(false);
+      } else {
+        setIngredients(ingRes.data);
+        setIsLiveBackend(true);
+        setIsServerDown(false);
+        if (catRes.data && catRes.data.length > 0) {
+          setCategories(catRes.data);
+        }
+        if (unitRes.data && unitRes.data.length > 0) {
+          setUnits(unitRes.data);
+        }
       }
     } catch {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+      }
+      setIsServerDown(true);
       setIsLiveBackend(false);
     } finally {
       setIsLoading(false);
@@ -110,25 +133,47 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
   useEffect(() => {
     let isMounted = true;
     const fetchInitialData = async () => {
+      const startTime = Date.now();
       try {
         const [ingRes, catRes, unitRes] = await Promise.all([
           ingredientService.getAll(),
           categoryService.getAll(),
           ingredientService.getUnits(),
         ]);
-        if (isMounted) {
+
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 3000) {
+          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+        }
+
+        if (!isMounted) return;
+
+        if (!ingRes.isLive) {
+          setIsServerDown(true);
+          setIsLiveBackend(false);
+        } else {
           setIngredients(ingRes.data);
-          setIsLiveBackend(ingRes.isLive);
+          setIsLiveBackend(true);
+          setIsServerDown(false);
           if (catRes.data && catRes.data.length > 0) {
             setCategories(catRes.data);
           }
-          if (unitRes && unitRes.length > 0) {
-            setUnits(unitRes);
+          if (unitRes.data && unitRes.data.length > 0) {
+            setUnits(unitRes.data);
           }
         }
       } catch {
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 3000) {
+          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+        }
         if (isMounted) {
+          setIsServerDown(true);
           setIsLiveBackend(false);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
         }
       }
     };
@@ -274,6 +319,20 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
         onNavigate={handleNavigate}
       />
     );
+  }
+
+  // Skeleton Loading Display (duration ~3s)
+  if (isLoading) {
+    return (
+      <div className="space-y-6 pb-12 animate-in fade-in duration-300">
+        <IngredientTableSkeleton />
+      </div>
+    );
+  }
+
+  // 502 Bad Gateway Display if backend server is offline (Full browser screen)
+  if (isServerDown) {
+    return <IngredientServer502 onRetry={loadIngredients} />;
   }
 
   return (

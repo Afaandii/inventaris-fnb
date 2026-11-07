@@ -1,11 +1,17 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
-import DataTable, { type DataTableRef } from 'datatables.net-react';
-import DT from 'datatables.net-dt';
-import 'datatables.net-dt/css/dataTables.dataTables.css';
-import { Eye, Pencil, Trash2, Search, Filter, ChevronDown } from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
-import type { Ingredient } from '@/types/ingredient';
-import type { Category } from '@/types/category';
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import DataTable, { type DataTableRef } from "datatables.net-react";
+import DT from "datatables.net-dt";
+import "datatables.net-dt/css/dataTables.dataTables.css";
+import { Eye, Pencil, Trash2, Search, Filter, ChevronDown } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { Ingredient } from "@/types/ingredient";
+import type { Category } from "@/types/category";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 DataTable.use(DT);
@@ -32,7 +38,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
   const { t, currentLanguage } = useTranslation();
   const dtRef = useRef<DataTableRef>(null);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [mobilePage, setMobilePage] = useState(1);
 
@@ -86,11 +92,14 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
   // Currency formatter
   const formatCurrency = useCallback(
     (amount: number) => {
-      return new Intl.NumberFormat(currentLanguage === 'id' ? 'id-ID' : 'en-US', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0,
-      }).format(amount);
+      return new Intl.NumberFormat(
+        currentLanguage === "id" ? "id-ID" : "en-US",
+        {
+          style: "currency",
+          currency: "IDR",
+          maximumFractionDigits: 0,
+        },
+      ).format(amount);
     },
     [currentLanguage],
   );
@@ -103,13 +112,16 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
       (i) =>
         i.ingre_name.toLowerCase().includes(q) ||
         i.ingre_code.toLowerCase().includes(q) ||
-        (i.sku || '').toLowerCase().includes(q) ||
-        (categoryMap.get(i.category_id) || '').toLowerCase().includes(q) ||
-        (i.supplier_name || '').toLowerCase().includes(q),
+        (i.sku || "").toLowerCase().includes(q) ||
+        (categoryMap.get(i.category_id) || "").toLowerCase().includes(q) ||
+        (i.supplier_name || "").toLowerCase().includes(q),
     );
   }, [ingredients, searchQuery, categoryMap]);
 
-  const totalMobilePages = Math.max(1, Math.ceil(mobileFilteredData.length / pageSize));
+  const totalMobilePages = Math.max(
+    1,
+    Math.ceil(mobileFilteredData.length / pageSize),
+  );
   const mobilePaginatedList = useMemo(() => {
     const start = (mobilePage - 1) * pageSize;
     return mobileFilteredData.slice(start, start + pageSize);
@@ -119,43 +131,43 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
   const columns = useMemo(() => {
     return [
       {
-        title: 'No',
-        data: 'id_ingredient',
-        width: '50px',
-        className: 'dt-left',
+        title: "No",
+        data: "id_ingredient",
+        width: "50px",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colName,
-        data: 'ingre_name',
-        className: 'dt-left',
+        data: "ingre_name",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colCategory,
-        data: 'category_id',
-        className: 'dt-left',
+        data: "category_id",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colStockLimit,
-        data: 'min_stok',
-        className: 'dt-left',
+        data: "min_stok",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colCostPrice,
-        data: 'cost_price',
-        className: 'dt-left',
+        data: "cost_price",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colStatus,
-        data: 'is_active',
-        className: 'dt-left',
+        data: "is_active",
+        className: "dt-left",
       },
       {
         title: t.ingredients.colActions,
         data: null,
         orderable: false,
         searchable: false,
-        width: '110px',
-        className: 'dt-right',
+        width: "110px",
+        className: "dt-right",
       },
     ];
   }, [t]);
@@ -164,7 +176,12 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
   const slots = useMemo(() => {
     return {
       // Column 0: No (clean number)
-      0: (_data: unknown, _row: Ingredient, _type: unknown, meta?: { row: number }) => {
+      0: (
+        _data: unknown,
+        _row: Ingredient,
+        _type: unknown,
+        meta?: { row: number },
+      ) => {
         const rowNumber = meta !== undefined ? meta.row + 1 : 1;
         return (
           <span className="font-mono text-xs font-medium text-muted-foreground">
@@ -179,11 +196,6 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
           <span className="font-semibold text-xs text-foreground tracking-tight">
             {row.ingre_name}
           </span>
-          {row.is_perishable && (
-            <span className="text-[10px] font-medium text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded-full border border-rose-500/20">
-              {t.ingredients.perishableYes}
-            </span>
-          )}
         </div>
       ),
 
@@ -204,7 +216,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
           <span className="font-semibold text-amber-500">{row.min_stok}</span>
           <span className="text-muted-foreground/60 mx-1">|</span>
           <span className="text-muted-foreground">Max: </span>
-          <span className="text-foreground/80">{row.max_stok || '—'}</span>
+          <span className="text-foreground/80">{row.max_stok || "—"}</span>
         </div>
       ),
 
@@ -275,32 +287,32 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
     return {
       responsive: true,
       pageLength: pageSize,
-      order: [[0, 'asc']],
+      order: [[0, "asc"]],
       layout: {
         topStart: null,
         topEnd: null,
-        bottomStart: 'info',
-        bottomEnd: 'paging',
+        bottomStart: "info",
+        bottomEnd: "paging",
       },
       language: {
         info:
-          currentLanguage === 'id'
-            ? 'Menampilkan _START_ sampai _END_ dari _TOTAL_ bahan baku'
-            : 'Showing _START_ to _END_ of _TOTAL_ ingredients',
+          currentLanguage === "id"
+            ? "Menampilkan _START_ sampai _END_ dari _TOTAL_ bahan baku"
+            : "Showing _START_ to _END_ of _TOTAL_ ingredients",
         infoEmpty:
-          currentLanguage === 'id'
-            ? 'Tidak ada data bahan baku'
-            : 'No ingredients available',
+          currentLanguage === "id"
+            ? "Tidak ada data bahan baku"
+            : "No ingredients available",
         infoFiltered:
-          currentLanguage === 'id'
-            ? '(disaring dari _MAX_ total data)'
-            : '(filtered from _MAX_ total entries)',
+          currentLanguage === "id"
+            ? "(disaring dari _MAX_ total data)"
+            : "(filtered from _MAX_ total entries)",
         zeroRecords: t.ingredients.emptyTitle,
         paginate: {
-          first: '«',
-          previous: '‹',
-          next: '›',
-          last: '»',
+          first: "«",
+          previous: "‹",
+          next: "›",
+          last: "»",
         },
       },
     };
@@ -312,7 +324,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Show [N] entries */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{currentLanguage === 'id' ? 'Tampilkan' : 'Show'}</span>
+          <span>{currentLanguage === "id" ? "Tampilkan" : "Show"}</span>
           <select
             value={pageSize}
             onChange={handlePageSizeChange}
@@ -323,7 +335,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
             <option value={25}>25</option>
             <option value={50}>50</option>
           </select>
-          <span>{currentLanguage === 'id' ? 'data' : 'entries'}</span>
+          <span>{currentLanguage === "id" ? "data" : "entries"}</span>
         </div>
 
         {/* Search Bar + Filter Button (Side-by-Side) */}
@@ -347,8 +359,8 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
               onClick={onOpenFilter}
               className={`flex items-center gap-1.5 h-9 px-3 rounded-xl border text-xs font-medium transition-all shadow-2xs shrink-0 cursor-pointer ${
                 activeFilterCount > 0
-                  ? 'border-primary bg-primary text-primary-foreground font-semibold'
-                  : 'border-border/70 bg-card hover:bg-accent text-foreground'
+                  ? "border-primary bg-primary text-primary-foreground font-semibold"
+                  : "border-border/70 bg-card hover:bg-accent text-foreground"
               }`}
             >
               <Filter className="w-3.5 h-3.5" />
@@ -385,7 +397,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
           mobilePaginatedList.map((item, idx) => {
             const isExpanded = expandedRows.has(item.id_ingredient);
             const rowNumber = (mobilePage - 1) * pageSize + idx + 1;
-            const catName = categoryMap.get(item.category_id) || '—';
+            const catName = categoryMap.get(item.category_id) || "—";
 
             return (
               <div
@@ -406,7 +418,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
                     >
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isExpanded ? 'rotate-180 text-foreground' : ''
+                          isExpanded ? "rotate-180 text-foreground" : ""
                         }`}
                       />
                     </button>
@@ -454,7 +466,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
                           {t.ingredients.colStockLimit}
                         </span>
                         <span className="font-medium text-foreground block">
-                          Min: {item.min_stok} | Max: {item.max_stok || '—'}
+                          Min: {item.min_stok} | Max: {item.max_stok || "—"}
                         </span>
                       </div>
 
@@ -523,7 +535,7 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
         {/* Mobile Pagination Controls */}
         <div className="flex items-center justify-between pt-3 text-xs text-muted-foreground">
           <span>
-            {currentLanguage === 'id'
+            {currentLanguage === "id"
               ? `Halaman ${mobilePage} dari ${totalMobilePages}`
               : `Page ${mobilePage} of ${totalMobilePages}`}
           </span>
@@ -543,7 +555,9 @@ export const IngredientTable: React.FC<IngredientTableProps> = ({
             <button
               type="button"
               disabled={mobilePage >= totalMobilePages}
-              onClick={() => setMobilePage((p) => Math.min(totalMobilePages, p + 1))}
+              onClick={() =>
+                setMobilePage((p) => Math.min(totalMobilePages, p + 1))
+              }
               className="h-8 px-2.5 rounded-lg border border-border/70 bg-card text-foreground disabled:opacity-40 transition-colors cursor-pointer"
             >
               ›

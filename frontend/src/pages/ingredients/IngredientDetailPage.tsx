@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ingredientService } from "@/services/ingredientService";
 import { categoryService } from "@/services/categoryService";
+import { IngredientDetailSkeleton } from "@/components/ingredients/IngredientSkeleton";
+import { IngredientServer502 } from "@/components/ingredients/IngredientServer502";
 import type { Ingredient, Unit, Supplier } from "@/types/ingredient";
 import type { Category } from "@/types/category";
 
@@ -33,71 +35,79 @@ export const IngredientDetailPage: React.FC<IngredientDetailPageProps> = ({
   const [categoryName, setCategoryName] = useState<string>("");
   const [unitLabel, setUnitLabel] = useState<string>("");
   const [supplierName, setSupplierName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(Boolean(effectiveIngredientId));
-  const [error, setError] = useState<string | null>(
+  const [isLoading, setIsLoading] = useState(true);
+  const [isServerDown, setIsServerDown] = useState(false);
+  const [error] = useState<string | null>(
     effectiveIngredientId ? null : t.ingredients.emptyTitle,
   );
 
-  useEffect(() => {
+  const loadDetail = useCallback(async () => {
     if (!effectiveIngredientId) return;
-    let isMounted = true;
+    setIsLoading(true);
+    setIsServerDown(false);
+    const startTime = Date.now();
 
-    const loadDetail = async () => {
-      try {
-        const [ingItem, catRes, unitRes, supRes] = await Promise.all([
-          ingredientService.getById(effectiveIngredientId),
-          categoryService.getAll(),
-          ingredientService.getUnits(),
-          ingredientService.getSuppliers(),
-        ]);
+    try {
+      const [ingRes, catRes, unitRes, supRes] = await Promise.all([
+        ingredientService.getById(effectiveIngredientId),
+        categoryService.getAll(),
+        ingredientService.getUnits(),
+        ingredientService.getSuppliers(),
+      ]);
 
-        if (!ingItem) {
-          if (isMounted) {
-            setError(t.ingredients.emptyTitle);
-          }
-          return;
-        }
-
-        if (isMounted) {
-          setIngredient(ingItem);
-
-          // Find Category Name
-          const cat = catRes.data.find(
-            (c: Category) => c.id_category === ingItem.category_id,
-          );
-          setCategoryName(cat ? cat.category_name : `Category #${ingItem.category_id}`);
-
-          // Find Unit Label
-          const u = unitRes.find((un: Unit) => un.id_unit === ingItem.unit_id);
-          setUnitLabel(u ? `${u.unit_name} (${u.unit_code})` : `Unit #${ingItem.unit_id}`);
-
-          // Find Supplier Name
-          if (ingItem.supplier_id) {
-            const s = supRes.find(
-              (sp: Supplier) => sp.id_supplier === ingItem.supplier_id,
-            );
-            setSupplierName(s ? s.supplier_name : `Supplier #${ingItem.supplier_id}`);
-          } else {
-            setSupplierName("—");
-          }
-        }
-      } catch {
-        if (isMounted) {
-          setError(t.ingredients.errorServerGeneric);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
       }
-    };
 
-    loadDetail();
+      if (!ingRes.isLive || !ingRes.data) {
+        setIsServerDown(true);
+        return;
+      }
 
+      const ingItem = ingRes.data;
+      setIngredient(ingItem);
+
+      // Find Category Name
+      const cat = catRes.data.find(
+        (c: Category) => c.id_category === ingItem.category_id,
+      );
+      setCategoryName(cat ? cat.category_name : `Category #${ingItem.category_id}`);
+
+      // Find Unit Label
+      const u = unitRes.data.find((un: Unit) => un.id_unit === ingItem.unit_id);
+      setUnitLabel(u ? `${u.unit_name} (${u.unit_code})` : `Unit #${ingItem.unit_id}`);
+
+      // Find Supplier Name
+      if (ingItem.supplier_id) {
+        const s = supRes.data.find(
+          (sp: Supplier) => sp.id_supplier === ingItem.supplier_id,
+        );
+        setSupplierName(s ? s.supplier_name : `Supplier #${ingItem.supplier_id}`);
+      } else {
+        setSupplierName("—");
+      }
+    } catch {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 3000) {
+        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+      }
+      setIsServerDown(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [effectiveIngredientId]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadDetail();
+    }
     return () => {
       isMounted = false;
     };
-  }, [effectiveIngredientId, t.ingredients.emptyTitle, t.ingredients.errorServerGeneric]);
+  }, [loadDetail]);
 
   const formatDate = (isoString?: string) => {
     if (!isoString) return "—";
@@ -137,11 +147,11 @@ export const IngredientDetailPage: React.FC<IngredientDetailPageProps> = ({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-xs text-muted-foreground">
-        <p>{t.ingredients.loadingDetail}</p>
-      </div>
-    );
+    return <IngredientDetailSkeleton />;
+  }
+
+  if (isServerDown) {
+    return <IngredientServer502 onRetry={loadDetail} />;
   }
 
   if (error || !ingredient) {
