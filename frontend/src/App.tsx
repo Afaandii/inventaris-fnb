@@ -14,6 +14,9 @@ import { CategoryDetailPage } from "@/pages/categories/CategoryDetailPage";
 import { IngredientsPage } from "@/pages/IngredientsPage";
 import { IngredientFormPage } from "@/pages/ingredients/IngredientFormPage";
 import { IngredientDetailPage } from "@/pages/ingredients/IngredientDetailPage";
+import { OutletsPage } from "@/pages/OutletsPage";
+import { OutletFormPage } from "@/pages/outlets/OutletFormPage";
+import { OutletDetailPage } from "@/pages/outlets/OutletDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
@@ -66,6 +69,31 @@ const MASTER_ROUTES = [
     path: "/master/ingredients/detail/:id",
     element: (navigate: (path: string) => void) => (
       <IngredientDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Outlets Management Routes
+  {
+    path: "/master/outlets",
+    element: (navigate: (path: string) => void) => (
+      <OutletsPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/outlets/create",
+    element: (navigate: (path: string) => void) => (
+      <OutletFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/outlets/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <OutletFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/outlets/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <OutletDetailPage onNavigate={navigate} />
     ),
   },
 ];
