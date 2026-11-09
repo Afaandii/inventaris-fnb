@@ -28,6 +28,7 @@ export const en = {
     thisWeek: "This Week",
     thisMonth: "This Month",
     restock: "Restock",
+    back: "Back",
   },
   theme: {
     theme: "Display Theme",

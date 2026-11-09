@@ -5,6 +5,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { outletService } from "@/services/outletService";
 import { OutletFormSkeleton } from "@/components/outlets/OutletSkeleton";
 import { OutletServer502 } from "@/components/outlets/OutletServer502";
+import { TimePicker } from "@/components/ui/time-picker";
 import type { Outlet, OutletFormData, StatusOutlet } from "@/types/outlet";
 
 interface OutletFormPageProps {
@@ -260,10 +261,10 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
         <button
           type="button"
           onClick={() => handleNavigate("/master/outlets")}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all shadow-2xs self-start sm:self-center cursor-pointer"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-6 py-3 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all group cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-          <span>{t.common.back}</span>
+          <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+          <span>{t.outlets.btnBack}</span>
         </button>
       </div>
 
@@ -280,8 +281,8 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
         className="rounded-2xl border border-border/70 bg-card/60 backdrop-blur-md shadow-xs p-6 space-y-6"
       >
         <div className="grid grid-cols-12 gap-5">
-          {/* Field 1: Nama Outlet Cabang (6 cols sm / 12 cols mobile) */}
-          <div className="col-span-12 sm:col-span-6 space-y-1.5">
+          {/* Field 1: Nama Outlet Cabang (12 cols) */}
+          <div className="col-span-12 space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelOutletName} *
             </label>
@@ -309,8 +310,8 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             )}
           </div>
 
-          {/* Field 2: Kode Outlet (6 cols sm / 12 cols mobile, readonly/generated) */}
-          <div className="col-span-12 sm:col-span-6 space-y-1.5">
+          {/* Field 2: Kode Outlet (12 cols, readonly/generated) */}
+          <div className="col-span-12 space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelCode}
             </label>
@@ -327,8 +328,8 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             </p>
           </div>
 
-          {/* Field 3: Kota (6 cols sm / 12 cols mobile) */}
-          <div className="col-span-12 sm:col-span-6 space-y-1.5">
+          {/* Field 3: Kota (12 cols) */}
+          <div className="col-span-12 space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelCity} *
             </label>
@@ -360,8 +361,8 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             )}
           </div>
 
-          {/* Field 4: Nomor Telepon (6 cols sm / 12 cols mobile) */}
-          <div className="col-span-12 sm:col-span-6 space-y-1.5">
+          {/* Field 4: Nomor Telepon (12 cols) */}
+          <div className="col-span-12 space-y-1.5">
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelPhone} *
             </label>
@@ -431,20 +432,15 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelOpeningHours} *
             </label>
-            <input
-              type="time"
+            <TimePicker
               value={openingHours}
-              onChange={(e) => {
-                setOpeningHours(e.target.value);
+              onChange={(val) => {
+                setOpeningHours(val);
                 if (errors.openingHours) {
                   setErrors((prev) => ({ ...prev, openingHours: "" }));
                 }
               }}
-              className={`w-full h-10 px-3.5 rounded-xl border bg-background text-foreground text-xs focus:outline-none focus:ring-2 transition-all font-mono ${
-                errors.openingHours
-                  ? "border-destructive focus:ring-destructive/30"
-                  : "border-border/70 focus:ring-ring/40 hover:border-border"
-              }`}
+              hasError={!!errors.openingHours}
             />
             {errors.openingHours && (
               <p className="text-[11px] text-destructive font-medium">
@@ -458,20 +454,15 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelClosingHours} *
             </label>
-            <input
-              type="time"
+            <TimePicker
               value={closingHours}
-              onChange={(e) => {
-                setClosingHours(e.target.value);
+              onChange={(val) => {
+                setClosingHours(val);
                 if (errors.closingHours) {
                   setErrors((prev) => ({ ...prev, closingHours: "" }));
                 }
               }}
-              className={`w-full h-10 px-3.5 rounded-xl border bg-background text-foreground text-xs focus:outline-none focus:ring-2 transition-all font-mono ${
-                errors.closingHours
-                  ? "border-destructive focus:ring-destructive/30"
-                  : "border-border/70 focus:ring-ring/40 hover:border-border"
-              }`}
+              hasError={!!errors.closingHours}
             />
             {errors.closingHours && (
               <p className="text-[11px] text-destructive font-medium">
