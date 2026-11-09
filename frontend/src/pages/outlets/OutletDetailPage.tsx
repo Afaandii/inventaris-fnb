@@ -148,7 +148,7 @@ export const OutletDetailPage: React.FC<OutletDetailPageProps> = ({
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-          <span>{t.common.back}</span>
+          <span>{t.outlets.btnBack}</span>
         </button>
       </div>
     );
@@ -214,7 +214,7 @@ export const OutletDetailPage: React.FC<OutletDetailPageProps> = ({
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border/70 bg-card hover:bg-muted text-xs font-medium text-foreground transition-all shadow-2xs cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-            <span>{t.common.back}</span>
+            <span>{t.outlets.btnBack}</span>
           </button>
         </div>
       </div>

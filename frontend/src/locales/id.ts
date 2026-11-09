@@ -28,6 +28,7 @@ export const id = {
     thisWeek: "Minggu Ini",
     thisMonth: "Bulan Ini",
     restock: "Restock",
+    back: "Kembali",
   },
   theme: {
     theme: "Tema Tampilan",
