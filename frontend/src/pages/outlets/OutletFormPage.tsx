@@ -323,9 +323,6 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
               placeholder="OTL-AUTO-GENERATED"
               className="w-full h-10 px-3.5 rounded-xl border border-border/60 bg-muted/40 font-mono text-muted-foreground text-xs cursor-not-allowed select-none"
             />
-            <p className="text-[11px] text-muted-foreground">
-              {t.outlets.codeHelp}
-            </p>
           </div>
 
           {/* Field 3: Kota (12 cols) */}
@@ -350,13 +347,9 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
                   : "border-border/70 focus:ring-ring/40 hover:border-border"
               }`}
             />
-            {errors.city ? (
+            {errors.city && (
               <p className="text-[11px] text-destructive font-medium">
                 {errors.city}
-              </p>
-            ) : (
-              <p className="text-[11px] text-muted-foreground">
-                {t.outlets.cityHelp}
               </p>
             )}
           </div>
@@ -383,13 +376,9 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
                   : "border-border/70 focus:ring-ring/40 hover:border-border"
               }`}
             />
-            {errors.phoneNumber ? (
+            {errors.phoneNumber && (
               <p className="text-[11px] text-destructive font-medium">
                 {errors.phoneNumber}
-              </p>
-            ) : (
-              <p className="text-[11px] text-muted-foreground">
-                {t.outlets.phoneHelp}
               </p>
             )}
           </div>
@@ -400,7 +389,7 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
               {t.outlets.labelAddress} *
             </label>
             <textarea
-              rows={3}
+              rows={4}
               value={address}
               maxLength={150}
               onChange={(e) => {
@@ -416,13 +405,9 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
                   : "border-border/70 focus:ring-ring/40 hover:border-border"
               }`}
             />
-            {errors.address ? (
+            {errors.address && (
               <p className="text-[11px] text-destructive font-medium">
                 {errors.address}
-              </p>
-            ) : (
-              <p className="text-[11px] text-muted-foreground">
-                {t.outlets.addressHelp}
               </p>
             )}
           </div>
@@ -476,56 +461,80 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
             <label className="text-xs font-semibold text-foreground">
               {t.outlets.labelStatus} *
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1 rounded-xl border border-border/70 bg-muted/30">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 p-1 rounded-xl border border-border/70 bg-muted/30">
               <button
                 type="button"
                 onClick={() => setStatusOutlet("active")}
-                className={`flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 h-10 rounded-lg text-xs transition-all cursor-pointer ${
                   statusOutlet === "active"
-                    ? "bg-card text-emerald-600 dark:text-emerald-400 font-bold shadow-xs"
+                    ? "bg-card text-emerald-400 font-bold shadow-sm ring-1 ring-white/10"
                     : "text-muted-foreground hover:text-foreground font-medium"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                    statusOutlet === "active"
+                      ? "bg-emerald-500 shadow-[0_0_6px_#10b981]"
+                      : "bg-muted-foreground/40"
+                  }`}
+                />
                 <span>{t.outlets.statusActive}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setStatusOutlet("inactive")}
-                className={`flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 h-10 rounded-lg text-xs transition-all cursor-pointer ${
                   statusOutlet === "inactive"
-                    ? "bg-card text-foreground font-bold shadow-xs"
+                    ? "bg-card text-foreground font-bold shadow-sm ring-1 ring-white/10"
                     : "text-muted-foreground hover:text-foreground font-medium"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                    statusOutlet === "inactive"
+                      ? "bg-muted-foreground"
+                      : "bg-muted-foreground/40"
+                  }`}
+                />
                 <span>{t.outlets.statusInactive}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setStatusOutlet("renovation")}
-                className={`flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 h-10 rounded-lg text-xs transition-all cursor-pointer ${
                   statusOutlet === "renovation"
-                    ? "bg-card text-amber-600 dark:text-amber-400 font-bold shadow-xs"
+                    ? "bg-card text-amber-400 font-bold shadow-sm ring-1 ring-white/10"
                     : "text-muted-foreground hover:text-foreground font-medium"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                    statusOutlet === "renovation"
+                      ? "bg-amber-500 shadow-[0_0_6px_#f59e0b]"
+                      : "bg-muted-foreground/40"
+                  }`}
+                />
                 <span>{t.outlets.statusRenovation}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setStatusOutlet("closed")}
-                className={`flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 h-10 rounded-lg text-xs transition-all cursor-pointer ${
                   statusOutlet === "closed"
-                    ? "bg-card text-rose-600 dark:text-rose-400 font-bold shadow-xs"
+                    ? "bg-card text-rose-400 font-bold shadow-sm ring-1 ring-white/10"
                     : "text-muted-foreground hover:text-foreground font-medium"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                    statusOutlet === "closed"
+                      ? "bg-rose-500 shadow-[0_0_6px_#ef4444]"
+                      : "bg-muted-foreground/40"
+                  }`}
+                />
                 <span>{t.outlets.statusClosed}</span>
               </button>
             </div>
@@ -536,7 +545,7 @@ export const OutletFormPage: React.FC<OutletFormPageProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between gap-3 pt-4 border-t border-border/60">
+        <div className="flex items-center justify-between gap-3 pt-4">
           <button
             type="button"
             onClick={() => handleNavigate("/master/outlets")}
