@@ -17,6 +17,9 @@ import { IngredientDetailPage } from "@/pages/ingredients/IngredientDetailPage";
 import { OutletsPage } from "@/pages/OutletsPage";
 import { OutletFormPage } from "@/pages/outlets/OutletFormPage";
 import { OutletDetailPage } from "@/pages/outlets/OutletDetailPage";
+import { WirehousesPage } from "@/pages/WirehousesPage";
+import { WirehouseFormPage } from "@/pages/wirehouses/WirehouseFormPage";
+import { WirehouseDetailPage } from "@/pages/wirehouses/WirehouseDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
@@ -94,6 +97,56 @@ const MASTER_ROUTES = [
     path: "/master/outlets/detail/:id",
     element: (navigate: (path: string) => void) => (
       <OutletDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Wirehouses / Warehouses Management Routes
+  {
+    path: "/master/warehouses",
+    element: (navigate: (path: string) => void) => (
+      <WirehousesPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/warehouses/create",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/warehouses/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/warehouses/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Alias routes for /master/wirehouses
+  {
+    path: "/master/wirehouses",
+    element: (navigate: (path: string) => void) => (
+      <WirehousesPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/wirehouses/create",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/wirehouses/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/wirehouses/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <WirehouseDetailPage onNavigate={navigate} />
     ),
   },
 ];
