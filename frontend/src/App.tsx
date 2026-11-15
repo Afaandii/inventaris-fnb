@@ -23,6 +23,9 @@ import { WirehouseDetailPage } from "@/pages/wirehouses/WirehouseDetailPage";
 import { SuppliersPage } from "@/pages/SuppliersPage";
 import { SupplierFormPage } from "@/pages/suppliers/SupplierFormPage";
 import { SupplierDetailPage } from "@/pages/suppliers/SupplierDetailPage";
+import { UnitsPage } from "@/pages/UnitsPage";
+import { UnitFormPage } from "@/pages/units/UnitFormPage";
+import { UnitDetailPage } from "@/pages/units/UnitDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
@@ -175,6 +178,31 @@ const MASTER_ROUTES = [
     path: "/master/suppliers/detail/:id",
     element: (navigate: (path: string) => void) => (
       <SupplierDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Units Management Routes
+  {
+    path: "/master/units",
+    element: (navigate: (path: string) => void) => (
+      <UnitsPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/units/create",
+    element: (navigate: (path: string) => void) => (
+      <UnitFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/units/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <UnitFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/units/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <UnitDetailPage onNavigate={navigate} />
     ),
   },
 ];
