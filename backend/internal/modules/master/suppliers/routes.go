@@ -12,9 +12,9 @@ func RegisterSupplierRoutes(r *gin.Engine, db *gorm.DB) {
 
 	group := r.Group("/api/v1/suppliers")
 	{
-		group.GET("/", handler.GetAll)
+		group.GET("", handler.GetAll)
 		group.GET("/:id_supplier", handler.GetById)
-		group.POST("/", handler.Create)
+		group.POST("", handler.Create)
 		group.PUT("/:id_supplier", handler.Update)
 		group.DELETE("/:id_supplier", handler.Delete)
 	}
