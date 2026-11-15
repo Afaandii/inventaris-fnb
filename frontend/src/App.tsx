@@ -20,6 +20,9 @@ import { OutletDetailPage } from "@/pages/outlets/OutletDetailPage";
 import { WirehousesPage } from "@/pages/WirehousesPage";
 import { WirehouseFormPage } from "@/pages/wirehouses/WirehouseFormPage";
 import { WirehouseDetailPage } from "@/pages/wirehouses/WirehouseDetailPage";
+import { SuppliersPage } from "@/pages/SuppliersPage";
+import { SupplierFormPage } from "@/pages/suppliers/SupplierFormPage";
+import { SupplierDetailPage } from "@/pages/suppliers/SupplierDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
@@ -147,6 +150,31 @@ const MASTER_ROUTES = [
     path: "/master/wirehouses/detail/:id",
     element: (navigate: (path: string) => void) => (
       <WirehouseDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Suppliers Management Routes
+  {
+    path: "/master/suppliers",
+    element: (navigate: (path: string) => void) => (
+      <SuppliersPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/suppliers/create",
+    element: (navigate: (path: string) => void) => (
+      <SupplierFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/suppliers/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <SupplierFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/suppliers/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <SupplierDetailPage onNavigate={navigate} />
     ),
   },
 ];
