@@ -26,6 +26,9 @@ import { SupplierDetailPage } from "@/pages/suppliers/SupplierDetailPage";
 import { UnitsPage } from "@/pages/UnitsPage";
 import { UnitFormPage } from "@/pages/units/UnitFormPage";
 import { UnitDetailPage } from "@/pages/units/UnitDetailPage";
+import { RolesPage } from "@/pages/RolesPage";
+import { RoleFormPage } from "@/pages/roles/RoleFormPage";
+import { RoleDetailPage } from "@/pages/roles/RoleDetailPage";
 import { useTheme } from "@/hooks/useTheme";
 
 // Route Definitions
@@ -203,6 +206,31 @@ const MASTER_ROUTES = [
     path: "/master/units/detail/:id",
     element: (navigate: (path: string) => void) => (
       <UnitDetailPage onNavigate={navigate} />
+    ),
+  },
+  // Roles Management Routes
+  {
+    path: "/master/roles",
+    element: (navigate: (path: string) => void) => (
+      <RolesPage onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/roles/create",
+    element: (navigate: (path: string) => void) => (
+      <RoleFormPage mode="create" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/roles/edit/:id",
+    element: (navigate: (path: string) => void) => (
+      <RoleFormPage mode="edit" onNavigate={navigate} />
+    ),
+  },
+  {
+    path: "/master/roles/detail/:id",
+    element: (navigate: (path: string) => void) => (
+      <RoleDetailPage onNavigate={navigate} />
     ),
   },
 ];
