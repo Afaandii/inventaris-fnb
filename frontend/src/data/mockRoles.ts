@@ -1,0 +1,60 @@
+import type { Role } from '@/types/role';
+
+export const initialRoles: Role[] = [
+  {
+    id_role: 1,
+    role_name: 'superadmin',
+    display_name: 'Super Administrator',
+    description: 'Akses tertinggi sistem dengan wewenang penuh atas konfigurasi, hak akses, audit log, data master, dan laporan keuangan.',
+    created_at: '2026-01-01T08:00:00Z',
+    updated_at: '2026-01-10T10:00:00Z',
+  },
+  {
+    id_role: 2,
+    role_name: 'admin',
+    display_name: 'Administrator Cabang',
+    description: 'Mengelola operasional cabang, data master bahan baku, inventaris stok, outlet, dan transaksi pengadaan suplai.',
+    created_at: '2026-01-01T08:30:00Z',
+    updated_at: '2026-01-15T11:20:00Z',
+  },
+  {
+    id_role: 3,
+    role_name: 'manager',
+    display_name: 'Restaurant Manager',
+    description: 'Mengawasi transaksi penjualan harian, reservasi meja, laporan performa, dan persetujuan transfer stok antar gudang.',
+    created_at: '2026-01-02T09:00:00Z',
+    updated_at: '2026-02-01T14:15:00Z',
+  },
+  {
+    id_role: 4,
+    role_name: 'cashier',
+    display_name: 'Kasir Utama',
+    description: 'Melayani transaksi penjualan POS, input pesanan pelanggan, pembayaran, dan pencatatan kas keluar-masuk saat shift.',
+    created_at: '2026-01-02T09:30:00Z',
+    updated_at: '2026-02-10T09:00:00Z',
+  },
+  {
+    id_role: 5,
+    role_name: 'inventory_staff',
+    display_name: 'Staf Gudang & Logistik',
+    description: 'Mencatat penerimaan barang supplier (Good Receipt), stok opname fisik, pencatatan limbah (waste), dan mutasi bahan.',
+    created_at: '2026-01-03T10:00:00Z',
+    updated_at: '2026-02-15T16:30:00Z',
+  },
+  {
+    id_role: 6,
+    role_name: 'chef',
+    display_name: 'Head Chef / Dapur',
+    description: 'Mengatur resep hidangan, produksi bahan setengah jadi, memantau bahan kedaluwarsa, dan mengajukan permintaan stok bahan baku.',
+    created_at: '2026-01-03T10:30:00Z',
+    updated_at: '2026-02-20T11:45:00Z',
+  },
+  {
+    id_role: 7,
+    role_name: 'barista',
+    display_name: 'Barista & Bartender',
+    description: 'Meracik menu minuman, memantau penggunaan bahan bar, sirup, susu, biji kopi, serta menjaga kebersihan stasiun bar.',
+    created_at: '2026-01-04T11:00:00Z',
+    updated_at: '2026-02-22T13:00:00Z',
+  },
+];
