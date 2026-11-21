@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { categoryService } from "@/services/categoryService";
+import { CategoryServer502 } from "@/components/categories/CategoryServer502";
 import type { Category } from "@/types/category";
 
 interface CategoryDetailPageProps {
@@ -30,62 +31,70 @@ export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({
   const [category, setCategory] = useState<Category | null>(null);
   const [parentName, setParentName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(Boolean(effectiveCategoryId));
+  const [isServerDown, setIsServerDown] = useState(false);
   const [error, setError] = useState<string | null>(
     effectiveCategoryId ? null : t.categories.detailNotFound,
   );
 
-  useEffect(() => {
+  const loadCategory = useCallback(async () => {
     if (!effectiveCategoryId) return;
-    let isMounted = true;
+    setIsLoading(true);
+    setIsServerDown(false);
 
-    const loadCategory = async () => {
-      try {
-        const { data: allCats } = await categoryService.getAll();
-        const found = allCats.find((c) => c.id_category === effectiveCategoryId);
+    try {
+      const allRes = await categoryService.getAll();
+      if (!allRes.isLive) {
+        setIsServerDown(true);
+        return;
+      }
+      const allCats = allRes.data;
+      const found = allCats.find((c) => c.id_category === effectiveCategoryId);
 
-        if (found) {
-          if (isMounted) {
-            setCategory(found);
-            if (found.parent_id) {
-              const p = allCats.find((c) => c.id_category === found.parent_id);
-              if (p) setParentName(p.category_name);
-              else setParentName(t.categories.parentRootOption);
-            } else {
-              setParentName(t.categories.parentRootOption);
-            }
+      if (found) {
+        setCategory(found);
+        if (found.parent_id) {
+          const p = allCats.find((c) => c.id_category === found.parent_id);
+          if (p) setParentName(p.category_name);
+          else setParentName(t.categories.parentRootOption);
+        } else {
+          setParentName(t.categories.parentRootOption);
+        }
+      } else {
+        const single = await categoryService.getById(effectiveCategoryId);
+        if (!single.isLive) {
+          setIsServerDown(true);
+          return;
+        }
+        if (single.data) {
+          setCategory(single.data);
+          if (single.data.parent_id) {
+            const p = allCats.find((c) => c.id_category === single.data.parent_id);
+            if (p) setParentName(p.category_name);
+            else setParentName(t.categories.parentRootOption);
+          } else {
+            setParentName(t.categories.parentRootOption);
           }
         } else {
-          const single = await categoryService.getById(effectiveCategoryId);
-          if (single && isMounted) {
-            setCategory(single);
-            if (single.parent_id) {
-              const p = allCats.find((c) => c.id_category === single.parent_id);
-              if (p) setParentName(p.category_name);
-              else setParentName(t.categories.parentRootOption);
-            } else {
-              setParentName(t.categories.parentRootOption);
-            }
-          } else if (isMounted) {
-            setError(t.categories.detailNotFound);
-          }
-        }
-      } catch {
-        if (isMounted) {
-          setError(t.categories.detailLoadError);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
+          setError(t.categories.detailNotFound);
         }
       }
-    };
+    } catch {
+      setIsServerDown(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [effectiveCategoryId, t.categories.detailNotFound, t.categories.parentRootOption]);
 
-    loadCategory();
-
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadCategory();
+    }
     return () => {
       isMounted = false;
     };
-  }, [effectiveCategoryId, t.categories.detailNotFound, t.categories.detailLoadError, t.categories.parentRootOption]);
+  }, [loadCategory]);
 
   const formatDate = (isoString?: string) => {
     if (!isoString) return "—";
@@ -115,6 +124,10 @@ export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({
         return "—";
     }
   };
+
+  if (isServerDown) {
+    return <CategoryServer502 onRetry={loadCategory} />;
+  }
 
   if (isLoading) {
     return (

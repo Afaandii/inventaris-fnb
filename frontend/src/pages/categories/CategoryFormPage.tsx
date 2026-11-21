@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { categoryService } from "@/services/categoryService";
+import { CategoryServer502 } from "@/components/categories/CategoryServer502";
 import type {
   Category,
   CategoryFormData,
@@ -47,6 +48,7 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
 
   const [categoriesList, setCategoriesList] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(isEdit);
+  const [isServerDown, setIsServerDown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -199,54 +201,58 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
   }, [type, isLoading]);
 
   // Load existing categories for parent dropdown and existing category data if edit
-  useEffect(() => {
-    let isMounted = true;
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    setIsServerDown(false);
+    try {
+      const catRes = await categoryService.getAll();
+      if (!catRes.isLive) {
+        setIsServerDown(true);
+        return;
+      }
+      setCategoriesList(catRes.data);
 
-    const loadData = async () => {
-      try {
-        const { data } = await categoryService.getAll();
-        if (!isMounted) return;
-        setCategoriesList(data);
-
-        if (isEdit && effectiveCategoryId) {
-          const cat = data.find((c) => c.id_category === effectiveCategoryId);
-          if (cat) {
-            setCategoryName(cat.category_name);
-            setSlug(cat.slug);
-            setParentId(cat.parent_id);
-            setType(cat.type);
-            setStatus(cat.status);
-            setDescription(cat.description || "");
-          } else {
-            // Try fetching single category from backend
-            const single = await categoryService.getById(effectiveCategoryId);
-            if (single && isMounted) {
-              setCategoryName(single.category_name);
-              setSlug(single.slug);
-              setParentId(single.parent_id);
-              setType(single.type);
-              setStatus(single.status);
-              setDescription(single.description || "");
-            }
+      if (isEdit && effectiveCategoryId) {
+        const cat = catRes.data.find((c) => c.id_category === effectiveCategoryId);
+        if (cat) {
+          setCategoryName(cat.category_name);
+          setSlug(cat.slug);
+          setParentId(cat.parent_id);
+          setType(cat.type);
+          setStatus(cat.status);
+          setDescription(cat.description || "");
+        } else {
+          // Try fetching single category from backend
+          const single = await categoryService.getById(effectiveCategoryId);
+          if (!single.isLive || !single.data) {
+            setIsServerDown(true);
+            return;
           }
-        }
-      } catch {
-        if (isMounted) {
-          setServerError(t.categories.errorServerGeneric);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
+          setCategoryName(single.data.category_name);
+          setSlug(single.data.slug);
+          setParentId(single.data.parent_id);
+          setType(single.data.type);
+          setStatus(single.data.status);
+          setDescription(single.data.description || "");
         }
       }
-    };
+    } catch {
+      setIsServerDown(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isEdit, effectiveCategoryId]);
 
-    loadData();
-
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadData();
+    }
     return () => {
       isMounted = false;
     };
-  }, [isEdit, effectiveCategoryId, t.categories.errorServerGeneric]);
+  }, [loadData]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -320,6 +326,10 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
       return cat.parent_id === null;
     });
   }, [categoriesList, isEdit, effectiveCategoryId]);
+
+  if (isServerDown) {
+    return <CategoryServer502 onRetry={loadData} />;
+  }
 
   if (isLoading) {
     return (
