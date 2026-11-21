@@ -40,15 +40,9 @@ export const OutletDetailPage: React.FC<OutletDetailPageProps> = ({
     if (!effectiveOutletId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await outletService.getById(effectiveOutletId);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive || !res.data) {
         setIsServerDown(true);
@@ -57,10 +51,6 @@ export const OutletDetailPage: React.FC<OutletDetailPageProps> = ({
 
       setOutlet(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

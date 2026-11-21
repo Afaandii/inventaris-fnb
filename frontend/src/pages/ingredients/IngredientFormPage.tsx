@@ -282,11 +282,10 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
     }
   }, [statusIngredient, isLoading]);
 
-  // Load initial dropdown options & existing ingredient data if edit with 3-second skeleton & 502 check
+  // Load initial dropdown options & existing ingredient data if edit with dynamic skeleton & 502 check
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [catRes, unitRes, supRes] = await Promise.all([
@@ -302,12 +301,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         const itemRes = await ingredientService.getById(effectiveIngredientId);
         editItem = itemRes.data;
         editLive = itemRes.isLive;
-      }
-
-      // Maintain skeleton loading for ~3 seconds
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
       }
 
       // Check if backend returned valid live response
@@ -338,10 +331,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
         setIsActive(editItem.is_active);
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

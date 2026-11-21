@@ -57,7 +57,6 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = ({
     if (!effectiveUserId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [userRes, rolesRes, outletsRes] = await Promise.all([
@@ -65,11 +64,6 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = ({
         roleService.getAll().catch(() => ({ data: initialRoles, isLive: false })),
         outletService.getAll().catch(() => ({ data: initialOutlets, isLive: false })),
       ]);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!userRes.isLive || !userRes.data) {
         setIsServerDown(true);
@@ -94,10 +88,6 @@ export const UserDetailPage: React.FC<UserDetailPageProps> = ({
         setOutletName(`Outlet #${fetchedUser.outlet_id}`);
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

@@ -85,11 +85,10 @@ export const UsersPage: React.FC<UsersPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch users, roles, and outlets dynamically with 3-second skeleton & 502 detection
+  // Fetch users, roles, and outlets dynamically with real backend loading & 502 detection
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [usersRes, rolesRes, outletsRes] = await Promise.all([
@@ -97,11 +96,6 @@ export const UsersPage: React.FC<UsersPageProps> = ({
         roleService.getAll().catch(() => ({ data: initialRoles, isLive: false })),
         outletService.getAll().catch(() => ({ data: initialOutlets, isLive: false })),
       ]);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!usersRes.isLive) {
         setIsServerDown(true);
@@ -125,10 +119,6 @@ export const UsersPage: React.FC<UsersPageProps> = ({
 
       setUsers(mapped);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

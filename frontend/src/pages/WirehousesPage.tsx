@@ -80,22 +80,16 @@ export const WirehousesPage: React.FC<WirehousesPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch wirehouses dynamically from Golang backend with 3-second skeleton & 502 detection
+  // Fetch wirehouses dynamically from Golang backend with real backend loading & 502 detection
   const loadWirehouses = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [wireRes, outletsRes] = await Promise.all([
         wirehouseService.getAll(),
         outletService.getAll(),
       ]);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!wireRes.isLive) {
         setIsServerDown(true);
@@ -105,10 +99,6 @@ export const WirehousesPage: React.FC<WirehousesPageProps> = ({
         setIsServerDown(false);
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

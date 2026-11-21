@@ -45,11 +45,10 @@ export const RoleFormPage: React.FC<RoleFormPageProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // Load existing role data if edit with 3-second skeleton & 502 check
+  // Load existing role data if edit with real backend loading & 502 check
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       let editItem: Role | null = null;
@@ -66,12 +65,6 @@ export const RoleFormPage: React.FC<RoleFormPageProps> = ({
         }
       }
 
-      // Maintain skeleton loading for ~3 seconds
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
-
       // Check if backend returned valid live response
       if (!editLive || (isEdit && !editItem)) {
         setIsServerDown(true);
@@ -85,10 +78,6 @@ export const RoleFormPage: React.FC<RoleFormPageProps> = ({
         setDescription(editItem.description || "");
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

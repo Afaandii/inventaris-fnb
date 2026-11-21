@@ -40,15 +40,9 @@ export const RoleDetailPage: React.FC<RoleDetailPageProps> = ({
     if (!effectiveRoleId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await roleService.getById(effectiveRoleId);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive || !res.data) {
         setIsServerDown(true);
@@ -57,10 +51,6 @@ export const RoleDetailPage: React.FC<RoleDetailPageProps> = ({
 
       setRole(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);
