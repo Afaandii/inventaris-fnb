@@ -11,7 +11,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
-import { initialCategories } from "@/data/mockCategories";
 import { categoryService } from "@/services/categoryService";
 import { CategoryTable } from "@/components/categories/CategoryTable";
 import { CategoryDeleteDialog } from "@/components/categories/CategoryDeleteDialog";
@@ -21,6 +20,7 @@ import {
 } from "@/components/categories/CategoryFilterModal";
 import { CategoryFormPage } from "@/pages/categories/CategoryFormPage";
 import { CategoryDetailPage } from "@/pages/categories/CategoryDetailPage";
+import { CategoryServer502 } from "@/components/categories/CategoryServer502";
 import type { Category } from "@/types/category";
 
 interface CategoriesPageProps {
@@ -47,9 +47,10 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
   );
 
   // State categories data from backend
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLiveBackend, setIsLiveBackend] = useState(false);
+  const [isServerDown, setIsServerDown] = useState(false);
 
   // Filter criteria state
   const [filterCriteria, setFilterCriteria] = useState<CategoryFilterCriteria>({
@@ -76,14 +77,22 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch categories dynamically from Golang backend
+  // Fetch categories dynamically from Golang backend with 502 detection
   const loadCategories = useCallback(async () => {
     setIsLoading(true);
+    setIsServerDown(false);
     try {
       const res = await categoryService.getAll();
-      setCategories(res.data);
-      setIsLiveBackend(res.isLive);
+      if (!res.isLive) {
+        setIsServerDown(true);
+        setIsLiveBackend(false);
+      } else {
+        setCategories(res.data);
+        setIsLiveBackend(true);
+        setIsServerDown(false);
+      }
     } catch {
+      setIsServerDown(true);
       setIsLiveBackend(false);
     } finally {
       setIsLoading(false);
@@ -95,12 +104,18 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
     const fetchInitialCategories = async () => {
       try {
         const res = await categoryService.getAll();
-        if (isMounted) {
+        if (!isMounted) return;
+        if (!res.isLive) {
+          setIsServerDown(true);
+          setIsLiveBackend(false);
+        } else {
           setCategories(res.data);
-          setIsLiveBackend(res.isLive);
+          setIsLiveBackend(true);
+          setIsServerDown(false);
         }
       } catch {
         if (isMounted) {
+          setIsServerDown(true);
           setIsLiveBackend(false);
         }
       }
@@ -226,6 +241,11 @@ export const CategoriesPage: React.FC<CategoriesPageProps> = ({
     return (
       <CategoryDetailPage categoryId={detailId} onNavigate={handleNavigate} />
     );
+  }
+
+  // 502 Bad Gateway Display if backend server is offline
+  if (isServerDown) {
+    return <CategoryServer502 onRetry={loadCategories} />;
   }
 
   return (
