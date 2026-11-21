@@ -63,11 +63,10 @@ export const UserFormPage: React.FC<UserFormPageProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // Load existing user data if edit, plus options with 3-second skeleton & 502 check
+  // Load existing user data if edit, plus options with real backend loading & 502 check
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       let editItem: User | null = null;
@@ -97,12 +96,6 @@ export const UserFormPage: React.FC<UserFormPageProps> = ({
         }
       }
 
-      // Maintain skeleton loading for ~3 seconds
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
-
       // Check if backend returned valid live response
       if (!isLiveCheck || (isEdit && !editItem)) {
         setIsServerDown(true);
@@ -122,10 +115,6 @@ export const UserFormPage: React.FC<UserFormPageProps> = ({
         setAvatar(editItem.avatar || "");
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

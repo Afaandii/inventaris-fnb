@@ -45,7 +45,6 @@ export const IngredientDetailPage: React.FC<IngredientDetailPageProps> = ({
     if (!effectiveIngredientId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [ingRes, catRes, unitRes, supRes] = await Promise.all([
@@ -54,11 +53,6 @@ export const IngredientDetailPage: React.FC<IngredientDetailPageProps> = ({
         ingredientService.getUnits(),
         ingredientService.getSuppliers(),
       ]);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!ingRes.isLive || !ingRes.data) {
         setIsServerDown(true);
@@ -88,10 +82,6 @@ export const IngredientDetailPage: React.FC<IngredientDetailPageProps> = ({
         setSupplierName("—");
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

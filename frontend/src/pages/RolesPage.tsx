@@ -75,19 +75,13 @@ export const RolesPage: React.FC<RolesPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch roles dynamically from Golang backend with 3-second skeleton & 502 detection
+  // Fetch roles dynamically from Golang backend with real backend loading & 502 detection
   const loadRoles = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await roleService.getAll();
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive) {
         setIsServerDown(true);
@@ -96,10 +90,6 @@ export const RolesPage: React.FC<RolesPageProps> = ({
 
       setRoles(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

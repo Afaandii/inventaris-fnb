@@ -76,19 +76,13 @@ export const UnitsPage: React.FC<UnitsPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch units dynamically from Golang backend with 3-second skeleton & 502 detection
+  // Fetch units dynamically from Golang backend with real backend loading & 502 detection
   const loadUnits = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await unitService.getAll();
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive) {
         setIsServerDown(true);
@@ -97,10 +91,6 @@ export const UnitsPage: React.FC<UnitsPageProps> = ({
 
       setUnits(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

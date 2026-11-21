@@ -49,15 +49,9 @@ export const SupplierDetailPage: React.FC<SupplierDetailPageProps> = ({
     if (!effectiveSupplierId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await supplierService.getById(effectiveSupplierId);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive || !res.data) {
         setIsServerDown(true);
@@ -66,10 +60,6 @@ export const SupplierDetailPage: React.FC<SupplierDetailPageProps> = ({
 
       setSupplier(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

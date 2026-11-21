@@ -40,15 +40,9 @@ export const WirehouseDetailPage: React.FC<WirehouseDetailPageProps> = ({
     if (!effectiveWirehouseId) return;
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await wirehouseService.getById(effectiveWirehouseId);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive || !res.data) {
         setIsServerDown(true);
@@ -57,10 +51,6 @@ export const WirehouseDetailPage: React.FC<WirehouseDetailPageProps> = ({
 
       setWirehouse(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);

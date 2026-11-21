@@ -86,11 +86,10 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch ingredients dynamically from Golang backend with 3-second skeleton & 502 detection
+  // Fetch ingredients dynamically from Golang backend with real backend loading & 502 detection
   const loadIngredients = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const [ingRes, catRes, unitRes] = await Promise.all([
@@ -98,11 +97,6 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
         categoryService.getAll(),
         ingredientService.getUnits(),
       ]);
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!ingRes.isLive) {
         setIsServerDown(true);
@@ -119,10 +113,6 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
         }
       }
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
       setIsLiveBackend(false);
     } finally {
@@ -133,18 +123,12 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
   useEffect(() => {
     let isMounted = true;
     const fetchInitialData = async () => {
-      const startTime = Date.now();
       try {
         const [ingRes, catRes, unitRes] = await Promise.all([
           ingredientService.getAll(),
           categoryService.getAll(),
           ingredientService.getUnits(),
         ]);
-
-        const elapsed = Date.now() - startTime;
-        if (elapsed < 3000) {
-          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-        }
 
         if (!isMounted) return;
 
@@ -163,10 +147,6 @@ export const IngredientsPage: React.FC<IngredientsPageProps> = ({
           }
         }
       } catch {
-        const elapsed = Date.now() - startTime;
-        if (elapsed < 3000) {
-          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-        }
         if (isMounted) {
           setIsServerDown(true);
           setIsLiveBackend(false);

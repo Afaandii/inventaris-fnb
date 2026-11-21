@@ -76,19 +76,13 @@ export const SuppliersPage: React.FC<SuppliersPageProps> = ({
     }, 3500);
   }, []);
 
-  // Fetch suppliers dynamically from Golang backend with 3-second skeleton & 502 detection
+  // Fetch suppliers dynamically from Golang backend with real backend loading & 502 detection
   const loadSuppliers = useCallback(async () => {
     setIsLoading(true);
     setIsServerDown(false);
-    const startTime = Date.now();
 
     try {
       const res = await supplierService.getAll();
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
 
       if (!res.isLive) {
         setIsServerDown(true);
@@ -97,10 +91,6 @@ export const SuppliersPage: React.FC<SuppliersPageProps> = ({
 
       setSuppliers(res.data);
     } catch {
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 3000) {
-        await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
-      }
       setIsServerDown(true);
     } finally {
       setIsLoading(false);
