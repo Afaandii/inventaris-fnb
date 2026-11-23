@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -213,7 +219,9 @@ export const CategoryFormPage: React.FC<CategoryFormPageProps> = ({
       setCategoriesList(catRes.data);
 
       if (isEdit && effectiveCategoryId) {
-        const cat = catRes.data.find((c) => c.id_category === effectiveCategoryId);
+        const cat = catRes.data.find(
+          (c) => c.id_category === effectiveCategoryId,
+        );
         if (cat) {
           setCategoryName(cat.category_name);
           setSlug(cat.slug);

@@ -6,7 +6,12 @@ import { ingredientService } from "@/services/ingredientService";
 import { categoryService } from "@/services/categoryService";
 import { IngredientFormSkeleton } from "@/components/ingredients/IngredientSkeleton";
 import { IngredientServer502 } from "@/components/ingredients/IngredientServer502";
-import type { Ingredient, IngredientFormData, Unit, Supplier } from "@/types/ingredient";
+import type {
+  Ingredient,
+  IngredientFormData,
+  Unit,
+  Supplier,
+} from "@/types/ingredient";
 import type { Category } from "@/types/category";
 import $ from "jquery";
 
@@ -304,7 +309,11 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
       }
 
       // Check if backend returned valid live response
-      if (!unitRes.isLive || !catRes.isLive || (isEdit && (!editLive || !editItem))) {
+      if (
+        !unitRes.isLive ||
+        !catRes.isLive ||
+        (isEdit && (!editLive || !editItem))
+      ) {
         setIsServerDown(true);
         return;
       }
@@ -519,7 +528,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
                 setErrors((prev) => ({ ...prev, ingreName: "" }));
               }
             }}
-            placeholder={t.ingredients.formNamePlaceholder}
             maxLength={120}
             className={`w-full h-10 px-3.5 rounded-xl border bg-background text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all ${
               errors.ingreName
@@ -645,7 +653,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
               type="text"
               value={sku}
               onChange={(e) => setSku(e.target.value)}
-              placeholder={t.ingredients.formSkuPlaceholder}
               maxLength={60}
               className="w-full h-10 px-3.5 rounded-xl border border-border/70 bg-background text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all hover:border-border"
             />
@@ -659,7 +666,6 @@ export const IngredientFormPage: React.FC<IngredientFormPageProps> = ({
               type="text"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              placeholder={t.ingredients.formBarcodePlaceholder}
               maxLength={80}
               className="w-full h-10 px-3.5 rounded-xl border border-border/70 bg-background text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all hover:border-border"
             />
